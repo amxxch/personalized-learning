@@ -26,20 +26,20 @@ public class LessonBubbleService {
         return lessonBubbleRepository.findAll();
     }
 
-    public Optional<LessonBubble> getBubbleById(Integer bubbleId) {
-        return lessonBubbleRepository.findById(bubbleId);
+    public Optional<LessonBubble> getBubbleById(Long bubbleId) {
+        return lessonBubbleRepository.findByBubbleId(bubbleId);
     }
 
-    public List<LessonBubble> getAllBubblesBySkillId(Integer skillId) {
+    public List<LessonBubble> getAllBubblesBySkillId(Long skillId) {
         return lessonBubbleRepository.findBySkill_SkillId(skillId);
     }
 
-    public Optional<LessonBubble> getBubbleByBubbleOrder(Integer skillId, Integer bubbleOrder) {
+    public Optional<LessonBubble> getBubbleByBubbleOrder(Long skillId, Integer bubbleOrder) {
         return lessonBubbleRepository.findBySkill_SkillIdAndBubbleOrder(skillId, bubbleOrder);
     }
 
     public LessonBubble addBubble(LessonBubble bubble) {
-        Integer skillId = bubble.getSkill().getSkillId();
+        Long skillId = bubble.getSkill().getSkillId();
 
         Skill skill = skillService.getSkillById(skillId)
                         .orElseThrow(() -> new RuntimeException("Skill not found"));
@@ -66,7 +66,7 @@ public class LessonBubbleService {
     }
 
     @Transactional
-    public void deleteBubble(Integer bubbleId) {
-        lessonBubbleRepository.deleteById(bubbleId);
+    public void deleteBubble(Long bubbleId) {
+        lessonBubbleRepository.deleteByBubbleId(bubbleId);
     }
 }

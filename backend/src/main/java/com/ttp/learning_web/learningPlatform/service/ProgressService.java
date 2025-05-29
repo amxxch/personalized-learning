@@ -36,29 +36,29 @@ public class ProgressService {
         return progressRepository.findAll();
     }
 
-    public Progress getProgressById(Integer id) {
-        return progressRepository.findById(id).orElse(null);
+    public Optional<Progress> getProgressById(Long progressId) {
+        return progressRepository.findByProgressId(progressId);
     }
 
-    public Progress getProgressByCourseIdAndUserIdAndSkillId(Integer courseId,
-                                                             Integer userId,
-                                                             Integer skillId) {
+    public Progress getProgressByCourseIdAndUserIdAndSkillId(Long courseId,
+                                                             Long userId,
+                                                             Long skillId) {
         return progressRepository.findByCourse_CourseIdAndUser_UserIdAndSkill_SkillId(
                 courseId, userId, skillId).orElse(null);
     }
 
-    public List<Progress> getProgressByUserId(Integer userId) {
+    public List<Progress> getProgressByUserId(Long userId) {
         return progressRepository.findByUser_UserId(userId);
     }
 
-    public List<Progress> getProgressByCourseIdAndUserId(Integer courseId,
-                                                         Integer userId) {
+    public List<Progress> getProgressByCourseIdAndUserId(Long courseId,
+                                                         Long userId) {
         return progressRepository.findByCourse_CourseIdAndUser_UserId(courseId, userId);
     }
 
     public Progress getIncompleteProgressByCourseIdAndUserId(
-            Integer courseId,
-            Integer userId) {
+            Long courseId,
+            Long userId) {
         List<Progress> incompleteProgress = progressRepository.findByCourse_CourseIdAndUser_UserId(courseId, userId)
                 .stream().filter(progress -> !progress.getCompleted())
                 .collect(Collectors.toList());
@@ -69,10 +69,10 @@ public class ProgressService {
     }
 
     public Progress addProgress(Progress progress) {
-        Integer courseId = progress.getCourse().getCourseId();
-        Integer userId = progress.getUser().getUserId();
-        Integer skillId = progress.getSkill().getSkillId();
-        Integer bubbleId = progress.getBubble().getBubbleId();
+        Long courseId = progress.getCourse().getCourseId();
+        Long userId = progress.getUser().getUserId();
+        Long skillId = progress.getSkill().getSkillId();
+        Long bubbleId = progress.getBubble().getBubbleId();
 
         Course course = courseService.getCourseByCourseId(courseId)
                 .orElseThrow(() -> new RuntimeException("Course Not Found"));
@@ -96,7 +96,7 @@ public class ProgressService {
     }
 
     public Progress resetProgress(Progress progress) {
-        Integer skillId = progress.getSkill().getSkillId();
+        Long skillId = progress.getSkill().getSkillId();
         Optional<LessonBubble> bubble = lessonBubbleService.getBubbleByBubbleOrder(skillId, 1);
 
         if (bubble.isPresent()) {
@@ -121,7 +121,12 @@ public class ProgressService {
     }
 
     @Transactional
-    public void deleteProgress(Integer progressId) {
-        progressRepository.deleteById(progressId);
+    public void deleteProgress(Long progressId) {
+        progressRepository.deleteByProgressId(progressId);
+    }
+
+    @Transactional
+    public void deleteAllProgress() {
+        progressRepository.deleteAll();
     }
 }

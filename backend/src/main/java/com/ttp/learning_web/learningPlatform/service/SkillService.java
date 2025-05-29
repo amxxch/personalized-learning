@@ -25,11 +25,11 @@ public class SkillService {
         return skillRepository.findAll();
     }
 
-    public Optional<Skill> getSkillById(Integer skillId) {
+    public Optional<Skill> getSkillById(Long skillId) {
         return skillRepository.findBySkillId(skillId);
     }
 
-    public List<Skill> getSkillsByCourseId(Integer courseId) {
+    public List<Skill> getSkillsByCourseId(Long courseId) {
 //        Optional<Course> course = courseService.getCourseByCourseId(courseId);
 //
 //        if (course.isPresent()) {
@@ -51,7 +51,7 @@ public class SkillService {
     }
 
     public Skill addSkill(Skill skill) {
-        Integer courseId = skill.getCourse().getCourseId();
+        Long courseId = skill.getCourse().getCourseId();
 
         Course course = courseService.getCourseByCourseId(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
@@ -61,7 +61,7 @@ public class SkillService {
     }
 
     public Skill updateSkill(Skill skill) {
-        Optional<Skill> existingSkill = skillRepository.findById(skill.getSkillId());
+        Optional<Skill> existingSkill = skillRepository.findBySkillId(skill.getSkillId());
 
         if (existingSkill.isPresent()) {
             Skill skillToUpdate = existingSkill.get();
@@ -76,7 +76,7 @@ public class SkillService {
     }
 
     @Transactional
-    public void deleteSkill(Integer skillId) {
+    public void deleteSkill(Long skillId) {
         skillRepository.deleteBySkillId(skillId);
     }
 }

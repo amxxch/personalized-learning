@@ -22,9 +22,9 @@ public class ProgressController {
 
     @GetMapping
     public List<Progress> getProgress(
-            @RequestParam(required = false) Integer userId,
-            @RequestParam(required = false) Integer courseId,
-            @RequestParam(required = false) Integer skillId
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long courseId,
+            @RequestParam(required = false) Long skillId
     ) {
         if (userId != null && courseId != null && skillId != null) {
             Progress progress = progressService.getProgressByCourseIdAndUserIdAndSkillId(userId, courseId, skillId);
@@ -40,8 +40,8 @@ public class ProgressController {
 
     @GetMapping("/incomplete")
     public Progress getIncompleteProgress(
-            @RequestParam(required = true) Integer userId,
-            @RequestParam(required = true) Integer courseId
+            @RequestParam(required = true) Long userId,
+            @RequestParam(required = true) Long courseId
     ) {
         return progressService.getIncompleteProgressByCourseIdAndUserId(courseId, userId);
     }
@@ -55,9 +55,9 @@ public class ProgressController {
 
     @PostMapping("/reset")
     public ResponseEntity<Progress> resetProgress(@RequestBody NextBubbleRequest nextBubbleRequest) {
-        Integer courseId = nextBubbleRequest.getCourseId();
-        Integer userId = nextBubbleRequest.getUserId();
-        Integer skillId = nextBubbleRequest.getSkillId();
+        Long courseId = nextBubbleRequest.getCourseId();
+        Long userId = nextBubbleRequest.getUserId();
+        Long skillId = nextBubbleRequest.getSkillId();
         Progress progress = progressService.getProgressByCourseIdAndUserIdAndSkillId(courseId, userId, skillId);
         progressService.resetProgress(progress);
         return new ResponseEntity<>(progress, HttpStatus.OK);
@@ -74,7 +74,7 @@ public class ProgressController {
     }
 
     @DeleteMapping("/{progressId}")
-    public ResponseEntity<String> deleteProgress(@PathVariable("progressId") Integer progressId) {
+    public ResponseEntity<String> deleteProgress(@PathVariable("progressId") Long progressId) {
         progressService.deleteProgress(progressId);
         return new ResponseEntity<>("Progress deleted successfully", HttpStatus.OK);
     }

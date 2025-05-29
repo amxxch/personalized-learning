@@ -4,4 +4,6 @@ public enum ContentType {
     TEXT,
     IMAGE,
     VIDEO,
+    CODE,
+    GPT
 }

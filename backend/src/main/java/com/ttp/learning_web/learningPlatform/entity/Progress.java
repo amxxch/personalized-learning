@@ -11,7 +11,7 @@ public class Progress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "progress_id", unique = true, nullable = false)
-    private Integer progressId;
+    private Long progressId;
 
     @Column(name = "completed", nullable = false)
     private Boolean completed;
@@ -46,11 +46,11 @@ public class Progress {
         this.completed = completed;
     }
 
-    public Integer getProgressId() {
+    public Long getProgressId() {
         return progressId;
     }
 
-    public void setProgressId(Integer progressId) {
+    public void setProgressId(Long progressId) {
         this.progressId = progressId;
     }
 

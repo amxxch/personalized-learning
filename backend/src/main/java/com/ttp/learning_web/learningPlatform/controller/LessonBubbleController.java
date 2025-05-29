@@ -20,7 +20,7 @@ public class LessonBubbleController {
 
     @GetMapping
     public List<LessonBubble> getBubbles(
-            @RequestParam(required = false) Integer skillId) {
+            @RequestParam(required = false) Long skillId) {
         if (skillId == null) {
             return lessonBubbleService.getAllBubbles();
         } else {
@@ -29,7 +29,7 @@ public class LessonBubbleController {
     }
 
     @GetMapping("/{bubbleId}")
-    public ResponseEntity<LessonBubble> getBubble(@PathVariable Integer bubbleId) {
+    public ResponseEntity<LessonBubble> getBubble(@PathVariable Long bubbleId) {
         Optional<LessonBubble> bubble = lessonBubbleService.getBubbleById(bubbleId);
         return bubble.map(lessonBubble -> new ResponseEntity<>(lessonBubble, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -51,7 +51,7 @@ public class LessonBubbleController {
     }
 
     @DeleteMapping("/{bubbleId}")
-    public ResponseEntity<String> deleteBubble(@PathVariable("bubbleId") Integer bubbleId) {
+    public ResponseEntity<String> deleteBubble(@PathVariable("bubbleId") Long bubbleId) {
         lessonBubbleService.deleteBubble(bubbleId);
         return new ResponseEntity<>("Bubble deleted successfully.", HttpStatus.OK);
     }

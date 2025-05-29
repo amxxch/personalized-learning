@@ -22,7 +22,7 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
-    public Optional<Course> getCourseByCourseId(Integer courseId) {
+    public Optional<Course> getCourseByCourseId(Long courseId) {
         return courseRepository.findByCourseId(courseId);
     }
 
@@ -55,7 +55,7 @@ public class CourseService {
     }
 
     @Transactional
-    public void deleteCourse(Integer courseId) {
+    public void deleteCourse(Long courseId) {
         courseRepository.deleteByCourseId(courseId);
     }
 }

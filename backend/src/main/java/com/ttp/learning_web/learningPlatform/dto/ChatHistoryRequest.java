@@ -1,9 +1,22 @@
 package com.ttp.learning_web.learningPlatform.dto;
 
-public class NextBubbleRequest {
+public class ChatHistoryRequest {
     private Long userId;
     private Long courseId;
     private Long skillId;
+
+    public ChatHistoryRequest() {}
+
+    public ChatHistoryRequest(Long userId, Long courseId) {
+        this.userId = userId;
+        this.courseId = courseId;
+    }
+
+    public ChatHistoryRequest(Long userId, Long courseId, Long skillId) {
+        this.userId = userId;
+        this.courseId = courseId;
+        this.skillId = skillId;
+    }
 
     public Long getUserId() {
         return userId;

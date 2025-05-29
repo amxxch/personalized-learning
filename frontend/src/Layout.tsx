@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div data-theme="cupcake">
       <NavBar />
-      <main>{children}</main>
+      <main style={{ height: 'calc(100vh - 64px)' }} className='h-screen'>{children}</main>
     </div>
   );
 }

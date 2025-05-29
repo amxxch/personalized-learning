@@ -2,30 +2,30 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
-import { Progress } from '../dto/response';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { Message } from '../dto/response';
 import { GrFormNextLink } from "react-icons/gr";
 import { IoReloadOutline } from "react-icons/io5";
 import { MdLogout } from "react-icons/md";
 
-interface Message {
-  sender: 'user' | 'teacher';
-  type: 'TEXT' | 'IMAGE' | 'VIDEO';
-  content: string;
-}
-
 interface ChatBubbleProps {
     initialMessages: Message[];
+    initialSkillId?: number;
+    initialBubbleId?: number;
 }
 
 
-const ChatBubble = ({ initialMessages } : ChatBubbleProps) => {
+const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 } : ChatBubbleProps) => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState('');
   const [datetime, setDatetime] = useState(new Date().toLocaleString());
 
-  const [courseId, setCourseId] = useState(1);
-  const [skillId, setSkillId] = useState(1);
+  const [userId] = useState(1);
+  const [courseId] = useState(1);
+  const [skillId, setSkillId] = useState(initialSkillId);
+  const [bubbleId, setBubbleId] = useState(initialBubbleId);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
@@ -33,60 +33,84 @@ const ChatBubble = ({ initialMessages } : ChatBubbleProps) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleOptionClick = async (option: 'next' | 'repeat' | 'quit') => {
+  useEffect(() => {
+    console.log('Skill ID:', skillId);
+    console.log('Bubble ID:', bubbleId);
+  }, [skillId, bubbleId]);
+
+  const handleOptionClick = async (option: 'next' | 'rephrase' | 'quit') => {
     setLoading(true);
 
     try {
       if (option === 'next') {
         // send API request
         const response = await axios.post('http://localhost:8080/api/v1/learning/next-bubble', {
-          "userId": 1,
-          "courseId": 1,
-          "skillId": 1,
+          "userId": userId,
+          "courseId": courseId,
+          "skillId": skillId,
         });
         const data = response.data;
 
-        if (typeof data === 'string') {
-          // Course completed
-          setMessages([...messages, {
-            sender: 'teacher',
+        console.log(data)
+
+        if (data.status === 'COMPLETED') {
+          const completeMessage: Message = {
+            sender: 'CHATBOT',
             type: 'TEXT',
-            content: data
-          }]);
-          // TODO: add quiz page
-        } else if (data && data.content) {
-          const newBubble: Message = {
-            sender: 'teacher',
-            type: data.contentType,
-            content: data.content,
+            content: data.message
           };
-          setMessages([...messages, newBubble]);
+          setMessages(prevMessages => [...prevMessages, completeMessage]);
+
+          // TODO: add quiz page
+
+        } else if (data.status === 'CONTINUE') {
+          const newBubble: Message = {
+            sender: 'CHATBOT',
+            type: data.nextBubble.contentType,
+            content: data.nextBubble.content,
+            topic: data.nextBubble.topic,
+            skillId: data.nextBubble.skillId,
+            skillName: data.nextBubble.skillName,
+            bubbleOrder: data.nextBubble.bubbleOrder
+          };
+
+          // Update state with new bubble and progress
+          setSkillId(data.nextBubble.skillId);
+          setBubbleId(data.nextBubble.bubbleId);
+          setMessages(prevMessages => [...prevMessages, newBubble]);
+
+          // TODO: find a way to detect if this is the last bubble and call for quiz page
+          // Actually, might be able to handle it in backend learning endpoint
+
+          console.log("Bubble ID:", bubbleId);
+          console.log("Skill ID:", skillId);
         }
 
-      } else if (option === 'repeat') {
-        // send API request
-        // setMessages([...messages, 'Repeat message']);
-        const response = await axios.post('http://localhost:8080/api/v1/progress/reset', {
-          "userId": 1,
-          "courseId": 1,
-          "skillId": 1,
+      } else if (option === 'rephrase') {
+        // Create still unsure message from user's side
+        const stillUnsureMessage: Message = {
+          sender: 'USER',
+          type: 'TEXT',
+          content: "I'm still unsure. Can you elaborate more?"
+        }
+        setMessages(prevMessages => [...prevMessages, stillUnsureMessage]);
+
+        // send API request to rephrase the lesson
+        const response = await axios.post('http://localhost:8080/api/v1/learning/rephrase', {
+          "userId": userId,
+          "bubbleId": bubbleId,
         });
         const data = response.data;
         console.log(data);
 
-        const resetConfirmation: Message = {
-          sender: 'teacher',
-          type: 'TEXT',
-          content: "Reset progress successfully. You can start over.",
-        };
-
-        const newBubble: Message = {
-          sender: 'teacher',
-          type: data.bubble.contentType,
-          content: data.bubble.content,
-        };
-
-        setMessages([...messages, resetConfirmation, newBubble]);
+        if (data.status === 'COMPLETED') {
+          const answer: Message = {
+            sender: 'CHATBOT',
+            type: 'GPT',
+            content: data.message
+          };
+          setMessages(prevMessages => [...prevMessages, answer]);
+        }
 
       } else if (option === 'quit') {
         // send API request
@@ -95,22 +119,68 @@ const ChatBubble = ({ initialMessages } : ChatBubbleProps) => {
       }
     } catch (error) {
       console.error('Error:', error);
-      setMessages([...messages, {
-        sender: 'teacher',
+      const errorMessage: Message = {
+        sender: 'CHATBOT',
         type: 'TEXT',
-        content: 'Failed to load next bubble. Please try again.'
-    }]);
+        content: 'An error occurred while processing your request. Please try again.'
+      };
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
     } finally {
       setLoading(false);
     }
   }
 
   const handleSend = async () => {
-      // gpt api to ask questions
+      // post message
+      const question: Message = {
+        sender: 'USER',
+        type: 'TEXT',
+        content: input,
+      }
+      setMessages(prevMessages => [...prevMessages, question]);
+
+      if (!input.trim()) {
+        const warningMessage: Message = {
+          sender: 'CHATBOT',
+          type: 'TEXT',
+          content: 'Please enter a question before sending.'
+        };
+        setMessages(prevMessages => [...prevMessages, warningMessage]);
+      }
+      
+      // send api
+      setLoading(true);
+      try {
+        const response = await axios.post('http://localhost:8080/api/v1/learning/ask-questions', {
+          "userId": userId,
+          "skillId": skillId,
+          "question": input,
+        });
+        const data = response.data;
+
+        const answer: Message = {
+          sender: 'CHATBOT',
+          type: 'GPT',
+          content: data.message
+        };
+        setMessages(prevMessages => [...prevMessages, answer]);
+
+      } catch (error) {
+        console.error('Error:', error);
+        const errorMessage: Message = {
+          sender: 'CHATBOT',
+          type: 'TEXT',
+          content: 'An error occurred while processing your question. Please try again.'
+        };
+        setMessages(prevMessages => [...prevMessages, errorMessage]);
+      } finally {
+        setLoading(false);
+        setInput('');
+      }
   }
   
     return (
-      <div style={{ height: 'calc(100vh - 64px)' }} className="flex flex-col h-screen p-4">
+      <div style={{ height: 'calc(100vh - 64px)' }} className="flex flex-col p-4 overflow-y-auto">
 
         {/* Title */}
         <div className="flex-1 overflow-y-auto space-y-4">
@@ -121,17 +191,36 @@ const ChatBubble = ({ initialMessages } : ChatBubbleProps) => {
 
         {/* Messages */}
         {messages.map((msg, idx) => (
-          <div key={idx} className={`message ${msg.sender === 'user' ? 'chat-end' : 'chat-start'}`}>
-            <div className={`chat-bubble ${msg.sender === 'user' ? 'bg-orange-400 text-white text-lg mr-5' : 'bg-gray-300 text-black text-lg ml-5'}`}>
+          <div key={idx} className={`message ${msg.sender === 'USER' ? 'chat-end' : 'chat-start'}`}>
+            <div className={`chat-bubble ${msg.sender === 'USER' ? 'bg-orange-400 text-white text-lg mr-5' : 'bg-gray-300 text-black text-lg ml-5'}`}>
+              {msg.skillName && msg.skillId && (msg.bubbleOrder && msg.bubbleOrder === 1) &&
+               <p className="font-bold mb-2">Chapter {msg.skillId}: {msg.skillName}</p>
+               }
+              {msg.topic && <p className="font-bold mb-2">{msg.topic}</p>}
               {msg.type === 'TEXT' && msg.content}
               {msg.type === 'IMAGE' && <img src={msg.content} alt="IMAGE" className="w-32 h-32 object-cover" />}
               {msg.type === 'VIDEO' && <video src={msg.content} controls className="w-32 h-32 object-cover"></video>}
+              {msg.type === 'CODE' && 
+              <SyntaxHighlighter language="cpp" showLineNumbers>
+                {msg.content}
+              </SyntaxHighlighter>}
+              {msg.type === 'GPT' && <ReactMarkdown>{msg.content}</ReactMarkdown>}
             </div>
           </div>
         ))}
+
+        {loading && (
+          <div className="chat-start">
+            <div className="chat-bubble bg-gray-300 text-black text-lg ml-5">
+              <span className="loading loading-dots loading-md"></span>
+            </div>
+          </div>
+        )}
+
+        {/* Scroll to bottom */}
+        <div ref={messagesEndRef} />
         </div>
 
-        <div ref={messagesEndRef} />
 
         {/* Decision-making Buttons */}
         <div className="flex justify-center mt-4">
@@ -145,7 +234,7 @@ const ChatBubble = ({ initialMessages } : ChatBubbleProps) => {
                   <MdLogout className='text-2xl'/>
                 </button>
                 <button 
-                  onClick={() => handleOptionClick('repeat')} 
+                  onClick={() => handleOptionClick('rephrase')} 
                   className="btn btn-secondary btn-md text-lg mr-2 px-8"
                 >
                   Still Unsure

@@ -8,13 +8,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MasteryRepository extends JpaRepository<Mastery, Integer> {
+public interface MasteryRepository extends JpaRepository<Mastery, Long> {
 
-    void deleteByMasteryId(Integer masteryId);
+    void deleteByMasteryId(Long masteryId);
 
-    Optional<Mastery> findByUser_UserIdAndSkill_SkillId(Integer userId, Integer skillId);
+    Optional<Mastery> findByMasteryId(Long masteryId);
 
-    List<Mastery> findByUser_UserId(Integer userId);
+    Optional<Mastery> findByUser_UserIdAndSkill_SkillId(Long userId, Long skillId);
 
-    List<Mastery> findBySkill_SkillId(Integer skillId);
+    List<Mastery> findByUser_UserId(Long userId);
+
+    List<Mastery> findBySkill_SkillId(Long skillId);
 }

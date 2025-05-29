@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CourseRepository extends JpaRepository<Course, Integer> {
+public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    void deleteByCourseId(Integer courseId);
+    void deleteByCourseId(Long courseId);
 
-    Optional<Course> findByCourseId(Integer courseId);
+    Optional<Course> findByCourseId(Long courseId);
 
     List<Course> findByTitleContaining(String courseTitle);
 }

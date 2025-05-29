@@ -1,6 +1,7 @@
 package com.ttp.learning_web.learningPlatform.entity;
 
 import com.ttp.learning_web.learningPlatform.enums.ContentType;
+import com.ttp.learning_web.learningPlatform.enums.Difficulty;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,7 +11,7 @@ public class LessonBubble {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bubble_id", unique = true, nullable = false)
-    private Integer bubbleId;
+    private Long bubbleId;
 
     @Column(name = "topic", nullable = false)
     private String topic;
@@ -22,34 +23,40 @@ public class LessonBubble {
     @Column(name = "content_type", nullable = false)
     private ContentType contentType;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @ManyToOne
     @JoinColumn(name = "skill_id", nullable = false)
     private Skill skill;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "difficulty", nullable = false)
+    private Difficulty difficulty;
+
     public LessonBubble() {}
 
-    public LessonBubble(Integer bubbleId,
+    public LessonBubble(Long bubbleId,
                         String topic,
                         Integer bubbleOrder,
                         ContentType contentType,
                         String content,
-                        Skill skill) {
+                        Skill skill,
+                        Difficulty difficulty) {
         this.bubbleId = bubbleId;
         this.topic = topic;
         this.bubbleOrder = bubbleOrder;
         this.contentType = contentType;
         this.content = content;
         this.skill = skill;
+        this.difficulty = difficulty;
     }
 
-    public Integer getBubbleId() {
+    public Long getBubbleId() {
         return bubbleId;
     }
 
-    public void setBubbleId(Integer bubbleId) {
+    public void setBubbleId(Long bubbleId) {
         this.bubbleId = bubbleId;
     }
 
@@ -91,5 +98,13 @@ public class LessonBubble {
 
     public void setSkill(Skill skill) {
         this.skill = skill;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
     }
 }

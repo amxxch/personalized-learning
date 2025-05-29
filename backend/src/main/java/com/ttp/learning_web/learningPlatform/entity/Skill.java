@@ -12,7 +12,7 @@ public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "skill_id", unique = true, nullable = false)
-    private Integer skillId;
+    private Long skillId;
 
     @Column(name = "skill_name", nullable = false)
     private String skillName;
@@ -26,11 +26,9 @@ public class Skill {
 
     public Skill() {}
 
-    public Skill(Integer skillId,
-                 Course course,
+    public Skill(Course course,
                  Integer skillOrder,
                  String skillName) {
-        this.skillId = skillId;
         this.course = course;
         this.skillOrder = skillOrder;
         this.skillName = skillName;
@@ -60,11 +58,11 @@ public class Skill {
         this.skillName = skillName;
     }
 
-    public Integer getSkillId() {
+    public Long getSkillId() {
         return skillId;
     }
 
-    public void setSkillId(Integer skillId) {
+    public void setSkillId(Long skillId) {
         this.skillId = skillId;
     }
 }

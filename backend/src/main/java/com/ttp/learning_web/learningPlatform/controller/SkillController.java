@@ -21,7 +21,7 @@ public class SkillController {
     }
 
     @GetMapping
-    public List<Skill> getSkills(@RequestParam(required = false) Integer courseId) {
+    public List<Skill> getSkills(@RequestParam(required = false) Long courseId) {
         if (courseId == null) {
             return skillService.getAllSkills();
         }
@@ -29,7 +29,7 @@ public class SkillController {
     }
 
     @GetMapping("/{skillId}")
-    public ResponseEntity<Skill> getSkillById(@PathVariable("skillId") Integer skillId) {
+    public ResponseEntity<Skill> getSkillById(@PathVariable("skillId") Long skillId) {
         Optional<Skill> skill = skillService.getSkillById(skillId);
         return skill.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -52,7 +52,7 @@ public class SkillController {
     }
 
     @DeleteMapping("/{skillId}")
-    public ResponseEntity<String> deleteSkill(@PathVariable("skillId") Integer skillId) {
+    public ResponseEntity<String> deleteSkill(@PathVariable("skillId") Long skillId) {
         skillService.deleteSkill(skillId);
         return new ResponseEntity<>("Skill deleted successfully.", HttpStatus.OK);
     }

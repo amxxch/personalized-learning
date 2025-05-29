@@ -27,7 +27,7 @@ public class UserService {
         return userRepository.findByNameContaining(name);
     }
 
-    public Optional<User> getUserById(Integer userId) {
+    public Optional<User> getUserById(Long userId) {
         return userRepository.findByUserId(userId);
     }
 
@@ -49,7 +49,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Integer userId) {
-        userRepository.deleteById(userId);
+    public void deleteUser(Long userId) {
+        userRepository.deleteByUserId(userId);
     }
 }

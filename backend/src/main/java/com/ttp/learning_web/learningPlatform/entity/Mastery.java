@@ -11,7 +11,7 @@ public class Mastery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mastery_id", unique = true, nullable = false)
-    private Integer masteryId;
+    private Long masteryId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -26,29 +26,25 @@ public class Mastery {
 
     public Mastery() {}
 
-    public Mastery(Integer masteryId,
-                   User user,
+    public Mastery(User user,
                    Skill skill) {
-        this.masteryId = masteryId;
         this.user = user;
         this.skill = skill;
     }
 
-    public Mastery(Integer masteryId,
-                   User user,
+    public Mastery(User user,
                    Skill skill,
                    Double masteryLevel) {
-        this.masteryId = masteryId;
         this.user = user;
         this.skill = skill;
         this.masteryLevel = masteryLevel;
     }
 
-    public Integer getMasteryId() {
+    public Long getMasteryId() {
         return masteryId;
     }
 
-    public void setMasteryId(Integer masteryId) {
+    public void setMasteryId(Long masteryId) {
         this.masteryId = masteryId;
     }
 

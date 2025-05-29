@@ -12,7 +12,7 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id", unique = true, nullable = false)
-    private Integer courseId;
+    private Long courseId;
 
     @Column(name = "course_title", nullable = false)
     private String title;
@@ -22,7 +22,7 @@ public class Course {
 
     public Course() {}
 
-    public Course(Integer courseId,
+    public Course(Long courseId,
                   String title,
                   String description) {
         this.courseId = courseId;
@@ -30,11 +30,11 @@ public class Course {
         this.description = description;
     }
 
-    public Integer getCourseId() {
+    public Long getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(Integer course_id) {
+    public void setCourseId(Long course_id) {
         this.courseId = course_id;
     }
 

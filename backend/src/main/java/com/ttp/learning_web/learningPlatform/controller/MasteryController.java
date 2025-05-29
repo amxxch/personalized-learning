@@ -20,8 +20,8 @@ public class MasteryController {
 
     @GetMapping
     public List<Mastery> getAllMastery(
-            @RequestParam(required = false) Integer userId,
-            @RequestParam(required = false) Integer skillId) {
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long skillId) {
         if (userId != null && skillId != null) {
             Mastery mastery = masteryService.getMasteryByUserIdAndSkillId(userId, skillId);
             return mastery != null ? List.of(mastery) : List.of();
@@ -50,8 +50,8 @@ public class MasteryController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/masteryId")
-    public ResponseEntity<String> deleteMastery(@PathVariable("masteryId") Integer masteryId) {
+    @DeleteMapping("/{masteryId}")
+    public ResponseEntity<String> deleteMastery(@PathVariable("masteryId") Long masteryId) {
         masteryService.deleteMasteryById(masteryId);
         return new ResponseEntity<>("Mastery deleted successfully", HttpStatus.OK);
     }

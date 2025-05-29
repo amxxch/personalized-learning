@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface SkillRepository extends JpaRepository<Skill, Integer> {
+public interface SkillRepository extends JpaRepository<Skill, Long> {
 
-    void deleteBySkillId(Integer skillId);
+    void deleteBySkillId(Long skillId);
 
-    Optional<Skill> findBySkillId(Integer skillId);
+    Optional<Skill> findBySkillId(Long skillId);
 
-    List<Skill> findByCourse_CourseId(Integer courseId);
+    List<Skill> findByCourse_CourseId(Long courseId);
 
     List<Skill> findBySkillNameContaining(String skillName);
 }

@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface LessonBubbleRepository extends JpaRepository<LessonBubble, Integer> {
+public interface LessonBubbleRepository extends JpaRepository<LessonBubble, Long> {
 
-    void deleteByBubbleId(Integer bubbleId);
+    void deleteByBubbleId(Long bubbleId);
 
-    Optional<LessonBubble> findByBubbleId(Integer bubbleId);
+    Optional<LessonBubble> findByBubbleId(Long bubbleId);
 
-    Optional<LessonBubble> findBySkill_SkillIdAndBubbleOrder(Integer skillId, Integer bubbleOrder);
+    Optional<LessonBubble> findBySkill_SkillIdAndBubbleOrder(Long skillId, Integer bubbleOrder);
 
-    List<LessonBubble> findBySkill_SkillId(Integer skillId);
+    List<LessonBubble> findBySkill_SkillId(Long skillId);
 }

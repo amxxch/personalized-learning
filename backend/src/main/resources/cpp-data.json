@@ -1,0 +1,916 @@
+{
+    "title": "Introduction to C++ Programming",
+    "description": "This course introduces students to the C++ programming language, teaching them the fundamentals of computer science using CS50-inspired lessons adapted for C++.",
+    "skills": [
+      {
+        "skillName": "C++ Basics and Syntax",
+        "skillOrder": 1,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "Welcome to C++! C++ is a powerful, high-performance language used in system/software development and game programming. It combines both procedural and object-oriented programming features.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Introduction to C++"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "A basic C++ program starts with a function named main. This is where the program begins execution. The syntax is similar to C, but includes some unique features like namespaces and streams.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "main function"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "#include <iostream> allows us to use input and output. cout is used to print text to the console. Always end statements with a semicolon!",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "I/O with iostream"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "// Here is a simple C++ program:\n\n#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"Hello, world!\" << endl;\n    return 0;\n}",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Sample Program"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "Every C++ statement must end with a semicolon. The return 0; indicates that the program ended successfully. endl is used to insert a newline.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Syntax Rules"
+          }
+        ]
+      },
+      {
+        "skillName": "Variables and Data Types",
+        "skillOrder": 2,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "In C++, variables are containers for storing data values. Before using a variable, you must declare its type. For example, to store an integer, you can write: int x; You can also assign a value right away: int x = 5; The type tells the compiler how much memory to allocate and how to interpret the bits stored there.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Variable Declaration"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "C++ is a statically typed language. This means that every variable must have a type that is known at compile time. Common types include int for integers, float for floating-point numbers, char for characters, and bool for boolean values. These types allow precise control over performance and memory.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Primitive Data Types"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "// Let's look at some examples:\n\nint age = 21;\nfloat weight = 60.5;\nchar grade = 'A';\nbool isStudent = true;\n\n// Each line here creates a variable of a specific type and assigns it a value.\n// Notice that char values use single quotes, and bool uses either true or false.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Example Declarations"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "The C++ standard also supports extended data types like double, which is similar to float but with more precision. There's also the string type, which isn't built into C++ as a primitive but comes from the standard library via #include <string>.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Advanced Data Types"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "// Here's how you can declare and use strings:\n\n#include <string>\nusing namespace std;\nstring name = \"Alice\";\ncout << \"Hello, \" << name << endl;\n\nStrings make it easy to work with text. Unlike C-style character arrays, the C++ string class is more powerful and easier to manipulate.",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Using Strings"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "You can also use the 'auto' keyword to let the compiler infer the type from the assigned value. For instance, auto x = 10; automatically treats x as an int. However, it's good practice to use explicit types while learning to improve clarity and understanding.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Type Inference"
+          }
+        ]
+      },
+      {
+        "skillName": "Control Flow (Conditionals & Loops)",
+        "skillOrder": 3,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "Control flow in C++ allows your program to make decisions and repeat actions. Two major types are conditionals (like if and switch) and loops (like while and for). These are fundamental for writing programs that do more than run top to bottom. Let’s start with conditionals.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Introduction to Control Flow"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "// The if statement lets you execute code only when a condition is true.\n// For example:\n\nint score = 90;\nif (score >= 90) {\n  cout << \"You got an A!\" << endl;\n}\n\nYou can also use else if and else for more complex logic paths.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "If-Else Statements"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "// When you have multiple values to compare against a single variable, switch statements can be cleaner than if-else.\n// For example:\n\nint day = 3;\nswitch (day) {\n  case 1: cout << \"Monday\"; break;\n  case 2: cout << \"Tuesday\"; break;\n  case 3: cout << \"Wednesday\"; break;\n  default: cout << \"Other day\";\n}",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Switch Statements"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "// Loops let you repeat code until a condition is false. A while loop checks its condition before each iteration:\n\nint i = 0;\nwhile (i < 5) {\n  cout << i << endl;\n  i++;\n}\n\nThis prints 0 through 4. Be careful to update your loop variable or you may create an infinite loop.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "While Loops"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "// A for loop is great when you know how many times to repeat.\n// It includes initialization, condition, and update all in one line:\n\nfor (int i = 0; i < 5; i++) {\n  cout << i << endl;\n}\n\nThis has the same output as the previous while loop but is often preferred for counting loops.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "For Loops"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "// The do-while loop is similar to a while loop, but the condition is checked after the loop body runs.\n// That means the loop runs at least once:\n\nint x = 0;\ndo {\n  cout << x << endl;\n  x++;\n} while (x < 5);",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Do-While Loops"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "You can control loops using the break and continue statements. break exits the loop immediately, while continue skips to the next iteration. These can be helpful in managing complex loop logic, but overusing them may reduce code readability.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Break and Continue"
+          }
+        ]
+      },
+      {
+        "skillName": "Functions",
+        "skillOrder": 4,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "Functions are blocks of code designed to perform a specific task. They help break down your code into smaller, reusable pieces. C++ comes with many built-in functions, but you can also define your own. Let's see how to define and use them.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Introduction to Functions"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "// Here’s a basic function in C++:\n\nint add(int a, int b) {\n  return a + b;\n}\n\nThis function takes two integers as input and returns their sum. You can call it like this:\n\nint result = add(3, 4);",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Function Definition and Call"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "Every function has a return type, a name, and a parameter list. If a function doesn’t return anything, use `void` as the return type. Parameters are like input variables that pass data into the function.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Function Syntax Explained"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "// Here’s an example of a void function:\n\nvoid greet(string name) {\n  cout << \"Hello, \" << name << \"!\" << endl;\n}\n\ngreet(\"Alice\"); // prints: Hello, Alice!",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Void Functions"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "// Functions can be declared before they are defined. This is known as a function prototype.\n// It allows you to organize code better, especially in larger programs:\n\nint multiply(int, int); // function prototype\n\nint main() {\n  cout << multiply(2, 3);\n}\n\nint multiply(int a, int b) {\n  return a * b;\n}",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Function Prototypes"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "// By default, function arguments are passed by value—copies of the values are made.\n// To modify the original variables, pass by reference using `&`:\n\nvoid update(int& x) {\n  x += 10;\n}\n\nint a = 5;\nupdate(a); // a is now 15",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Pass by Value vs Pass by Reference"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "// You can also use default arguments in functions. This allows you to call a function without specifying all parameters:\n\nvoid welcome(string name = \"Guest\") {\n  cout << \"Welcome, \" << name << endl;\n}\n\nwelcome(); // outputs: Welcome, Guest",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Default Arguments"
+          },
+          {
+            "bubbleOrder": 8,
+            "content": "Using functions helps reduce code duplication, increases readability, and makes debugging easier. As your programs grow, functions become essential to keep code clean and organized. Next, we’ll look into how functions interact with scope and variable lifetime.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Why Functions Matter"
+          }
+        ]
+      },
+      {
+        "skillName": "Variable Scope & Lifetime",
+        "skillOrder": 5,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "In C++, scope refers to the region of the program where a variable is accessible. Understanding scope helps avoid naming conflicts and ensures variables are only used where they’re valid. Let's start by learning about local and global scopes.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Introduction to Scope"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "// A local variable is declared inside a function or block and can only be used there.\n// Once the function ends, the variable is destroyed:\n\nvoid greet() {\n  string name = \"Alice\";\n  cout << \"Hi \" << name;\n}\n\n// 'name' doesn't exist outside greet()",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Local Scope"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "// A global variable is declared outside any function and is accessible from anywhere in the program.\n// Be careful—overusing globals can make code harder to manage:\n\nint score = 0;\n\nvoid increase() {\n  score++;\n}",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Global Scope"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "// If a variable is declared inside a block (e.g., inside a loop or `if` statement), it only exists within that block.\n// This is called block scope:\n\nfor (int i = 0; i < 3; i++) {\n  int temp = i * 2;\n  cout << temp;\n}\n\n// 'temp' is not accessible here",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Block Scope"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "When a variable is declared, its lifetime defines how long it exists in memory. Local variables are created when the function starts and destroyed when it ends. Global variables last for the entire duration of the program.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Variable Lifetime"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "// Static variables retain their value even after a function ends.\n// They are initialized only once and keep their state:\n\nvoid counter() {\n  static int count = 0;\n  count++;\n  cout << count;\n}\n\n// Each call to counter() increases count",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Static Variables"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "// If a local and global variable share the same name, the local one will shadow the global one within its scope.\n// You can still access the global variable using the scope resolution operator `::`:\n\nint value = 5;\n\nvoid show() {\n  int value = 10;\n  cout << ::value; // prints 5\n}",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Variable Shadowing"
+          },
+          {
+            "bubbleOrder": 8,
+            "content": "Mastering variable scope and lifetime helps you manage memory and avoid bugs. When you know which variable is being used where and for how long, you write cleaner and safer code.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Summary and Importance"
+          }
+        ]
+      },
+      {
+        "skillName": "Conditionals & Booleans",
+        "skillOrder": 6,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "Conditional statements allow programs to make decisions. C++ supports `if`, `else if`, and `else` to execute different code depending on whether conditions are true or false. Booleans (`true` and `false`) are at the core of conditionals.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Introduction to Conditionals"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "// The basic syntax of an `if` statement:\n\nint age = 20;\nif (age >= 18) {\n  cout << \"You are an adult.\";\n}\n\nThe code inside the `if` block runs only if the condition is true.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "if Statement"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "// Use `else` to provide an alternative block of code if the condition is false:\n\nif (age >= 18) {\n  cout << \"Adult\";\n} else {\n  cout << \"Minor\";\n}",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "if-else Statement"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "// Use `else if` to check multiple conditions in sequence:\n\nint score = 75;\nif (score >= 90) {\n  cout << \"A\";\n} else if (score >= 80) {\n  cout << \"B\";\n} else {\n  cout << \"C or below\";\n}",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "else if"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "C++ supports relational operators to compare values:\n- `==` (equal)\n- `!=` (not equal)\n- `<`, `>`, `<=`, `>=`\nThese are used in conditions to form boolean expressions.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Relational Operators"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "Logical operators allow combining multiple boolean conditions:\n- `&&` (logical AND)\n- `||` (logical OR)\n- `!` (logical NOT)\n\nExample: `if (age >= 18 && hasID)` checks two conditions together.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Logical Operators"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "// A boolean variable stores `true` or `false` and is often used in conditionals:\n\nbool isOnline = true;\nif (!isOnline) {\n  cout << \"Disconnected\";\n}",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Boolean Variables"
+          },
+          {
+            "bubbleOrder": 8,
+            "content": "// C++ allows the use of a `ternary operator` as a shorthand for `if-else`:\n\nint age = 20;\nstring status = (age >= 18) ? \"Adult\" : \"Minor\";\ncout << status;",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Ternary Operator"
+          },
+          {
+            "bubbleOrder": 9,
+            "content": "Conditionals and boolean logic are essential in building decision-making logic. You’ll use them constantly to control the flow of your programs and respond to different inputs.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Conclusion"
+          }
+        ]
+      },
+      {
+        "skillName": "Loops & Iteration",
+        "skillOrder": 7,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "Loops allow you to repeat a block of code multiple times, making your program more efficient. Instead of writing the same line over and over, a loop can execute code while a condition is true. C++ provides `while`, `for`, and `do-while` loops.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Introduction to Loops"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "// The `while` loop checks a condition before running the code inside:\n\nint i = 0;\nwhile (i < 5) {\n  cout << i << endl;\n  i++;\n}\n\nThis prints numbers from 0 to 4.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "While Loop"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "// A `for` loop is typically used when you know how many times to repeat:\n\nfor (int i = 0; i < 5; i++) {\n  cout << i << endl;\n}\n\nThis prints the same result as the previous `while` loop but in a more compact form.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "For Loop"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "// The `do-while` loop runs the block at least once, even if the condition is false:\n\nint i = 0;\ndo {\n  cout << i << endl;\n  i++;\n} while (i < 5);",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Do-While Loop"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "// You can use `break` to exit a loop early and `continue` to skip to the next iteration:\n\nfor (int i = 0; i < 10; i++) {\n  if (i == 5) break;\n  if (i % 2 == 0) continue;\n  cout << i << endl;\n}",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Break and Continue"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "Be careful with loops: an incorrect condition or forgetting to update the variable can cause an infinite loop. Infinite loops can freeze your program or computer, so always test loop conditions carefully.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Common Loop Errors"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "Loops are perfect for processing collections of data. For example, you can iterate through elements in an array or perform repeated calculations like summing numbers or searching for a value.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Use Cases"
+          },
+          {
+            "bubbleOrder": 8,
+            "content": "// Let’s sum the numbers 1 to 100 using a loop:\n\nint sum = 0;\nfor (int i = 1; i <= 100; i++) {\n  sum += i;\n}\ncout << \"Total: \" << sum;\n\nThis shows how loops are used in real tasks.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Example: Summing Numbers"
+          },
+          {
+            "bubbleOrder": 9,
+            "content": "// C++11 introduced range-based `for` loops, which are useful when working with arrays or containers:\n\nint nums[] = {1, 2, 3};\nfor (int num : nums) {\n  cout << num << endl;\n}",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Range-based For Loop"
+          }
+        ]
+      },
+      {
+        "skillName": "Functions in C++",
+        "skillOrder": 8,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "Functions are reusable blocks of code that perform a specific task. They help you organize your program into smaller, manageable pieces and avoid repetition. In C++, a function has a return type, a name, parameters (optional), and a body.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Introduction to Functions"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "// Here is the syntax of a simple function that adds two integers:\n\nint add(int a, int b) {\n  return a + b;\n}\n\nYou call it like this:\nint result = add(3, 4);  // result is 7",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Function Syntax"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "Functions can have parameters, which are variables passed to the function when called. They allow you to provide input to the function. Parameters have types and names, just like variables declared inside the function.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Function Parameters"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "A function can return a value using the `return` keyword. The return type must match the type declared in the function signature. If a function doesn’t return anything, use the `void` type.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Return Values"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "// Example of a function that prints a greeting without returning a value:\n\nvoid greet() {\n  cout << \"Hello, welcome!\" << endl;\n}\n\nYou call it simply with:\ngreet();",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Void Functions"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "Functions help improve code readability and reuse. When a function is defined once, you can call it multiple times with different inputs, avoiding duplicate code and making debugging easier.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Why Use Functions"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "Functions can call other functions, including themselves. When a function calls itself, it is called recursion. Recursion can solve problems like factorial calculation or traversing complex data structures, but should be used carefully to avoid infinite loops.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Recursion"
+          },
+          {
+            "bubbleOrder": 8,
+            "content": "// Example of a recursive function calculating factorial:\n\nint factorial(int n) {\n  if (n <= 1) return 1;\n  else return n * factorial(n - 1);\n}\n\nThis function calls itself with decremented values until it reaches 1.",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Example of Recursion"
+          },
+          {
+            "bubbleOrder": 9,
+            "content": "Function overloading lets you define multiple functions with the same name but different parameters. The compiler decides which function to call based on the argument types. This makes your code cleaner and more flexible.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Function Overloading"
+          },
+          {
+            "bubbleOrder": 10,
+            "content": "// Example of overloaded functions:\n\nint max(int a, int b) {\n  return (a > b) ? a : b;\n}\n\ndouble max(double a, double b) {\n  return (a > b) ? a : b;\n}\n\nYou can call `max` with ints or doubles, and the correct version will be used.",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Example of Overloading"
+          }
+        ]
+      },
+      {
+        "skillName": "Arrays and Strings",
+        "skillOrder": 9,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "Arrays in C++ are used to store multiple values of the same type in a contiguous block of memory. Each value is called an element, and you access elements using their index, starting at 0.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Introduction to Arrays"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "// Here is how to declare and initialize an array of integers with 5 elements:\n\nint numbers[5] = {10, 20, 30, 40, 50};\n\nYou can access the first element with numbers[0], which will give 10.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Array Declaration"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "Arrays have a fixed size that must be known at compile time. Trying to access an element outside the valid range (0 to size-1) causes undefined behavior, which can crash your program or produce incorrect results.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Array Bounds"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "// You can iterate over arrays using loops. For example, a for loop can print all elements:\n\nfor (int i = 0; i < 5; i++) {\n  cout << numbers[i] << \" \";\n}\n\nThis will output: 10 20 30 40 50",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Looping Through Arrays"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "Strings in C++ can be represented as arrays of characters ending with a null terminator `\\0`. This is the traditional C-style string. Alternatively, the `string` class from the C++ Standard Library is often preferred for easier manipulation.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Introduction to Strings"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "// Example of a C-style string:\n\nchar name[] = \"Alice\";\n\nHere, `name` is an array of characters including the null terminator at the end. You can access individual characters using indexes, e.g., `name[0]` is 'A'.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "C-style Strings"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "The `string` class in C++ is more powerful and flexible. It can grow or shrink dynamically and has many built-in functions like length(), substr(), find(), and more. To use it, include the `<string>` header and use the `std::string` type.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "std::string Class"
+          },
+          {
+            "bubbleOrder": 8,
+            "content": "// Example usage of `std::string`:\n\n#include <string>\n\nstd::string greeting = \"Hello, world!\";\ncout << greeting.length();  // outputs 13\n\nYou can concatenate strings easily with the `+` operator.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Using std::string"
+          },
+          {
+            "bubbleOrder": 9,
+            "content": "Remember, arrays and C-style strings are low-level and require manual management, while `std::string` provides safer and more convenient handling of text data. However, `std::string` may have a slight overhead compared to raw arrays.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Comparing C-style Strings and std::string"
+          },
+          {
+            "bubbleOrder": 10,
+            "content": "In summary, arrays hold fixed-size sequences of elements, useful for many situations like storing multiple values. Strings are sequences of characters used to represent text. Both concepts are fundamental in programming and C++ provides multiple ways to work with them.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Summary"
+          }
+        ]
+      },
+      {
+        "skillName": "Pointers",
+        "skillOrder": 10,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "Pointers are variables that store memory addresses rather than actual data. In C++, pointers allow you to directly access and manipulate memory, which can be powerful but requires careful handling to avoid errors.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Introduction to Pointers"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "To declare a pointer, use the `*` symbol. For example, `int* p;` declares a pointer `p` that can hold the address of an integer variable.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Pointer Declaration"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "// You can assign the address of a variable to a pointer using the address-of operator `&`. For example:\n\nint x = 42;\nint* p = &x;\n\nNow `p` holds the memory address of `x`.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Assigning Addresses"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "// Dereferencing a pointer means accessing the value stored at the memory address the pointer holds. Use the `*` operator to dereference:\n\ncout << *p;  // prints 42\n\nDereferencing lets you read or modify the variable indirectly.",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Dereferencing Pointers"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "Pointers can be `nullptr` to indicate that they don’t point to any valid memory. It’s important to check pointers before dereferencing to avoid undefined behavior or program crashes.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Null Pointers"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "Pointer arithmetic allows you to move through contiguous memory blocks, such as arrays. Incrementing a pointer moves it to the next element of the type it points to.\n\nFor example, if `p` points to an integer array element, `p + 1` points to the next integer.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Pointer Arithmetic"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "// Pointers are essential for dynamic memory management using `new` and `delete`. For example:\n\nint* p = new int(10);\n// use *p\ndelete p;\n\nYou allocate memory dynamically on the heap and must release it manually to prevent memory leaks.",
+            "contentType": "CODE",
+            "difficulty": "HARD",
+            "topic": "Dynamic Memory Allocation"
+          },
+          {
+            "bubbleOrder": 8,
+            "content": "Incorrect pointer use can cause serious bugs like dangling pointers, memory leaks, or segmentation faults. Always initialize pointers, avoid double deletion, and ensure they point to valid memory before use.",
+            "contentType": "TEXT",
+            "difficulty": "HARD",
+            "topic": "Pointer Safety"
+          },
+          {
+            "bubbleOrder": 9,
+            "content": "In modern C++, smart pointers (`std::unique_ptr`, `std::shared_ptr`) provide automatic memory management and help avoid many common pointer-related errors. They wrap raw pointers and manage lifetime safely.",
+            "contentType": "TEXT",
+            "difficulty": "HARD",
+            "topic": "Smart Pointers"
+          },
+          {
+            "bubbleOrder": 10,
+            "content": "In summary, pointers give you powerful control over memory and performance in C++. However, they require discipline and care to avoid errors. Understanding pointers deeply is essential for mastering C++ programming.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Summary"
+          }
+        ]
+      },
+      {
+        "skillName": "References and Const Qualifiers",
+        "skillOrder": 11,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "References in C++ are an alternative to pointers that provide an alias for an existing variable. Unlike pointers, references cannot be null and must be initialized when declared. They offer a safer and often more convenient way to work with variables indirectly.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Introduction to References"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "To declare a reference, use the `&` symbol in the variable declaration. For example, `int& ref = x;` creates a reference `ref` to the integer variable `x`. Any changes made to `ref` affect `x` directly.",
+            "contentType": "TEXT",
+            "difficulty": "EASY",
+            "topic": "Reference Declaration"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "// References are often used as function parameters to allow functions to modify arguments passed to them, or to avoid copying large objects.\n// For example:\n\nvoid increment(int& num) {\n  num++;\n}\n\nThis function modifies the original variable.",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "References as Function Parameters"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "The `const` qualifier can be combined with pointers and references to create read-only access to variables. A `const` reference promises not to modify the referred value, which is useful for passing large objects efficiently without copying.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Const References"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "// Example of a const reference:\n\nvoid print(const string& text) {\n  cout << text;\n}\n\nHere, `text` cannot be changed inside the function, ensuring safety and efficiency.",
+            "contentType": "CODE",
+            "difficulty": "EASY",
+            "topic": "Example of Const Reference"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "Const qualifiers can also apply to pointers, with different meanings depending on placement. For example, `const int* p` means the data pointed to is constant, but the pointer itself can change; `int* const p` means the pointer cannot change but the data can.",
+            "contentType": "TEXT",
+            "difficulty": "HARD",
+            "topic": "Const Pointers"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "Understanding the subtle differences between const pointers and pointers to const data is important for writing safe, efficient C++ code. Misuse can lead to compilation errors or unintended modifications.",
+            "contentType": "TEXT",
+            "difficulty": "HARD",
+            "topic": "Const Pointer vs Pointer to Const"
+          },
+          {
+            "bubbleOrder": 8,
+            "content": "References and const qualifiers together help create clear, safe, and efficient interfaces in C++ programs. They reduce errors, improve readability, and enable better optimization by the compiler.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Summary and Benefits"
+          }
+        ]
+      },
+      {
+        "skillName": "Smart Pointers and Memory Management",
+        "skillOrder": 12,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "In modern C++, managing dynamic memory safely and efficiently is essential. Raw pointers, while powerful, can lead to memory leaks and dangling pointers if not handled correctly. To address this, C++11 introduced smart pointers, which are template classes that automate memory management by owning and controlling the lifecycle of dynamically allocated objects.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Introduction to Smart Pointers"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "The three most commonly used smart pointers in C++ are std::unique_ptr, std::shared_ptr, and std::weak_ptr. Each serves a specific purpose: std::unique_ptr represents sole ownership of a resource, std::shared_ptr allows multiple owners with reference counting, and std::weak_ptr provides a non-owning reference to an object managed by std::shared_ptr to avoid cyclic references.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Types of Smart Pointers"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "std::unique_ptr is the simplest smart pointer that ensures a single owner of a dynamically allocated object. When the std::unique_ptr goes out of scope, it automatically deletes the owned object, preventing memory leaks. It cannot be copied but can be moved, allowing transfer of ownership. This makes it ideal for exclusive ownership scenarios.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "std::unique_ptr"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "// Here is an example of std::unique_ptr usage:\n\n```cpp\n#include <memory>\n#include <iostream>\n\nint main() {\n    std::unique_ptr<int> ptr = std::make_unique<int>(42);\n    std::cout << \"Value: \" << *ptr << std::endl;\n    // ptr automatically deletes the integer when it goes out of scope\n    return 0;\n}\n```",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Example of std::unique_ptr"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "std::shared_ptr enables multiple pointers to share ownership of a single dynamically allocated object. It maintains a reference count that tracks how many std::shared_ptr instances own the object. When the last std::shared_ptr owning the object is destroyed or reset, the object is deleted automatically. This feature helps manage shared resources safely.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "std::shared_ptr"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "// Example of std::shared_ptr usage:\n\n```cpp\n#include <iostream>\n#include <memory>\n\nint main() {\n    std::shared_ptr<int> ptr1 = std::make_shared<int>(100);\n    std::shared_ptr<int> ptr2 = ptr1; // shared ownership\n    std::cout << \"Value: \" << *ptr1 << \", use_count: \" << ptr1.use_count() << std::endl;\n    return 0;\n}\n```",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Example of std::shared_ptr"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "Lastly, std::weak_ptr is used to hold a non-owning reference to an object managed by std::shared_ptr. It is helpful in breaking circular references, which can prevent proper deallocation of objects. std::weak_ptr does not affect the reference count and must be converted to std::shared_ptr to access the underlying object safely.",
+            "contentType": "TEXT",
+            "difficulty": "HARD",
+            "topic": "std::weak_ptr"
+          },
+          {
+            "bubbleOrder": 8,
+            "content": "Summary: Smart pointers provide robust tools for automatic memory management in C++. Using std::unique_ptr for exclusive ownership, std::shared_ptr for shared ownership, and std::weak_ptr for non-owning references helps prevent memory leaks and dangling pointers, making your programs safer and easier to maintain.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Summary of Smart Pointers"
+          }
+        ]
+      },
+      {
+        "skillName": "Exception Handling in C++",
+        "skillOrder": 13,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "Exception handling in C++ is a mechanism to handle runtime errors or unusual conditions that disrupt the normal flow of a program. Instead of crashing or producing unpredictable results, C++ allows you to detect, catch, and respond to errors using try, throw, and catch blocks. This improves program robustness and reliability.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Introduction to Exception Handling"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "A try block encloses code that might throw an exception. If an error occurs, the code uses the throw keyword to raise an exception object. Control immediately jumps to the nearest matching catch block that handles the type of exception thrown. After catching, the program can continue or terminate gracefully.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "try, throw, and catch Keywords"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "// Here is an example of exception handling in C++:\n\n```cpp\n#include <iostream>\n\nint divide(int a, int b) {\n    if (b == 0) {\n        throw std::runtime_error(\"Division by zero\");\n    }\n    return a / b;\n}\n\nint main() {\n    try {\n        std::cout << divide(10, 0) << std::endl;\n    } catch (const std::runtime_error& e) {\n        std::cout << \"Error: \" << e.what() << std::endl;\n    }\n    return 0;\n}\n```",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Exception Handling Example"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "The throw statement raises a std::runtime_error exception if the divisor is zero. The catch block handles this exception, preventing the program from crashing and printing an informative error message. Exception handling helps separate error-handling logic from regular code, making programs cleaner and easier to maintain.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Understanding the Example"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "Multiple catch blocks can be used to handle different types of exceptions. The catch blocks are checked in order, and the first matching handler is executed. You can also use a catch-all handler with catch(...) to catch exceptions of any type, but it should be used sparingly to avoid hiding bugs.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Multiple Catch Blocks"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "The standard library defines many exception classes, such as std::logic_error, std::runtime_error, and their subclasses. You can also create your own exception types by inheriting from std::exception or other standard exceptions, allowing you to provide detailed error information specific to your program's context.",
+            "contentType": "TEXT",
+            "difficulty": "HARD",
+            "topic": "Standard and Custom Exceptions"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "In addition to try-catch, the C++ language supports the noexcept specifier for functions that guarantee not to throw exceptions. Using noexcept can help the compiler optimize code and clarify your program's exception safety guarantees. Proper use of exception specifications is important in large, complex systems.",
+            "contentType": "TEXT",
+            "difficulty": "HARD",
+            "topic": "noexcept Specifier"
+          },
+          {
+            "bubbleOrder": 8,
+            "content": "To summarize, exception handling in C++ enables graceful recovery from errors by throwing and catching exceptions. This prevents program crashes, separates error-handling from business logic, and makes your code more robust and maintainable.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Summary of Exception Handling"
+          }
+        ]
+      },
+      {
+        "skillName": "File Input and Output (I/O)",
+        "skillOrder": 14,
+        "lessonBubbles": [
+          {
+            "bubbleOrder": 1,
+            "content": "File Input and Output (I/O) is a fundamental part of many programs, allowing them to save data permanently or read data previously saved. In C++, file I/O is managed through the <fstream> library, which provides classes to handle reading and writing to files.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Introduction to File I/O"
+          },
+          {
+            "bubbleOrder": 2,
+            "content": "The key classes are ifstream for reading files, ofstream for writing files, and fstream for both reading and writing. These classes behave similarly to the standard input and output streams you already know, like cin and cout.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "File Stream Classes"
+          },
+          {
+            "bubbleOrder": 3,
+            "content": "To open a file, you can pass the filename as a string to the constructor of ifstream or ofstream, or you can create an object first and call the open() method later. Always check if the file opened successfully by using the is_open() method or by evaluating the stream in a boolean context.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Opening Files Safely"
+          },
+          {
+            "bubbleOrder": 4,
+            "content": "Reading from files can be done using the extraction operator (>>), which works well for formatted data, or getline(), which reads an entire line as a string. Writing is performed with the insertion operator (<<), similar to how you output to the console.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Reading and Writing Text"
+          },
+          {
+            "bubbleOrder": 5,
+            "content": "// Here is a simple example that writes some text to a file and then reads it back line by line:\n\n#include <iostream>\n#include <fstream>\n#include <string>\n\nint main() {\n    std::ofstream outfile(\"example.txt\");\n    if (!outfile) {\n        std::cerr << \"Error opening file for writing.\" << std::endl;\n        return 1;\n    }\n    outfile << \"Hello, file!\" << std::endl;\n    outfile << \"This is a second line.\" << std::endl;\n    outfile.close();\n\n    std::ifstream infile(\"example.txt\");\n    if (!infile) {\n        std::cerr << \"Error opening file for reading.\" << std::endl;\n        return 1;\n    }\n    std::string line;\n    while (std::getline(infile, line)) {\n        std::cout << line << std::endl;\n    }\n    infile.close();\n    return 0;\n}",
+            "contentType": "CODE",
+            "difficulty": "MEDIUM",
+            "topic": "Text File I/O Example"
+          },
+          {
+            "bubbleOrder": 6,
+            "content": "When you finish reading or writing, close the file stream explicitly by calling close(), or let the object go out of scope to close it automatically. Closing files properly ensures data integrity and releases system resources.",
+            "contentType": "TEXT",
+            "difficulty": "MEDIUM",
+            "topic": "Closing File Streams"
+          },
+          {
+            "bubbleOrder": 7,
+            "content": "File streams can be opened in different modes like ios::app for appending data, ios::trunc for truncating the file (default for output), ios::binary for binary data, and ios::in or ios::out to specify input or output modes explicitly. Understanding these modes is important for correct file handling.",
+            "contentType": "TEXT",
+            "difficulty": "HARD",
+            "topic": "File Opening Modes"
+          },
+          {
+            "bubbleOrder": 8,
+            "content": "// Here is an example showing how to open a file in append mode and add more text without overwriting the existing content:\n\n#include <iostream>\n#include <fstream>\n\nint main() {\n    std::ofstream outfile(\"example.txt\", std::ios::app);\n    if (!outfile) {\n        std::cerr << \"Cannot open file in append mode.\" << std::endl;\n        return 1;\n    }\n    outfile << \"Appending a new line.\" << std::endl;\n    outfile.close();\n    return 0;\n}",
+            "contentType": "CODE",
+            "difficulty": "HARD",
+            "topic": "Append Mode Example"
+          },
+          {
+            "bubbleOrder": 9,
+            "content": "Binary file I/O allows you to read and write raw bytes. This is useful for non-text files like images or audio. For binary mode, you add ios::binary when opening the file stream.",
+            "contentType": "TEXT",
+            "difficulty": "HARD",
+            "topic": "Introduction to Binary Files"
+          },
+          {
+            "bubbleOrder": 10,
+            "content": "Example of writing and reading an integer in binary mode:",
+            "contentType": "TEXT",
+            "difficulty": "HARD",
+            "topic": "Binary File I/O Example"
+          },
+          {
+            "bubbleOrder": 11,
+            "content": "// Example of writing and reading an integer in binary mode:\n\n#include <iostream>\n#include <fstream>\n\nint main() {\n    int number = 123456;\n    std::ofstream outfile(\"binary.dat\", std::ios::binary);\n    if (!outfile) {\n        std::cerr << \"Error opening file for binary write.\" << std::endl;\n        return 1;\n    }\n    outfile.write(reinterpret_cast<const char*>(&number), sizeof(number));\n    outfile.close();\n\n    int readNumber = 0;\n    std::ifstream infile(\"binary.dat\", std::ios::binary);\n    if (!infile) {\n        std::cerr << \"Error opening file for binary read.\" << std::endl;\n        return 1;\n    }\n    infile.read(reinterpret_cast<char*>(&readNumber), sizeof(readNumber));\n    infile.close();\n\n    std::cout << \"Number read from binary file: \" << readNumber << std::endl;\n    return 0;\n}",
+            "contentType": "CODE",
+            "difficulty": "HARD",
+            "topic": "Binary I/O Code Example"
+          },
+          {
+            "bubbleOrder": 12,
+            "content": "Always handle errors such as files not existing or permission issues gracefully by checking stream states and providing user-friendly messages. Proper error checking prevents unexpected crashes and improves the robustness of your program.",
+            "contentType": "TEXT",
+            "difficulty": "HARD",
+            "topic": "Error Handling in File I/O"
+          }
+        ]
+      }
+    ]
+}

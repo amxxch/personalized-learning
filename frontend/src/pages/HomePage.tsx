@@ -1,3 +1,4 @@
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import CourseCard from "../components/CourseCard";
 
 
@@ -26,15 +27,12 @@ export default function HomePage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 w-full">
         <CourseCard 
-          title="Python" 
-          image="images/python.png" 
-          description="This course teaches Python programming language."
+          title="Introduction to C++ Programming" 
+          image="images/cpp.png" 
+          description="This course introduces students to the C++ programming language."
         />
       </div>
-
     </div>
-
-  
 
   );
 }

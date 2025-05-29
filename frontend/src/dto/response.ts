@@ -20,9 +20,9 @@ export interface Bubble {
     bubbleId: number;
     topic: string;
     bubbleOrder: number;
-    contentType: 'TEXT' | 'IMAGE' | 'VIDEO';
+    contentType: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE';
     content: string;
-    skill: Skill;
+    skillId: number;
 }
 
 export interface Progress {
@@ -33,3 +33,27 @@ export interface Progress {
     skill: Skill;
     bubble: Bubble;
 }
+
+export interface ChatHistory {
+    chatId: number;
+    skillId: number;
+    skillName: string;
+    sender: 'CHATBOT' | 'USER';
+    contentType: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE' | 'GPT';
+    content: string;
+    topic?: string;
+    timestamp: Date;
+    bubbleOrder: number;
+    bubbleId?: number;
+}
+
+export interface Message {
+    sender: 'CHATBOT' | 'USER';
+    type: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE' | 'GPT';
+    content: string;
+    topic?: string;
+    skillId?: number;
+    skillName?: string;
+    bubbleOrder?: number;
+    bubbleId?: number;
+  }
