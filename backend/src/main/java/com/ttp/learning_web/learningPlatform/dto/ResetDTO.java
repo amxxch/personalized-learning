@@ -1,8 +1,8 @@
 package com.ttp.learning_web.learningPlatform.dto;
 
-public class QuestionBubbleRequest {
-    private String question;
+public class ResetDTO {
     private Long userId;
+    private Long courseId;
     private Long skillId;
 
     public Long getUserId() {
@@ -13,12 +13,12 @@ public class QuestionBubbleRequest {
         this.userId = userId;
     }
 
-    public String getQuestion() {
-        return question;
+    public Long getCourseId() {
+        return courseId;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
     }
 
     public Long getSkillId() {

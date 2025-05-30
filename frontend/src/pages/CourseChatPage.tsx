@@ -19,11 +19,12 @@ const CourseChatPage = () => {
     const fetchChatHistory = async () => {
       try {
         setLoading(true);
-        const response = await axios.post('http://localhost:8080/api/v1/chat-history/by-course', {
-          "userId": userId,
-          "courseId": courseId,
+        const response = await axios.get('http://localhost:8080/api/v1/chat-history/by-course', {
+          params: {
+            userId: userId,
+            courseId: courseId
+          }
         });
-
         const data = response.data;
 
         console.log("Fetched chat history:", data);

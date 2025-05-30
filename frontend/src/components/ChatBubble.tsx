@@ -44,10 +44,13 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
     try {
       if (option === 'next') {
         // send API request
-        const response = await axios.post('http://localhost:8080/api/v1/learning/next-bubble', {
-          "userId": userId,
-          "courseId": courseId,
-          "skillId": skillId,
+
+        const response = await axios.get('http://localhost:8080/api/v1/learning/next-bubble', {
+          params: {
+            userId: userId,
+            courseId: courseId,
+            skillId: skillId,
+          }
         });
         const data = response.data;
 
@@ -96,10 +99,13 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         setMessages(prevMessages => [...prevMessages, stillUnsureMessage]);
 
         // send API request to rephrase the lesson
-        const response = await axios.post('http://localhost:8080/api/v1/learning/rephrase', {
-          "userId": userId,
-          "bubbleId": bubbleId,
+        const response = await axios.get('http://localhost:8080/api/v1/learning/rephrase', {
+          params: {
+            userId: userId,
+            bubbleId: bubbleId,
+          }
         });
+        
         const data = response.data;
         console.log(data);
 
@@ -151,11 +157,14 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
       // send api
       setLoading(true);
       try {
-        const response = await axios.post('http://localhost:8080/api/v1/learning/ask-questions', {
-          "userId": userId,
-          "skillId": skillId,
-          "question": input,
+        const response = await axios.get('http://localhost:8080/api/v1/learning/ask-questions', {
+          params: {
+            userId: userId,
+            skillId: skillId,
+            question: input,
+          }
         });
+        
         const data = response.data;
 
         const answer: Message = {
@@ -185,7 +194,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         {/* Title */}
         <div className="flex-1 overflow-y-auto space-y-4">
         <div className="text-center mb-10">
-          <p className="text-xl text-gray-600 font-semibold mb-1">Python Courses</p>
+          <p className="text-xl text-gray-600 font-semibold mb-1">C++ Courses</p>
           <p className='text-gray-500'>{datetime}</p>
         </div>
 

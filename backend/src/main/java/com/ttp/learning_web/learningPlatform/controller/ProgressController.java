@@ -1,6 +1,6 @@
 package com.ttp.learning_web.learningPlatform.controller;
 
-import com.ttp.learning_web.learningPlatform.dto.NextBubbleRequest;
+import com.ttp.learning_web.learningPlatform.dto.ResetDTO;
 import com.ttp.learning_web.learningPlatform.entity.Progress;
 import com.ttp.learning_web.learningPlatform.service.ProgressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class ProgressController {
     }
 
     @PostMapping("/reset")
-    public ResponseEntity<Progress> resetProgress(@RequestBody NextBubbleRequest nextBubbleRequest) {
+    public ResponseEntity<Progress> resetProgress(@RequestBody ResetDTO nextBubbleRequest) {
         Long courseId = nextBubbleRequest.getCourseId();
         Long userId = nextBubbleRequest.getUserId();
         Long skillId = nextBubbleRequest.getSkillId();

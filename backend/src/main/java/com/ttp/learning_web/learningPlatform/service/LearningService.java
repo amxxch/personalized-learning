@@ -38,10 +38,9 @@ public class LearningService {
         this.aiService = aiService;
     }
 
-    public NextBubbleResponse handleNextBubble(NextBubbleRequest request) {
-        Long userId = request.getUserId();
-        Long courseId = request.getCourseId();
-        Long skillId = request.getSkillId();
+    public NextBubbleResponse handleNextBubble(Long userId,
+                                               Long courseId,
+                                               Long skillId) {
 
         User user = userService.getUserById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
@@ -138,9 +137,7 @@ public class LearningService {
         }
     }
 
-    public GPTResponse handleRephrase(RephraseBubbleRequest request) {
-        Long userId = request.getUserId();
-        Long bubbleId = request.getBubbleId();
+    public GPTResponse handleRephrase(Long userId, Long bubbleId) {
 
         User user = userService.getUserById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
@@ -174,11 +171,7 @@ public class LearningService {
         return new GPTResponse(answer, Status.COMPLETED);
     }
 
-    public GPTResponse handleAskQuestion(QuestionBubbleRequest request) {
-        Long userId = request.getUserId();
-        Long skillId = request.getSkillId();
-        String question = request.getQuestion();
-
+    public GPTResponse handleAskQuestion(String question, Long userId, Long skillId) {
         User user = userService.getUserById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
         Skill skill = skillService.getSkillById(skillId)
@@ -204,12 +197,6 @@ public class LearningService {
         String answer = aiService.chat(prompt);
         chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.CHATBOT);
         return new GPTResponse(answer, Status.COMPLETED);
-    }
-
-    public void handleQuit(NextBubbleRequest request) {
-        Long userId = request.getUserId();
-        Long skillId = request.getSkillId();
-
     }
 
     public void handleDeleteAll() {

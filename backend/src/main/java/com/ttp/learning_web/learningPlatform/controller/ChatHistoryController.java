@@ -1,7 +1,6 @@
 package com.ttp.learning_web.learningPlatform.controller;
 
 import com.ttp.learning_web.learningPlatform.dto.ChatHistoryDTO;
-import com.ttp.learning_web.learningPlatform.dto.ChatHistoryRequest;
 import com.ttp.learning_web.learningPlatform.service.ChatHistoryService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
@@ -19,24 +18,20 @@ public class ChatHistoryController {
         this.chatHistoryService = chatHistoryService;
     }
 
-    @PostMapping("/by-course")
+    @GetMapping("/by-course")
     public List<ChatHistoryDTO> getChatHistoryByCourseId(
-        @RequestBody ChatHistoryRequest request
+        @RequestParam Long userId,
+        @RequestParam Long courseId
     ) {
-        return chatHistoryService.getAllChatHistoryByUserIdAndCourseId(
-                request.getUserId(),
-                request.getCourseId()
-        );
+        return chatHistoryService.getAllChatHistoryByUserIdAndCourseId(userId, courseId);
     }
 
-    @PostMapping("/by-skill")
+    @GetMapping("/by-skill")
     public List<ChatHistoryDTO> getChatHistoryBySkillId(
-            @RequestBody ChatHistoryRequest request
+            @RequestParam Long userId,
+            @RequestParam Long skillId
     ) {
-        return chatHistoryService.getAllChatHistoryByUserIdAndSkillId(
-                request.getUserId(),
-                request.getSkillId()
-        );
+        return chatHistoryService.getAllChatHistoryByUserIdAndSkillId(userId, skillId);
     }
 
 
