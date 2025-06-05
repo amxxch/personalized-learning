@@ -27,7 +27,7 @@ public class ProgressController {
             @RequestParam(required = false) Long skillId
     ) {
         if (userId != null && courseId != null && skillId != null) {
-            Progress progress = progressService.getProgressByCourseIdAndUserIdAndSkillId(userId, courseId, skillId);
+            Progress progress = progressService.getProgressByUserIdAndSkillId(userId, skillId);
             return progress != null ? List.of(progress) : List.of();
         } else if (userId != null && courseId != null) {
             return progressService.getProgressByCourseIdAndUserId(courseId, userId);
@@ -58,7 +58,7 @@ public class ProgressController {
         Long courseId = nextBubbleRequest.getCourseId();
         Long userId = nextBubbleRequest.getUserId();
         Long skillId = nextBubbleRequest.getSkillId();
-        Progress progress = progressService.getProgressByCourseIdAndUserIdAndSkillId(courseId, userId, skillId);
+        Progress progress = progressService.getProgressByUserIdAndSkillId(userId, skillId);
         progressService.resetProgress(progress);
         return new ResponseEntity<>(progress, HttpStatus.OK);
     }

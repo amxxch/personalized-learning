@@ -44,6 +44,6 @@ public class LearningController {
     @DeleteMapping
     public ResponseEntity<String> reset(@RequestBody ResetDTO request) {
         learningService.handleDeleteAll();
-        return ResponseEntity.ok("All progresses, mastery, chat history, and quiz results are deleted.");
+        return ResponseEntity.ok("All progresses, mastery, chat history, gpt chat history, and quiz results are deleted.");
     }
 }

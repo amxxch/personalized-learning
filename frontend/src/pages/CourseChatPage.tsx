@@ -59,7 +59,7 @@ const CourseChatPage = () => {
         });
 
         const latestMessages = messages
-          .filter((msg: any) => msg.sender === 'CHATBOT')
+          .filter((msg: any) => msg.sender === 'ASSISTANT')
           .filter((msg: any) => msg.type !== 'GPT')
           .sort((a: any, b: any) => a.bubbleId - b.bubbleId);
 
@@ -70,7 +70,7 @@ const CourseChatPage = () => {
           console.log('Latest one message:', latestMessage);
           setSkillId(latestMessage.skillId || 1);
           setBubbleId(latestMessage.bubbleId || 1);
-        }
+        } 
         setInitialMessages(messages);
 
       } catch (error) {

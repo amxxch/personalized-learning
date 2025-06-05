@@ -17,5 +17,5 @@ public interface ProgressRepository extends JpaRepository<Progress, Long> {
 
     List<Progress> findByCourse_CourseIdAndUser_UserId(Long courseId, Long userId);
 
-    Optional<Progress> findByCourse_CourseIdAndUser_UserIdAndSkill_SkillId(Long courseId, Long userId, Long bubbleId);
+    Optional<Progress> findByUser_UserIdAndSkill_SkillId(Long userId, Long bubbleId);
 }

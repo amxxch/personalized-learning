@@ -8,7 +8,7 @@ const QuizTimeAnim = () => {
                 {/* Transparent Background Overlay */}
                 <motion.div
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.5 }}
+                    animate={{ opacity: 0.7 }}
                     exit={{ opacity: 0 }}
                     className="fixed inset-0 bg-white z-40"
                 />

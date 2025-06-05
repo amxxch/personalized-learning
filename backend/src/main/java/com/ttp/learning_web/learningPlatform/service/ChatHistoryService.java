@@ -103,6 +103,15 @@ public class ChatHistoryService {
                 .orElse(null);
     }
 
+    public ChatHistory getLatestQuizQuestionByUserIdAndSkillId(Long userId, Long skillId) {
+        List<ChatHistory> chatHistoryList = chatHistoryRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId);
+
+        return chatHistoryList.stream()
+                .filter(ch -> ch.getContentType() == ContentType.QUIZ)
+                .max(Comparator.comparingLong(ChatHistory::getChatId))
+                .orElse(null);
+    }
+
     public ChatHistory addChatHistory(ChatHistory chatHistory) {
         return chatHistoryRepository.save(chatHistory);
     }
@@ -119,7 +128,7 @@ public class ChatHistoryService {
                 skill.getCourse(),
                 skill,
                 bubble,
-                Sender.CHATBOT,
+                Sender.ASSISTANT,
                 new Date(),
                 nextChatHistoryOrder
         );

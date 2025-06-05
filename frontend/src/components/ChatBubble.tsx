@@ -22,7 +22,7 @@ interface ChatBubbleProps {
 
 const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 } : ChatBubbleProps) => {
 
-  const maxQuizQuestion = 6;
+  const maxQuizQuestion = 5;
 
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [loading, setLoading] = useState(false);
@@ -85,17 +85,15 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
 
         if (data.status === 'COMPLETED') {
           const completeMessage: Message = {
-            sender: 'CHATBOT',
+            sender: 'ASSISTANT',
             type: 'TEXT',
             content: data.message
           };
           setMessages(prevMessages => [...prevMessages, completeMessage]);
 
-          // TODO: add quiz page
-
         } else if (data.status === 'CONTINUE') {
           const newBubble: Message = {
-            sender: 'CHATBOT',
+            sender: 'ASSISTANT',
             type: data.nextBubble.contentType,
             content: data.nextBubble.content,
             topic: data.nextBubble.topic,
@@ -119,7 +117,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
             setQuizTimeAnim(true);
             setTimeout(() => {
               const quizTimeMessage: Message = {
-                sender: 'CHATBOT',
+                sender: 'ASSISTANT',
                 type: 'QUIZ',
                 content: "",
                 topic: "Quiz Time! Let's answer the following question"
@@ -155,7 +153,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
 
         if (data.status === 'COMPLETED') {
           const answer: Message = {
-            sender: 'CHATBOT',
+            sender: 'ASSISTANT',
             type: 'GPT',
             content: data.message
           };
@@ -170,7 +168,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
     } catch (error) {
       console.error('Error:', error);
       const errorMessage: Message = {
-        sender: 'CHATBOT',
+        sender: 'ASSISTANT',
         type: 'TEXT',
         content: 'An error occurred while processing your request. Please try again.'
       };
@@ -190,7 +188,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
 
       if (!input.trim()) {
         const warningMessage: Message = {
-          sender: 'CHATBOT',
+          sender: 'ASSISTANT',
           type: 'TEXT',
           content: 'Please enter a question before sending.'
         };
@@ -199,8 +197,12 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
       
       // send api
       setLoading(true);
+      const url = (quizTime || numOfQuiz !== 0) ? 
+      'http://localhost:8080/api/v1/quiz/ask-questions' :
+      'http://localhost:8080/api/v1/learning/ask-questions';
+
       try {
-        const response = await axios.get('http://localhost:8080/api/v1/learning/ask-questions', {
+        const response = await axios.get(url, {
           params: {
             userId: userId,
             skillId: skillId,
@@ -211,7 +213,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         const data = response.data;
 
         const answer: Message = {
-          sender: 'CHATBOT',
+          sender: 'ASSISTANT',
           type: 'GPT',
           content: data.message
         };
@@ -220,7 +222,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
       } catch (error) {
         console.error('Error:', error);
         const errorMessage: Message = {
-          sender: 'CHATBOT',
+          sender: 'ASSISTANT',
           type: 'TEXT',
           content: 'An error occurred while processing your question. Please try again.'
         };
@@ -259,7 +261,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
       }
       
       const question: Message = {
-        sender: 'CHATBOT',
+        sender: 'ASSISTANT',
         type: 'QUIZ',
         topic: `Quiz Question # ${numOfQuiz + 1}`,
         content: `${data.question}\n\n${choices}`,
@@ -272,7 +274,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
     } catch (error) {
       console.error('Error fetching quiz question:', error);
       const errorMessage: Message = {
-        sender: 'CHATBOT',
+        sender: 'ASSISTANT',
         type: 'TEXT',
         content: 'An error occurred while fetching the quiz question. Please try again.',
       };
@@ -285,6 +287,12 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
 
   const askForQuizEvaluation = async () => {
     setLoading(true);
+    const selectedAnswer: Message = {
+      sender: 'ASSISTANT',
+      type: 'QUIZ',
+      content: 'Generating quiz evaluation...',
+    }
+    setMessages(prevMessages => [...prevMessages, selectedAnswer]);
 
     try {
       const response = await axios.get('http://localhost:8080/api/v1/quiz/evaluate', {
@@ -297,30 +305,27 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
       const data = response.data;
       console.log(data);
 
-      if (data === null) {
-        askForQuizEvaluation();
-        return;
-      }
-
       const evaluationMessage: Message = {
-        sender: 'CHATBOT',
-        type: 'TEXT',
-        content: data.message,
+        sender: 'ASSISTANT',
+        type: 'QUIZ',
+        content: data,
       }
       setMessages(prevMessages => [...prevMessages, evaluationMessage]);
 
       setQuizTime(false);
       setQuizEvalTime(false);
+      setEnabledInput(true);
+      setNumOfQuiz(0);
 
     } catch (error) {
       console.error('Error evaluating quiz answer:', error);
       const errorMessage: Message = {
-        sender: 'CHATBOT',
+        sender: 'ASSISTANT',
         type: 'TEXT',
         content: 'An error occurred while evaluating your answer. Please try again.'
       };
       setMessages(prevMessages => [...prevMessages, errorMessage]);
-      setQuizEvalTime(false);
+      setQuizEvalTime(true);
     } finally {
       setLoading(false);
     }
@@ -331,7 +336,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
     const selectedAnswer: Message = {
       sender: 'USER',
       type: 'QUIZ',
-      content: `Selected answer: ${answer}`,
+      content: `Selected answer: **${answer}**`,
     }
     setMessages(prevMessages => [...prevMessages, selectedAnswer]);
 
@@ -350,7 +355,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
       console.log(data);
 
       const resultMessage: Message = {
-        sender: 'CHATBOT',
+        sender: 'ASSISTANT',
         type: 'QUIZ',
         content: data,
       }
@@ -365,7 +370,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
     } catch (error) {
       console.error('Error submitting quiz answer:', error);
       const errorMessage: Message = {
-        sender: 'CHATBOT',
+        sender: 'ASSISTANT',
         type: 'TEXT',
         content: 'An error occurred while submitting your answer. Please try again.'
       };
@@ -431,7 +436,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
                   <button 
                     onClick={() => handleLessonOptionClick('quit')} 
                     className="btn btn-danger btn-md text-lg mr-2 px-8"
-                    disabled={!quizTime}
+                    disabled={quizTime || numOfQuiz !== 0}
                   >
                     Quit
                     <MdLogout className='text-2xl'/>
@@ -503,7 +508,13 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
               disabled={!enabledInput}
               placeholder="Ask a question"
             />
-            <button className="btn btn-accent" onClick={handleInputSend}>Send</button>
+            <button 
+              className="btn btn-accent" 
+              onClick={handleInputSend}
+              disabled={!enabledInput}
+            >
+                Send
+            </button>
         </div>
       </div>
 

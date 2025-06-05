@@ -7,7 +7,7 @@ import org.aspectj.weaver.patterns.TypePatternQuestions;
 import java.util.Date;
 
 @Entity
-@Table(name = "quiz_result")
+@Table(name = "quiz_results")
 public class QuizResult {
 
     @Id

@@ -20,7 +20,8 @@ public class LearningService {
     private final MasteryService masteryService;
     private final ChatHistoryService chatHistoryService;
     private final QuizResultService quizResultService;
-    private final AiService aiService;
+    private final GPTChatHistoryService gptChatHistoryService;
+    private final OpenAIService openAIService;
 
     public LearningService(UserService userService,
                            CourseService courseService,
@@ -30,7 +31,8 @@ public class LearningService {
                            MasteryService masteryService,
                            ChatHistoryService chatHistoryService,
                            QuizResultService quizResultService,
-                           AiService aiService) {
+                           GPTChatHistoryService gptChatHistoryService,
+                           OpenAIService openAIService) {
         this.userService = userService;
         this.courseService = courseService;
         this.skillService = skillService;
@@ -39,7 +41,8 @@ public class LearningService {
         this.masteryService = masteryService;
         this.chatHistoryService = chatHistoryService;
         this.quizResultService = quizResultService;
-        this.aiService = aiService;
+        this.gptChatHistoryService = gptChatHistoryService;
+        this.openAIService = openAIService;
     }
 
     public NextBubbleResponse handleNextBubble(Long userId,
@@ -51,11 +54,13 @@ public class LearningService {
         Skill skill = skillService.getSkillBySkillId(skillId);
 
         Progress currentProgress = progressService.getIncompleteProgressByCourseIdAndUserId(courseId, userId);
-        Integer currentSkillOrder = skill.getSkillOrder();
+        int currentSkillIndex = skill.getSkillOrder() - 1;
 
         List<LessonBubble> bubbles = lessonBubbleService.getAllBubblesBySkillId(skillId);
         List<Skill> skills = skillService.getSkillsByCourseId(courseId);
         List<Progress> progresses = progressService.getProgressByCourseIdAndUserId(courseId, userId);
+
+        boolean isFirstTime = progresses.isEmpty();
 
         if (currentProgress == null) {
             // If the user has no progress yet, check if all skills are already completed
@@ -63,11 +68,14 @@ public class LearningService {
                 return new NextBubbleResponse(Status.COMPLETED, "You have already completed the course.");
             }
 
-            // Start progress on the first skill and its first lesson bubble
-            Skill nextSkill = skills.get(currentSkillOrder-1);
-            LessonBubble firstBubble = lessonBubbleService.getAllBubblesBySkillId(nextSkill.getSkillId()).get(0);
+            // Start new progress of the next skill at the first bubble
+            if (!isFirstTime) {
+                currentSkillIndex++;
+            }
+            Skill nextSkill = skills.get(currentSkillIndex);
+            LessonBubble firstBubble = lessonBubbleService.getAllBubblesBySkillId(nextSkill.getSkillId()).getFirst();
             progressService.addProgress(new Progress(false, false, user, course, nextSkill, firstBubble));
-            masteryService.addMastery(new Mastery(user, skill));
+            masteryService.addMastery(new Mastery(user, nextSkill));
             chatHistoryService.addChatbotMsgHistory(user, nextSkill, firstBubble);
 
             LessonBubbleDTO firstBubbleDTO = new LessonBubbleDTO(
@@ -130,12 +138,11 @@ public class LearningService {
             throw new RuntimeException("Chat History not found for course with ID: " + courseId);
         }
 
-        LessonBubble bubble = latestChatHistory.getBubble();
-
-        Skill skill = bubble.getSkill();
+        Skill skill = latestChatHistory.getSkill();
         Mastery mastery = masteryService.getMasteryByUserIdAndSkillId(userId, skill.getSkillId());
         chatHistoryService.addStillUnsureMsgHistory(user, skill);
-        masteryService.decreaseMasteryByBubble(mastery, bubble);
+        mastery.setMasteryLevel(mastery.getMasteryLevel() - 0.01);
+        masteryService.updateMastery(mastery);
 
         String prompt = String.format("""
             This content is part of the study course "%s", under the topic "%s".
@@ -144,17 +151,12 @@ public class LearningService {
             
             "%s"
             
-            Elaborate on this content to make it clearer and easier to understand for the student.
-            
-            - Use concise, plain language to explain key ideas.
-            - Break down the explanation into short bullet points or numbered steps.
-            - Use markdown formatting, including headings and code blocks (```), only where necessary.
-            - Avoid unnecessary repetition, filler content, introductory remark, or topic name.
-            - Focus on clarity over length — keep the explanation short but insightful.
-            """, skill.getCourse().getTitle(), skill.getSkillName(), mastery.getMasteryLevel(), bubble.getContent());
+            Please rewrite or elaborate on this content to make it clearer and easier to understand for the student. Focus on clarity and conceptual breakdown, and feel free to restructure the explanation to aid understanding. Please provide examples where necessary.
+            """, skill.getCourse().getTitle(), skill.getSkillName(), mastery.getMasteryLevel(), latestChatHistory.getContent());
 
-        String answer = aiService.chat(prompt);
-        chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.CHATBOT, ContentType.GPT);
+//        String answer = aiService.chat(prompt);
+        String answer = openAIService.prompt(userId, courseId, prompt);
+        chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT);
         return new GPTResponse(answer, Status.COMPLETED);
     }
 
@@ -162,26 +164,24 @@ public class LearningService {
         User user = userService.getUserByUserId(userId);
         Skill skill = skillService.getSkillBySkillId(skillId);
 
-
+        String unrelatedAnswer = "The question is not related to the course content. Please ask a new question.";
         String prompt = String.format("""
             The student has a mastery level of %.2f out of 1 and has a question related to "%s" while studying the course "%s":
             
             "%s"
             
             Please provide a clear and concise answer to this question.
-            - Focus on helping the student understand the concept effectively.
-            - Keep the explanation short but complete — avoid filler or introductory remarks or topic name.
-            - If code is involved, use markdown code blocks (```language).
-            - Use markdown for clarity: structure your response with short paragraphs, lists, and section headers where helpful.
-            - Limit the response to essential points, aiming for under 200 words if possible.
-            - If the question is unrelated to the course content, respond exactly with: "The question is not related to the course content. Please ask a new question."
+            If the question is unrelated to the course content, respond exactly with: "%s"
             """, masteryService.getMasteryByUserIdAndSkillId(userId, skillId).getMasteryLevel(),
-                skill.getSkillName(), skill.getCourse().getTitle(), question);
+                skill.getSkillName(), skill.getCourse().getTitle(), question, unrelatedAnswer);
 
-        String answer = aiService.chat(prompt);
-        // TODO: If the question is unrelated, create the condition to not save that to chat history
-        chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.TEXT);
-        chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.CHATBOT, ContentType.GPT);
+//        String answer = aiService.chat(prompt);
+        String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
+        if (!answer.equals(unrelatedAnswer)) {
+            // Save to chat history only if the question is related to the lesson
+            chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.TEXT);
+            chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT);
+        }
         return new GPTResponse(answer, Status.COMPLETED);
     }
 
@@ -190,6 +190,7 @@ public class LearningService {
         chatHistoryService.deleteAllChatHistory();
         progressService.deleteAllProgress();
         quizResultService.deleteAllQuizResults();
+        gptChatHistoryService.deleteAllGPTChatHistory();
     }
 
     // TODO: This is for the handling next skill after reviewing done

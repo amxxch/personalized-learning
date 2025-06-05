@@ -40,11 +40,9 @@ public class ProgressService {
                 .orElseThrow(() -> new RuntimeException("Progress Not Found"));
     }
 
-    public Progress getProgressByCourseIdAndUserIdAndSkillId(Long courseId,
-                                                             Long userId,
-                                                             Long skillId) {
-        return progressRepository.findByCourse_CourseIdAndUser_UserIdAndSkill_SkillId(
-                courseId, userId, skillId)
+    public Progress getProgressByUserIdAndSkillId(Long userId,
+                                                  Long skillId) {
+        return progressRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId)
                 .orElseThrow(() -> new RuntimeException("Progress Not Found"));
     }
 

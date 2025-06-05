@@ -2,15 +2,11 @@ package com.ttp.learning_web.learningPlatform.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ttp.learning_web.learningPlatform.dto.MCQSolutionDTO;
+import com.ttp.learning_web.learningPlatform.dto.GPTResponse;
 import com.ttp.learning_web.learningPlatform.dto.QuizChoiceDTO;
-import com.ttp.learning_web.learningPlatform.dto.QuizEvalDTO;
 import com.ttp.learning_web.learningPlatform.dto.QuizQuestionDTO;
 import com.ttp.learning_web.learningPlatform.entity.*;
-import com.ttp.learning_web.learningPlatform.enums.ChoiceLetter;
-import com.ttp.learning_web.learningPlatform.enums.ContentType;
-import com.ttp.learning_web.learningPlatform.enums.Difficulty;
-import com.ttp.learning_web.learningPlatform.enums.Sender;
+import com.ttp.learning_web.learningPlatform.enums.*;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,7 +21,9 @@ public class QuizService {
     private final ChatHistoryService chatHistoryService;
     private final UserService userService;
     private final SkillService skillService;
+    private final ProgressService progressService;
     private final AiService aiService;
+    private final OpenAIService openAIService;
 
 
     public QuizService(QuizQuestionService quizQuestionService,
@@ -35,7 +33,9 @@ public class QuizService {
                        ChatHistoryService chatHistoryService,
                        UserService userService,
                        SkillService skillService,
-                       AiService aiService) {
+                       ProgressService progressService,
+                       AiService aiService,
+                       OpenAIService openAIService) {
         this.quizQuestionService = quizQuestionService;
         this.quizChoiceService = quizChoiceService;
         this.quizResultService = quizResultService;
@@ -43,7 +43,9 @@ public class QuizService {
         this.chatHistoryService = chatHistoryService;
         this.userService = userService;
         this.skillService = skillService;
+        this.progressService = progressService;
         this.aiService = aiService;
+        this.openAIService = openAIService;
     }
 
     public QuizQuestionDTO handleNextQuestion(Long userId, Long skillId) {
@@ -75,7 +77,7 @@ public class QuizService {
                     user,
                     skill,
                     questionBubble,
-                    Sender.CHATBOT,
+                    Sender.ASSISTANT,
                     ContentType.QUIZ
             );
 
@@ -172,17 +174,18 @@ public class QuizService {
                 user,
                 skill,
                 solution,
-                Sender.CHATBOT,
+                Sender.ASSISTANT,
                 ContentType.QUIZ
         );
 
         return solution;
     }
 
-    public QuizEvalDTO getQuizEvaluation(Long userId, Long skillId) throws JsonProcessingException {
+    public String getQuizEvaluation(Long userId, Long skillId) throws JsonProcessingException {
         User user = userService.getUserByUserId(userId);
         Skill skill = skillService.getSkillBySkillId(skillId);
         Mastery mastery = masteryService.getMasteryByUserIdAndSkillId(userId, skillId);
+        Progress progress = progressService.getProgressByUserIdAndSkillId(userId, skillId);
         List<QuizResult> quizResults = quizResultService.getQuizResultsBySkillIdAndUserId(skillId, userId);
 
         int numOfQuiz = quizResults.size();
@@ -196,7 +199,7 @@ public class QuizService {
         String resultSummary = getQuizResultSummary(quizResults);
 
         String prompt = String.format("""
-            You are a teaching assistant. A student with a mastery level of %.2f out of 1 has just completed a quiz on the topic of "%s" while studying the course "%s"
+            A student with a mastery level of %.2f out of 1 has just completed a quiz on the topic of "%s" while studying the course "%s"
             
             Below is a list of their answers, which includes the topic (skill), questions, the correct answers, the user's answers, question's difficulty, and whether the student answered correctly:
             
@@ -204,9 +207,9 @@ public class QuizService {
             
             Please summarize the student's performance.
             - Highlight the topics where they did well and the ones they need to improve on.
+            - Use you pronoun if need to refer to the user.
+            - Make it short and concise, focusing on main topic rather than subtopic.
             - Make the tone encouraging and helpful.
-            - Use markdown for clarity: structure your response with short paragraphs, lists, and section headers where helpful.
-            - Avoid filler or introductory remarks or topic name.
             """,
                 mastery.getMasteryLevel(),
                 skill.getSkillName(),
@@ -214,20 +217,26 @@ public class QuizService {
                 resultSummary
         );
 
-        String evalMsg = aiService.chat(prompt);
-        chatHistoryService.addCustomizedMsgHistory(user, skill, evalMsg, Sender.CHATBOT, ContentType.QUIZ);
+        String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
+        progress.setQuizCompleted(true);
+        progressService.updateProgress(progress);
 
-//      have gpt judge mastery level
+        // Find the average mastery level between our static rubric and GPT suggested level
         Double updatedMasteryLevel = getMasteryLevelFromGPT(resultSummary, skillId, userId);
-        mastery.setMasteryLevel(updatedMasteryLevel);
+        Double avgMasteryLevel = (updatedMasteryLevel + mastery.getMasteryLevel()) / 2;
+        mastery.setMasteryLevel(avgMasteryLevel);
         masteryService.updateMastery(mastery);
 
-        return new QuizEvalDTO(
-                numOfQuiz,
-                numOfCorrectQuiz,
-                updatedMasteryLevel,
-                evalMsg
-        );
+        String introMsg = String.format("""
+                **Congratulations! You have completed the quiz for this chapter** 🎉 Here are the results:\n\n
+                You answered **%d** out of **%d** questions correctly.\n\n
+                Your current mastery level for this chapter is **%.2f/1**.\n\n
+                """, numOfCorrectQuiz, numOfQuiz, avgMasteryLevel);
+
+        String evalMsg = introMsg + answer;
+        chatHistoryService.addCustomizedMsgHistory(user, skill, evalMsg, Sender.ASSISTANT, ContentType.QUIZ);
+
+        return evalMsg;
 
     }
 
@@ -235,10 +244,7 @@ public class QuizService {
                                           Long skillId,
                                           Long userId) {
         Skill skill = skillService.getSkillBySkillId(skillId);
-        User user = userService.getUserByUserId(userId);
         Mastery mastery = masteryService.getMasteryByUserIdAndSkillId(userId, skillId);
-
-//        TODO: considering get rid of mastery level
 
         String prompt = String.format("""
             A student has just completed a quiz on the skill "%s" from the course "%s".
@@ -247,7 +253,7 @@ public class QuizService {
             
             %s
             
-            The student's previous mastery estimate was %.2f (on a scale from 0.0 to 1.0).
+            The student's mastery level estimate with a static rubric was %.2f (on a scale from 0.0 to 1.0).
             
             Based only on this quiz performance, estimate the student's updated mastery of this skill as a number between 0.0 (no mastery) and 1.0 (full mastery).
             
@@ -261,16 +267,17 @@ public class QuizService {
                 mastery.getMasteryLevel()
         );
 
-        String answer = aiService.chat(prompt);
+        String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
         int retries = 0;
         final int maxRetries = 5;
 
         while (!isValidDouble(answer) && retries < maxRetries) {
             // For bad output
-            answer = aiService.chat("""
+            String reGenPrompt = """
                     Please return only the updated mastery score as a number between 0.0 and 1.0. For example: 0.78.
                     Do not include any explanation, text, formatting, or additional symbols. Only return the number.
-                    """);
+                    """;
+            answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), reGenPrompt);
             retries++;
         }
 
@@ -304,5 +311,39 @@ public class QuizService {
                 )).toList();
 
         return new ObjectMapper().writeValueAsString(summaryJSON);
+    }
+
+    public GPTResponse handleAskQuestion(String question, Long userId, Long skillId) {
+        User user = userService.getUserByUserId(userId);
+        Skill skill = skillService.getSkillBySkillId(skillId);
+
+        String lastQuiz = chatHistoryService.getLatestQuizQuestionByUserIdAndSkillId(userId, skillId).getContent();
+
+        String unrelatedAnswer = "The question is not related to the course content. Please ask a new question.";
+        String prompt = String.format("""
+            The student has a mastery level of %.2f out of 1. They are currently taking a quiz on the topic "%s" from the course "%s".
+            
+            They have submitted the following question:
+            
+            "%s"
+            
+            For context, this is the previous quiz question they may be referring to:
+            
+            "%s"
+            
+            Please provide a clear and concise answer to the student's question.
+            
+            If the question is unrelated to the course content, respond exactly with:
+            "%s"
+            """, masteryService.getMasteryByUserIdAndSkillId(userId, skillId).getMasteryLevel(),
+                skill.getSkillName(), skill.getCourse().getTitle(), question, lastQuiz, unrelatedAnswer);
+
+        String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
+        if (!answer.equals(unrelatedAnswer)) {
+            // Save to chat history only if the question is related to the lesson
+            chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.TEXT);
+            chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT);
+        }
+        return new GPTResponse(answer, Status.COMPLETED);
     }
 }

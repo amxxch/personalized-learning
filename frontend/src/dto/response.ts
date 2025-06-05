@@ -48,7 +48,7 @@ export interface ChatHistory {
 }
 
 export interface Message {
-    sender: 'CHATBOT' | 'USER';
+    sender: 'ASSISTANT' | 'USER';
     type: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE' | 'GPT' | 'UNSURE' | 'QUIZ';
     content: string;
     topic?: string;

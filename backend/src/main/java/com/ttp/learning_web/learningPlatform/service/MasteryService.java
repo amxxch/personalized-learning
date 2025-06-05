@@ -100,11 +100,11 @@ public class MasteryService {
         Double currentMasteryLevel = mastery.getMasteryLevel();
 
         if (difficulty == Difficulty.EASY) {
-            mastery.setMasteryLevel(min(currentMasteryLevel + 0.05, 1));
-        } else if (difficulty == Difficulty.MEDIUM) {
-            mastery.setMasteryLevel(min(currentMasteryLevel + 0.1, 1));
-        } else if (difficulty == Difficulty.HARD) {
             mastery.setMasteryLevel(min(currentMasteryLevel + 0.15, 1));
+        } else if (difficulty == Difficulty.MEDIUM) {
+            mastery.setMasteryLevel(min(currentMasteryLevel + 0.2, 1));
+        } else if (difficulty == Difficulty.HARD) {
+            mastery.setMasteryLevel(min(currentMasteryLevel + 0.25, 1));
         }
         updateMastery(mastery);
     }
@@ -118,11 +118,11 @@ public class MasteryService {
         Double currentMasteryLevel = mastery.getMasteryLevel();
 
         if (difficulty == Difficulty.EASY) {
-            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.01));
+            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.03));
         } else if (difficulty == Difficulty.MEDIUM) {
             mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.02));
         } else if (difficulty == Difficulty.HARD) {
-            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.03));
+            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.01));
         }
         updateMastery(mastery);
     }
@@ -134,14 +134,15 @@ public class MasteryService {
 
         Difficulty difficulty = quizQuestion.getDifficulty();
         Double currentMasteryLevel = mastery.getMasteryLevel();
+        mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.05));
 
-        if (difficulty == Difficulty.EASY) {
-            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.025));
-        } else if (difficulty == Difficulty.MEDIUM) {
-            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.05));
-        } else if (difficulty == Difficulty.HARD) {
-            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.075));
-        }
+//        if (difficulty == Difficulty.EASY) {
+//            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.05));
+//        } else if (difficulty == Difficulty.MEDIUM) {
+//            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.1));
+//        } else if (difficulty == Difficulty.HARD) {
+//            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.15));
+//        }
         updateMastery(mastery);
     }
 

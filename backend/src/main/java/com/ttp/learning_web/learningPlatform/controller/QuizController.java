@@ -1,7 +1,7 @@
 package com.ttp.learning_web.learningPlatform.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ttp.learning_web.learningPlatform.dto.QuizEvalDTO;
+import com.ttp.learning_web.learningPlatform.dto.GPTResponse;
 import com.ttp.learning_web.learningPlatform.dto.QuizQuestionDTO;
 import com.ttp.learning_web.learningPlatform.enums.ChoiceLetter;
 import com.ttp.learning_web.learningPlatform.service.QuizService;
@@ -29,8 +29,6 @@ public class QuizController {
         return ResponseEntity.ok(quizService.handleNextQuestion(userId, skillId));
     }
 
-//    submitAnswerAndGetSolution
-    // inside, check answer, record chat history (, record quiz result, update mastery level
     @GetMapping("/submit-answer")
     public ResponseEntity<String> submitAnswer(
             @RequestParam Long userId,
@@ -45,9 +43,17 @@ public class QuizController {
         }
     }
 
-//    generate result summary, evaluation
+    @GetMapping("/ask-questions")
+    public ResponseEntity<GPTResponse> askQuestion(
+            @RequestParam String question,
+            @RequestParam Long userId,
+            @RequestParam Long skillId
+    ) {
+        return ResponseEntity.ok(quizService.handleAskQuestion(question, userId, skillId));
+    }
+
     @GetMapping("/evaluate")
-    public ResponseEntity<QuizEvalDTO> evaluateQuiz(
+    public ResponseEntity<String> evaluateQuiz(
             @RequestParam Long userId,
             @RequestParam Long skillId
     ) throws JsonProcessingException {
