@@ -23,13 +23,6 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable("userId") Long userId) {
-        Optional<User> user = userService.getUserById(userId);
-        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
     @PostMapping
     public ResponseEntity<User> addUser(@RequestBody User user) {
         User newUser = userService.addUser(user);

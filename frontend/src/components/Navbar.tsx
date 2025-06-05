@@ -1,12 +1,25 @@
 import { Link } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import { FaUser } from "react-icons/fa";
+import { useEffect } from "react";
 
 const NavBar = () => {
+    const { pathname } = useLocation();
+    const disabledHref = pathname.includes('/chat');
+
+    useEffect(() => {
+        console.log("Current path:", pathname);
+        console.log("Disabled href:", disabledHref);
+    });
 
     return (
         <div className="navbar bg-base-300 shadow-sm">
             <div className="flex-1">
-                <Link to="/" className="btn btn-ghost text-xl">LearningBot</Link>
+                {disabledHref ? (
+                    <span className="btn btn-ghost text-xl">LearningBot</span>
+                ) : (
+                    <Link to="/" className="btn btn-ghost text-xl">LearningBot</Link>
+                )}
             </div>
             <div className="flex-none">
                 <div className="dropdown dropdown-end">

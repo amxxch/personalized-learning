@@ -28,13 +28,6 @@ public class LessonBubbleController {
         }
     }
 
-    @GetMapping("/{bubbleId}")
-    public ResponseEntity<LessonBubble> getBubble(@PathVariable Long bubbleId) {
-        Optional<LessonBubble> bubble = lessonBubbleService.getBubbleById(bubbleId);
-        return bubble.map(lessonBubble -> new ResponseEntity<>(lessonBubble, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
     @PostMapping()
     public ResponseEntity<LessonBubble> addBubble(@RequestBody LessonBubble lessonBubble) {
         LessonBubble newBubble = lessonBubbleService.addBubble(lessonBubble);

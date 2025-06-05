@@ -41,6 +41,242 @@
             "difficulty": "EASY",
             "topic": "Syntax Rules"
           }
+        ],
+        "quizQuestions": [
+          {
+            "difficulty": "EASY",
+            "questionType": "MCQ",
+            "question": "What is the correct syntax to output 'Hello, World!' in C++?",
+            "expectedAnswer": "A",
+            "explanation": "The correct syntax uses cout along with the insertion operator << and ends the statement with a semicolon.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "cout << \"Hello, World!\";" },
+              { "choiceLetter": "B", "content": "print(\"Hello, World!\");" },
+              { "choiceLetter": "C", "content": "Console.WriteLine(\"Hello, World!\");" },
+              { "choiceLetter": "D", "content": "echo \"Hello, World!\";" }
+            ]
+          },
+          {
+            "difficulty": "EASY",
+            "questionType": "MCQ",
+            "question": "Which of the following is a correct variable declaration in C++?",
+            "expectedAnswer": "A",
+            "explanation": "int age; is a correct declaration of an integer variable in C++.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "int age;" },
+              { "choiceLetter": "B", "content": "integer age;" },
+              { "choiceLetter": "C", "content": "var age;" },
+              { "choiceLetter": "D", "content": "let age;" }
+            ]
+          },
+          {
+            "difficulty": "EASY",
+            "questionType": "MCQ",
+            "question": "Which header file is required to use 'cout' in C++?",
+            "expectedAnswer": "C",
+            "explanation": "#include <iostream> is needed to use cout and cin in C++.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "#include <cstdio>" },
+              { "choiceLetter": "B", "content": "#include <stdlib.h>" },
+              { "choiceLetter": "C", "content": "#include <iostream>" },
+              { "choiceLetter": "D", "content": "#include <stdio>" }
+            ]
+          },
+          {
+            "difficulty": "EASY",
+            "questionType": "MCQ",
+            "question": "What is the output of the following code?\n\n```cpp\nint x = 5;\ncout << x + 3;\n```",
+            "expectedAnswer": "B",
+            "explanation": "5 + 3 equals 8, so the output will be 8.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "5" },
+              { "choiceLetter": "B", "content": "8" },
+              { "choiceLetter": "C", "content": "53" },
+              { "choiceLetter": "D", "content": "x + 3" }
+            ]
+          },
+          {
+            "difficulty": "EASY",
+            "questionType": "MCQ",
+            "question": "Which of the following is used to comment a single line in C++?",
+            "expectedAnswer": "C",
+            "explanation": "// is used for single-line comments in C++.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "/* comment */" },
+              { "choiceLetter": "B", "content": "# comment" },
+              { "choiceLetter": "C", "content": "// comment" },
+              { "choiceLetter": "D", "content": "-- comment" }
+            ]
+          },
+          {
+            "difficulty": "MEDIUM",
+            "questionType": "MCQ",
+            "question": "Which of the following is the correct way to define the main function in C++?",
+            "expectedAnswer": "A",
+            "explanation": "int main() is the correct way to define the main function in C++.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "int main()" },
+              { "choiceLetter": "B", "content": "void main()" },
+              { "choiceLetter": "C", "content": "function main()" },
+              { "choiceLetter": "D", "content": "main()" }
+            ]
+          },
+          {
+            "difficulty": "MEDIUM",
+            "questionType": "MCQ",
+            "question": "Which of the following is the correct way to declare a constant in C++?",
+            "expectedAnswer": "A",
+            "explanation": "Use the keyword 'const' followed by the type and name.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "const int x = 10;" },
+              { "choiceLetter": "B", "content": "final int x = 10;" },
+              { "choiceLetter": "C", "content": "int const x = 10;" },
+              { "choiceLetter": "D", "content": "constant int x = 10;" }
+            ]
+          },
+          {
+            "difficulty": "MEDIUM",
+            "questionType": "MCQ",
+            "question": "What will the following code output?\n\n```cpp\nint a = 10, b = 3;\ncout << a / b;\n```",
+            "expectedAnswer": "B",
+            "explanation": "Integer division 10 / 3 results in 3 (decimal part is discarded).",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "3.33" },
+              { "choiceLetter": "B", "content": "3" },
+              { "choiceLetter": "C", "content": "3.0" },
+              { "choiceLetter": "D", "content": "Error" }
+            ]
+          },
+          {
+            "difficulty": "MEDIUM",
+            "questionType": "MCQ",
+            "question": "Which of the following is a correct way to take user input in C++?",
+            "expectedAnswer": "A",
+            "explanation": "cin is used for user input in C++.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "cin >> x;" },
+              { "choiceLetter": "B", "content": "scanf(\"%d\", &x);" },
+              { "choiceLetter": "C", "content": "input(x);" },
+              { "choiceLetter": "D", "content": "read x;" }
+            ]
+          },
+          {
+            "difficulty": "MEDIUM",
+            "questionType": "MCQ",
+            "question": "Which operator is used for modulus (remainder) operation in C++?",
+            "expectedAnswer": "C",
+            "explanation": "% is used to get the remainder of a division operation.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "//" },
+              { "choiceLetter": "B", "content": "**" },
+              { "choiceLetter": "C", "content": "%" },
+              { "choiceLetter": "D", "content": "^" }
+            ]
+          },
+          {
+            "difficulty": "MEDIUM",
+            "questionType": "MCQ",
+            "question": "Which of the following correctly initializes an integer array in C++?",
+            "expectedAnswer": "B",
+            "explanation": "int arr[] = {1, 2, 3}; is the correct syntax for array initialization.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "int arr = [1, 2, 3];" },
+              { "choiceLetter": "B", "content": "int arr[] = {1, 2, 3};" },
+              { "choiceLetter": "C", "content": "array<int> arr = {1, 2, 3};" },
+              { "choiceLetter": "D", "content": "int[] arr = {1, 2, 3};" }
+            ]
+          },
+          {
+            "difficulty": "MEDIUM",
+            "questionType": "MCQ",
+            "question": "Which of the following is NOT a valid C++ data type?",
+            "expectedAnswer": "C",
+            "explanation": "real is not a valid C++ data type. The correct types are float, int, char, etc.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "int" },
+              { "choiceLetter": "B", "content": "float" },
+              { "choiceLetter": "C", "content": "real" },
+              { "choiceLetter": "D", "content": "char" }
+            ]
+          },
+          {
+            "difficulty": "MEDIUM",
+            "questionType": "MCQ",
+            "question": "Which of the following best describes the 'endl' keyword in C++?",
+            "expectedAnswer": "A",
+            "explanation": "endl is used to insert a newline character and flush the output buffer.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "It adds a newline and flushes the output buffer." },
+              { "choiceLetter": "B", "content": "It ends the program execution." },
+              { "choiceLetter": "C", "content": "It skips to the next iteration." },
+              { "choiceLetter": "D", "content": "It returns the control to main." }
+            ]
+          },
+          {
+            "difficulty": "HARD",
+            "questionType": "MCQ",
+            "question": "Which of the following is the correct way to declare a pointer to an integer in C++?",
+            "expectedAnswer": "C",
+            "explanation": "int* ptr declares a pointer to an integer. It can also be written as int *ptr.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "int ptr;" },
+              { "choiceLetter": "B", "content": "pointer int ptr;" },
+              { "choiceLetter": "C", "content": "int* ptr;" },
+              { "choiceLetter": "D", "content": "int &ptr;" }
+            ]
+          },
+          {
+            "difficulty": "HARD",
+            "questionType": "MCQ",
+            "question": "What is the output of the following C++ code?\n\n```cpp\nint a = 5;\nint b = ++a + a++;\ncout << b;\n```",
+            "expectedAnswer": "C",
+            "explanation": "`++a` becomes 6, then `a++` is 6 (before post-increment), so 6 + 6 = 12.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "10" },
+              { "choiceLetter": "B", "content": "11" },
+              { "choiceLetter": "C", "content": "12" },
+              { "choiceLetter": "D", "content": "13" }
+            ]
+          },
+          {
+            "difficulty": "HARD",
+            "questionType": "MCQ",
+            "question": "What will this C++ code output?\n\n```cpp\nint a = 10;\nint& ref = a;\nref = 20;\ncout << a;\n```",
+            "expectedAnswer": "D",
+            "explanation": "ref is a reference to a, so modifying ref also changes a. Output is 20.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "10" },
+              { "choiceLetter": "B", "content": "0" },
+              { "choiceLetter": "C", "content": "Compilation error" },
+              { "choiceLetter": "D", "content": "20" }
+            ]
+          },
+          {
+            "difficulty": "HARD",
+            "questionType": "MCQ",
+            "question": "Which of the following correctly creates a reference to a float variable 'x'?",
+            "expectedAnswer": "B",
+            "explanation": "float& ref = x; creates a reference to x. References must be initialized.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "float ref = &x;" },
+              { "choiceLetter": "B", "content": "float& ref = x;" },
+              { "choiceLetter": "C", "content": "ref<float> x;" },
+              { "choiceLetter": "D", "content": "float ref(x);" }
+            ]
+          },
+          {
+            "difficulty": "HARD",
+            "questionType": "MCQ",
+            "question": "What is the output of the following code?\n\n```cpp\nint arr[5] = {1, 2, 3, 4, 5};\ncout << *(arr + 3);\n```",
+            "expectedAnswer": "C",
+            "explanation": "Pointer arithmetic: *(arr + 3) accesses the fourth element, which is 4.",
+            "quizChoices": [
+              { "choiceLetter": "A", "content": "3" },
+              { "choiceLetter": "B", "content": "5" },
+              { "choiceLetter": "C", "content": "4" },
+              { "choiceLetter": "D", "content": "Undefined behavior" }
+            ]
+          }
         ]
       },
       {

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/learning")
 public class LearningController {
 
-    private LearningService learningService;
+    private final LearningService learningService;
 
     public LearningController(LearningService learningService) {
         this.learningService = learningService;
@@ -27,9 +27,9 @@ public class LearningController {
     @GetMapping("/rephrase")
     public ResponseEntity<GPTResponse> rephraseBubble(
             @RequestParam Long userId,
-            @RequestParam Long bubbleId
+            @RequestParam Long courseId
     ) {
-        return ResponseEntity.ok(learningService.handleRephrase(userId, bubbleId));
+        return ResponseEntity.ok(learningService.handleRephrase(userId, courseId));
     }
 
     @GetMapping("/ask-questions")
@@ -44,6 +44,6 @@ public class LearningController {
     @DeleteMapping
     public ResponseEntity<String> reset(@RequestBody ResetDTO request) {
         learningService.handleDeleteAll();
-        return ResponseEntity.ok("All progresses, mastery, and chat history are deleted.");
+        return ResponseEntity.ok("All progresses, mastery, chat history, and quiz results are deleted.");
     }
 }

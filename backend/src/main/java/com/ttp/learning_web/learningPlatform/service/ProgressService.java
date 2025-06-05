@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class ProgressService {
@@ -36,15 +35,17 @@ public class ProgressService {
         return progressRepository.findAll();
     }
 
-    public Optional<Progress> getProgressById(Long progressId) {
-        return progressRepository.findByProgressId(progressId);
+    public Progress getProgressById(Long progressId) {
+        return progressRepository.findByProgressId(progressId)
+                .orElseThrow(() -> new RuntimeException("Progress Not Found"));
     }
 
     public Progress getProgressByCourseIdAndUserIdAndSkillId(Long courseId,
                                                              Long userId,
                                                              Long skillId) {
         return progressRepository.findByCourse_CourseIdAndUser_UserIdAndSkill_SkillId(
-                courseId, userId, skillId).orElse(null);
+                courseId, userId, skillId)
+                .orElseThrow(() -> new RuntimeException("Progress Not Found"));
     }
 
     public List<Progress> getProgressByUserId(Long userId) {
@@ -60,8 +61,8 @@ public class ProgressService {
             Long courseId,
             Long userId) {
         List<Progress> incompleteProgress = progressRepository.findByCourse_CourseIdAndUser_UserId(courseId, userId)
-                .stream().filter(progress -> !progress.getCompleted())
-                .collect(Collectors.toList());
+                .stream().filter(progress -> !progress.getLessonCompleted() || !progress.getQuizCompleted())
+                .toList();
         if (incompleteProgress.isEmpty()) {
             return null;
         }
@@ -74,14 +75,10 @@ public class ProgressService {
         Long skillId = progress.getSkill().getSkillId();
         Long bubbleId = progress.getBubble().getBubbleId();
 
-        Course course = courseService.getCourseByCourseId(courseId)
-                .orElseThrow(() -> new RuntimeException("Course Not Found"));
-        User user = userService.getUserById(userId)
-                .orElseThrow(() -> new RuntimeException("User Not Found"));
-        Skill skill = skillService.getSkillById(skillId)
-                .orElseThrow(() -> new RuntimeException("Skill Not Found"));
-        LessonBubble bubble = lessonBubbleService.getBubbleById(bubbleId)
-                .orElseThrow(() -> new RuntimeException("Bubble Not Found"));
+        Course course = courseService.getCourseByCourseId(courseId);
+        User user = userService.getUserByUserId(userId);
+        Skill skill = skillService.getSkillBySkillId(skillId);
+        LessonBubble bubble = lessonBubbleService.getBubbleByBubbleId(bubbleId);
 
         progress.setCourse(course);
         progress.setUser(user);
@@ -90,21 +87,20 @@ public class ProgressService {
         return progressRepository.save(progress);
     }
 
-    public Progress markSkillComplete(Progress progress) {
-        progress.setCompleted(true);
-        return this.updateProgress(progress);
+    public void markSkillLessonComplete(Progress progress) {
+        progress.setLessonCompleted(true);
+        this.updateProgress(progress);
     }
 
-    public Progress resetProgress(Progress progress) {
+    public void resetProgress(Progress progress) {
         Long skillId = progress.getSkill().getSkillId();
         Optional<LessonBubble> bubble = lessonBubbleService.getBubbleByBubbleOrder(skillId, 1);
 
         if (bubble.isPresent()) {
-            progress.setCompleted(false);
+            progress.setLessonCompleted(false);
+            progress.setQuizCompleted(false);
             progress.setBubble(bubble.get());
-            return this.updateProgress(progress);
-        } else {
-            return progress;
+            this.updateProgress(progress);
         }
     }
 
@@ -113,7 +109,8 @@ public class ProgressService {
         if (existingProgress.isPresent()) {
             Progress progressToUpdate = existingProgress.get();
             progressToUpdate.setBubble(progress.getBubble());
-            progressToUpdate.setCompleted(progress.getCompleted());
+            progressToUpdate.setLessonCompleted(progress.getLessonCompleted());
+            progressToUpdate.setQuizCompleted(progress.getQuizCompleted());
 
             return progressRepository.save(progressToUpdate);
         }

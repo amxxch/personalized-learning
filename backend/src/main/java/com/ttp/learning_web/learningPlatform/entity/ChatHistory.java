@@ -66,6 +66,7 @@ public class ChatHistory {
         this.bubble = bubble;
         this.sender = sender;
         this.timestamp = timestamp;
+        this.content = bubble.getContent();
         this.contentOrder = contentOrder;
         this.contentType = bubble.getContentType();
         this.topic = bubble.getTopic();

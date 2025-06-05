@@ -22,16 +22,18 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
-    public Optional<Course> getCourseByCourseId(Long courseId) {
-        return courseRepository.findByCourseId(courseId);
+    public Course getCourseByCourseId(Long courseId) {
+        return courseRepository.findByCourseId(courseId)
+                .orElseThrow(() -> new RuntimeException("Course Not Found"));
     }
 
     public List<Course> getCoursesByCourseName(String courseName) {
-//        return courseRepository.findAll().stream()
-//                .filter(course ->
-//                        course.getTitle().toLowerCase().contains(courseName.toLowerCase()))
-//                .collect(Collectors.toList());
         return courseRepository.findByTitleContaining(courseName);
+    }
+
+    public int getCount() {
+        List<Course> courses = getAllCourses();
+        return courses.size();
     }
 
     public Course addCourse(Course course) {

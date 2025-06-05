@@ -37,6 +37,7 @@ const CourseChatPage = () => {
         const messages: Message[] = data
         .sort((a: any, b: any) => a.chatId - b.chatId)
         .map((msg: any) => {
+          msg.contentType = msg.contentType === 'UNSURE' ? 'TEXT' : msg.contentType;
           return msg.topic ?
           {
             sender: msg.sender,

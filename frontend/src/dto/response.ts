@@ -39,7 +39,7 @@ export interface ChatHistory {
     skillId: number;
     skillName: string;
     sender: 'CHATBOT' | 'USER';
-    contentType: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE' | 'GPT';
+    contentType: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE' | 'GPT' | 'UNSURE' | 'QUIZ';
     content: string;
     topic?: string;
     timestamp: Date;
@@ -49,7 +49,7 @@ export interface ChatHistory {
 
 export interface Message {
     sender: 'CHATBOT' | 'USER';
-    type: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE' | 'GPT';
+    type: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE' | 'GPT' | 'UNSURE' | 'QUIZ';
     content: string;
     topic?: string;
     skillId?: number;
@@ -57,3 +57,8 @@ export interface Message {
     bubbleOrder?: number;
     bubbleId?: number;
   }
+
+export interface QuizChoice {
+    content: string;
+    choiceLetter: 'A' | 'B' | 'C' | 'D';
+}

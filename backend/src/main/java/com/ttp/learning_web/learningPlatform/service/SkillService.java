@@ -25,36 +25,24 @@ public class SkillService {
         return skillRepository.findAll();
     }
 
-    public Optional<Skill> getSkillById(Long skillId) {
-        return skillRepository.findBySkillId(skillId);
+    public Skill getSkillBySkillId(Long skillId) {
+
+        return skillRepository.findBySkillId(skillId)
+                .orElseThrow(() -> new RuntimeException("Skill Not Found"));
     }
 
     public List<Skill> getSkillsByCourseId(Long courseId) {
-//        Optional<Course> course = courseService.getCourseByCourseId(courseId);
-//
-//        if (course.isPresent()) {
-//            return skillRepository.findAll().stream()
-//                    .filter(skill ->
-//                            skill.getCourse().getCourseId().equals(courseId))
-//                    .collect(Collectors.toList());
-//        }
-//        return null;
         return skillRepository.findByCourse_CourseId(courseId);
     }
 
     public List<Skill> getSkillsBySkillName(String skillName) {
-//        return skillRepository.findAll().stream()
-//                .filter(skill ->
-//                        skill.getSkillName().toLowerCase().contains(skillName.toLowerCase()))
-//                .collect(Collectors.toList());
         return skillRepository.findBySkillNameContaining(skillName);
     }
 
     public Skill addSkill(Skill skill) {
         Long courseId = skill.getCourse().getCourseId();
 
-        Course course = courseService.getCourseByCourseId(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+        Course course = courseService.getCourseByCourseId(courseId);
 
         skill.setCourse(course);
         return skillRepository.save(skill);

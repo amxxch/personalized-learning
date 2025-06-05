@@ -1,9 +1,6 @@
 package com.ttp.learning_web.learningPlatform.service;
 
-import com.ttp.learning_web.learningPlatform.entity.LessonBubble;
-import com.ttp.learning_web.learningPlatform.entity.Mastery;
-import com.ttp.learning_web.learningPlatform.entity.Skill;
-import com.ttp.learning_web.learningPlatform.entity.User;
+import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.Difficulty;
 import com.ttp.learning_web.learningPlatform.repository.MasteryRepository;
 import jakarta.transaction.Transactional;
@@ -36,13 +33,13 @@ public class MasteryService {
         return masteryRepository.findAll();
     }
 
-    public Optional<Mastery> getMasteryById(Long masteryId) {
+    public Optional<Mastery> getMasteryByMasteryId(Long masteryId) {
         return masteryRepository.findByMasteryId(masteryId);
     }
 
     public Mastery getMasteryByUserIdAndSkillId(Long userId, Long skillId) {
-        Optional<Mastery> mastery = masteryRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId);
-        return mastery.orElse(null);
+        return masteryRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId)
+                .orElseThrow(() -> new RuntimeException("Mastery Not Found"));
     }
 
     public List<Mastery> getMasteryByUserId(Long userId) {
@@ -57,10 +54,8 @@ public class MasteryService {
         Long userId = mastery.getUser().getUserId();
         Long skillId = mastery.getSkill().getSkillId();
 
-        User user = userService.getUserById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found."));
-        Skill skill = skillService.getSkillById(skillId)
-                .orElseThrow(() -> new RuntimeException("Skill not found."));
+        User user = userService.getUserByUserId(userId);
+        Skill skill = skillService.getSkillBySkillId(skillId);
 
         mastery.setUser(user);
         mastery.setSkill(skill);
@@ -78,9 +73,9 @@ public class MasteryService {
         return null;
     }
 
-    public Mastery increaseMasteryByBubble(Mastery mastery, LessonBubble lessonBubble) {
+    public void increaseMasteryByBubble(Mastery mastery, LessonBubble lessonBubble) {
         if (!lessonBubble.getSkill().getSkillId().equals(mastery.getSkill().getSkillId())) {
-            return null;
+            return;
         }
 
         Difficulty difficulty = lessonBubble.getDifficulty();
@@ -93,12 +88,30 @@ public class MasteryService {
         } else if (difficulty == Difficulty.HARD) {
             mastery.setMasteryLevel(min(currentMasteryLevel + 0.03, 1));
         }
-        return updateMastery(mastery);
+        updateMastery(mastery);
     }
 
-    public Mastery decreaseMasteryByBubble(Mastery mastery, LessonBubble lessonBubble) {
+    public void increaseMasteryByQuiz(Mastery mastery, QuizQuestion quizQuestion) {
+        if (!quizQuestion.getSkill().getSkillId().equals(mastery.getSkill().getSkillId())) {
+            return;
+        }
+
+        Difficulty difficulty = quizQuestion.getDifficulty();
+        Double currentMasteryLevel = mastery.getMasteryLevel();
+
+        if (difficulty == Difficulty.EASY) {
+            mastery.setMasteryLevel(min(currentMasteryLevel + 0.05, 1));
+        } else if (difficulty == Difficulty.MEDIUM) {
+            mastery.setMasteryLevel(min(currentMasteryLevel + 0.1, 1));
+        } else if (difficulty == Difficulty.HARD) {
+            mastery.setMasteryLevel(min(currentMasteryLevel + 0.15, 1));
+        }
+        updateMastery(mastery);
+    }
+
+    public void decreaseMasteryByBubble(Mastery mastery, LessonBubble lessonBubble) {
         if (!lessonBubble.getSkill().getSkillId().equals(mastery.getSkill().getSkillId())) {
-            return null;
+            return;
         }
 
         Difficulty difficulty = lessonBubble.getDifficulty();
@@ -111,8 +124,28 @@ public class MasteryService {
         } else if (difficulty == Difficulty.HARD) {
             mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.03));
         }
-        return updateMastery(mastery);
+        updateMastery(mastery);
     }
+
+    public void decreaseMasteryByQuiz(Mastery mastery, QuizQuestion quizQuestion) {
+        if (!quizQuestion.getSkill().getSkillId().equals(mastery.getSkill().getSkillId())) {
+            return;
+        }
+
+        Difficulty difficulty = quizQuestion.getDifficulty();
+        Double currentMasteryLevel = mastery.getMasteryLevel();
+
+        if (difficulty == Difficulty.EASY) {
+            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.025));
+        } else if (difficulty == Difficulty.MEDIUM) {
+            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.05));
+        } else if (difficulty == Difficulty.HARD) {
+            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.075));
+        }
+        updateMastery(mastery);
+    }
+
+
 
     @Transactional
     public void deleteMasteryById(Long masteryId) {

@@ -28,13 +28,6 @@ public class SkillController {
         return skillService.getSkillsByCourseId(courseId);
     }
 
-    @GetMapping("/{skillId}")
-    public ResponseEntity<Skill> getSkillById(@PathVariable("skillId") Long skillId) {
-        Optional<Skill> skill = skillService.getSkillById(skillId);
-        return skill.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
     @PostMapping
     public ResponseEntity<Skill> addSkill(@RequestBody Skill skill) {
         Skill newSKill = skillService.addSkill(skill);

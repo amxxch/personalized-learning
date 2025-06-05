@@ -26,8 +26,9 @@ public class LessonBubbleService {
         return lessonBubbleRepository.findAll();
     }
 
-    public Optional<LessonBubble> getBubbleById(Long bubbleId) {
-        return lessonBubbleRepository.findByBubbleId(bubbleId);
+    public LessonBubble getBubbleByBubbleId(Long bubbleId) {
+        return lessonBubbleRepository.findByBubbleId(bubbleId)
+                .orElseThrow(() -> new RuntimeException("Bubble Not Found"));
     }
 
     public List<LessonBubble> getAllBubblesBySkillId(Long skillId) {
@@ -41,8 +42,7 @@ public class LessonBubbleService {
     public LessonBubble addBubble(LessonBubble bubble) {
         Long skillId = bubble.getSkill().getSkillId();
 
-        Skill skill = skillService.getSkillById(skillId)
-                        .orElseThrow(() -> new RuntimeException("Skill not found"));
+        Skill skill = skillService.getSkillBySkillId(skillId);
         bubble.setSkill(skill);
         return lessonBubbleRepository.save(bubble);
     }

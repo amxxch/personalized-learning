@@ -4,10 +4,14 @@ import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { Message } from '../dto/response';
+
 import { GrFormNextLink } from "react-icons/gr";
 import { IoReloadOutline } from "react-icons/io5";
 import { MdLogout } from "react-icons/md";
+
+import { Message, QuizChoice } from '../dto/response';
+import QuizTimeAnim from './QuizTimeAnim';
+
 
 interface ChatBubbleProps {
     initialMessages: Message[];
@@ -17,8 +21,18 @@ interface ChatBubbleProps {
 
 
 const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 } : ChatBubbleProps) => {
+
+  const maxQuizQuestion = 6;
+
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [loading, setLoading] = useState(false);
+
+  const [quizTime, setQuizTime] = useState(false);
+  const [quizEvalTime, setQuizEvalTime] = useState(false);
+  const [quizTimeAnim, setQuizTimeAnim] = useState(quizTime);
+  const [numOfQuiz, setNumOfQuiz] = useState(0);
+
+  const [enabledInput, setEnabledInput] = useState(!quizTime);
   const [input, setInput] = useState('');
   const [datetime, setDatetime] = useState(new Date().toLocaleString());
 
@@ -26,6 +40,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
   const [courseId] = useState(1);
   const [skillId, setSkillId] = useState(initialSkillId);
   const [bubbleId, setBubbleId] = useState(initialBubbleId);
+  const [quizId, setQuizId] = useState(1);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
@@ -34,11 +49,23 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
   }, [messages]);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setQuizTimeAnim(false);
+    }, 1500)
+
+    return () => clearTimeout(timer);
+  }, [quizTimeAnim]);
+
+  useEffect(() => {
     console.log('Skill ID:', skillId);
     console.log('Bubble ID:', bubbleId);
   }, [skillId, bubbleId]);
 
-  const handleOptionClick = async (option: 'next' | 'rephrase' | 'quit') => {
+  useEffect(() => {
+    console.log('num of quiz: ', numOfQuiz);
+  }, [numOfQuiz]);
+
+  const handleLessonOptionClick = async (option: 'next' | 'rephrase' | 'quit') => {
     setLoading(true);
 
     try {
@@ -87,6 +114,23 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
 
           console.log("Bubble ID:", bubbleId);
           console.log("Skill ID:", skillId);
+        } else if (data.status === 'QUIZ') {
+          if (numOfQuiz === 0) {
+            setQuizTimeAnim(true);
+            setTimeout(() => {
+              const quizTimeMessage: Message = {
+                sender: 'CHATBOT',
+                type: 'QUIZ',
+                content: "",
+                topic: "Quiz Time! Let's answer the following question"
+              };
+              setMessages(prevMessages => [...prevMessages, quizTimeMessage]);
+
+              handleNextQuiz();
+            }, 1500);
+          } else {
+            handleNextQuiz();
+          }
         }
 
       } else if (option === 'rephrase') {
@@ -102,7 +146,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         const response = await axios.get('http://localhost:8080/api/v1/learning/rephrase', {
           params: {
             userId: userId,
-            bubbleId: bubbleId,
+            courseId: courseId
           }
         });
         
@@ -136,8 +180,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
     }
   }
 
-  const handleSend = async () => {
-      // post message
+  const handleInputSend = async () => {
       const question: Message = {
         sender: 'USER',
         type: 'TEXT',
@@ -187,9 +230,156 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         setInput('');
       }
   }
+
+  const handleNextQuiz = async () => {
+    setQuizTime(true);
+    setLoading(true);
+    setEnabledInput(false);
+
+    try {
+      const response = await axios.get('http://localhost:8080/api/v1/quiz/next-quiz-question', {
+        params: {
+          userId: userId,
+          skillId: skillId,
+        }
+      });
+      
+      const data = response.data;
+
+      if (!data || data === null) {
+        askForQuizEvaluation();
+        return;
+      }
+
+      console.log(data);
+      
+      let choices = '';
+      for (let choice of data.quizChoices) {
+        choices += `**${choice.choiceLetter}.** ${choice.content}\n\n`;
+      }
+      
+      const question: Message = {
+        sender: 'CHATBOT',
+        type: 'QUIZ',
+        topic: `Quiz Question # ${numOfQuiz + 1}`,
+        content: `${data.question}\n\n${choices}`,
+      }
+
+      setMessages(prevMessages => [...prevMessages, question]);
+      console.log(data.questionId)
+      setQuizId(data.questionId);
+
+    } catch (error) {
+      console.error('Error fetching quiz question:', error);
+      const errorMessage: Message = {
+        sender: 'CHATBOT',
+        type: 'TEXT',
+        content: 'An error occurred while fetching the quiz question. Please try again.',
+      };
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
+      setEnabledInput(true);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const askForQuizEvaluation = async () => {
+    setLoading(true);
+
+    try {
+      const response = await axios.get('http://localhost:8080/api/v1/quiz/evaluate', {
+        params: {
+          userId: userId,
+          skillId: skillId,
+        }
+      });
+      
+      const data = response.data;
+      console.log(data);
+
+      if (data === null) {
+        askForQuizEvaluation();
+        return;
+      }
+
+      const evaluationMessage: Message = {
+        sender: 'CHATBOT',
+        type: 'TEXT',
+        content: data.message,
+      }
+      setMessages(prevMessages => [...prevMessages, evaluationMessage]);
+
+      setQuizTime(false);
+      setQuizEvalTime(false);
+
+    } catch (error) {
+      console.error('Error evaluating quiz answer:', error);
+      const errorMessage: Message = {
+        sender: 'CHATBOT',
+        type: 'TEXT',
+        content: 'An error occurred while evaluating your answer. Please try again.'
+      };
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
+      setQuizEvalTime(false);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleSubmitQuiz = async (answer: string) => {
+    setQuizTime(false);
+    const selectedAnswer: Message = {
+      sender: 'USER',
+      type: 'QUIZ',
+      content: `Selected answer: ${answer}`,
+    }
+    setMessages(prevMessages => [...prevMessages, selectedAnswer]);
+
+    try {
+      setLoading(true);
+      const response = await axios.get('http://localhost:8080/api/v1/quiz/submit-answer', {
+        params: {
+          userId: userId,
+          questionId: quizId,
+          choiceLetterStr: answer,
+        }
+      });
+      
+      const data = response.data;
+
+      console.log(data);
+
+      const resultMessage: Message = {
+        sender: 'CHATBOT',
+        type: 'QUIZ',
+        content: data,
+      }
+      setMessages(prevMessages => [...prevMessages, resultMessage]);
+      setNumOfQuiz(prev => prev + 1);
+      setEnabledInput(true);
+
+      if (numOfQuiz >= maxQuizQuestion) {
+        setQuizEvalTime(true);
+      }
+
+    } catch (error) {
+      console.error('Error submitting quiz answer:', error);
+      const errorMessage: Message = {
+        sender: 'CHATBOT',
+        type: 'TEXT',
+        content: 'An error occurred while submitting your answer. Please try again.'
+      };
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
+    } finally {
+      setLoading(false);
+    }
+  }
   
     return (
       <div style={{ height: 'calc(100vh - 64px)' }} className="flex flex-col p-4 overflow-y-auto">
+
+        {/* Quiz Time Animation */}
+        { quizTimeAnim && <QuizTimeAnim /> }
 
         {/* Title */}
         <div className="flex-1 overflow-y-auto space-y-4">
@@ -201,19 +391,21 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         {/* Messages */}
         {messages.map((msg, idx) => (
           <div key={idx} className={`message ${msg.sender === 'USER' ? 'chat-end' : 'chat-start'}`}>
-            <div className={`chat-bubble ${msg.sender === 'USER' ? 'bg-orange-400 text-white text-lg mr-5' : 'bg-gray-300 text-black text-lg ml-5'}`}>
+            <div className={`chat-bubble ${msg.type === 'QUIZ' ? 'bg-yellow-200 text-black text-lg ml-5' :
+                msg.sender === 'USER' ? 'bg-orange-400 text-white text-lg mr-5' : 'bg-gray-300 text-black text-lg ml-5'}`}>
+
               {msg.skillName && msg.skillId && (msg.bubbleOrder && msg.bubbleOrder === 1) &&
                <p className="font-bold mb-2">Chapter {msg.skillId}: {msg.skillName}</p>
                }
+
               {msg.topic && <p className="font-bold mb-2">{msg.topic}</p>}
-              {msg.type === 'TEXT' && msg.content}
+              {(msg.type === 'TEXT' || msg.type === 'GPT' || msg.type === 'QUIZ')  && <ReactMarkdown>{msg.content}</ReactMarkdown>}
               {msg.type === 'IMAGE' && <img src={msg.content} alt="IMAGE" className="w-32 h-32 object-cover" />}
               {msg.type === 'VIDEO' && <video src={msg.content} controls className="w-32 h-32 object-cover"></video>}
               {msg.type === 'CODE' && 
               <SyntaxHighlighter language="cpp" showLineNumbers>
                 {msg.content}
               </SyntaxHighlighter>}
-              {msg.type === 'GPT' && <ReactMarkdown>{msg.content}</ReactMarkdown>}
             </div>
           </div>
         ))}
@@ -234,30 +426,71 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         {/* Decision-making Buttons */}
         <div className="flex justify-center mt-4">
           <div className="flex flex-wrap gap-4">
+            { enabledInput &&
+              <div className="options mt-2 ml-5 mr-2">
+                  <button 
+                    onClick={() => handleLessonOptionClick('quit')} 
+                    className="btn btn-danger btn-md text-lg mr-2 px-8"
+                    disabled={!quizTime}
+                  >
+                    Quit
+                    <MdLogout className='text-2xl'/>
+                  </button>
+                  <button 
+                    onClick={() => handleLessonOptionClick('rephrase')} 
+                    className="btn btn-secondary btn-md text-lg mr-2 px-8"
+                  >
+                    Still Unsure
+                    <IoReloadOutline className='text-2xl'/>
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (quizEvalTime) {
+                        askForQuizEvaluation();
+                      } else if (quizTime) {
+                        handleNextQuiz();
+                      } else {
+                        handleLessonOptionClick('next');
+                      }
+                    }}
+                    className="btn btn-primary btn-md text-lg px-8"
+                  >
+                    Next
+                    <GrFormNextLink className='text-2xl'/>
+                  </button>
+              </div>
+            }
+
+            { quizTime &&
             <div className="options mt-2 ml-5 mr-2">
                 <button 
-                  onClick={() => handleOptionClick('quit')} 
-                  className="btn btn-danger btn-md text-lg mr-2 px-8"
+                  onClick={() => handleSubmitQuiz('A')} 
+                  className="btn btn-secondary btn-lg text-2xl mr-5 px-10"
                 >
-                  Quit
-                  <MdLogout className='text-2xl'/>
+                  A
                 </button>
                 <button 
-                  onClick={() => handleOptionClick('rephrase')} 
-                  className="btn btn-secondary btn-md text-lg mr-2 px-8"
+                  onClick={() => handleSubmitQuiz('B')} 
+                  className="btn btn-primary btn-lg text-2xl mr-5 px-10"
                 >
-                  Still Unsure
-                  <IoReloadOutline className='text-2xl'/>
+                  B
                 </button>
                 <button 
-                  onClick={() => handleOptionClick('next')} 
-                  className="btn btn-primary btn-md text-lg px-8"
+                  onClick={() => handleSubmitQuiz('C')} 
+                  className="btn btn-accent btn-lg text-2xl mr-5 px-10"
                 >
-                  Next
-                  <GrFormNextLink className='text-2xl'/>
+                  C
+                </button>
+                <button 
+                  onClick={() => handleSubmitQuiz('D')} 
+                  className="btn btn-success btn-lg text-2xl px-10"
+                >
+                  D
                 </button>
             </div>
-            </div>
+            }
+            
+          </div>
         </div>
 
         {/* Search bar */}
@@ -266,12 +499,14 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
               className="input input-bordered flex-1"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              onKeyDown={(e) => e.key === 'Enter' && handleInputSend()}
+              disabled={!enabledInput}
               placeholder="Ask a question"
             />
-            <button className="btn btn-accent" onClick={handleSend}>Send</button>
+            <button className="btn btn-accent" onClick={handleInputSend}>Send</button>
         </div>
       </div>
+
     );
   }
   

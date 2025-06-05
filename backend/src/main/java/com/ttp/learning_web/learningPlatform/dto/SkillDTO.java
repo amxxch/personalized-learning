@@ -6,6 +6,7 @@ public class SkillDTO {
     private String skillName;
     private Integer skillOrder;
     private List<LessonBubbleDTO> lessonBubbles;
+    private List<QuizQuestionDTO> quizQuestions;
 
     public String getSkillName() {
         return skillName;
@@ -29,5 +30,13 @@ public class SkillDTO {
 
     public void setLessonBubbles(List<LessonBubbleDTO> lessonBubbles) {
         this.lessonBubbles = lessonBubbles;
+    }
+
+    public List<QuizQuestionDTO> getQuizQuestions() {
+        return quizQuestions;
+    }
+
+    public void setQuizQuestions(List<QuizQuestionDTO> quizQuestions) {
+        this.quizQuestions = quizQuestions;
     }
 }

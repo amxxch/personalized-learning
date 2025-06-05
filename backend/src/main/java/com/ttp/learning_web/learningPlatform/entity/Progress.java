@@ -13,8 +13,11 @@ public class Progress {
     @Column(name = "progress_id", unique = true, nullable = false)
     private Long progressId;
 
-    @Column(name = "completed", nullable = false)
-    private Boolean completed;
+    @Column(name = "lesson_completed", nullable = false)
+    private Boolean lessonCompleted;
+
+    @Column(name = "quiz_completed", nullable = false)
+    private Boolean quizCompleted;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -34,7 +37,8 @@ public class Progress {
 
     public Progress() {}
 
-    public Progress(Boolean completed,
+    public Progress(Boolean quizCompleted,
+                    Boolean lessonCompleted,
                     User user,
                     Course course,
                     Skill skill,
@@ -43,7 +47,8 @@ public class Progress {
         this.course = course;
         this.skill = skill;
         this.bubble = bubble;
-        this.completed = completed;
+        this.lessonCompleted = lessonCompleted;
+        this.quizCompleted = quizCompleted;
     }
 
     public Long getProgressId() {
@@ -54,12 +59,20 @@ public class Progress {
         this.progressId = progressId;
     }
 
-    public Boolean getCompleted() {
-        return completed;
+    public Boolean getLessonCompleted() {
+        return lessonCompleted;
     }
 
-    public void setCompleted(Boolean completed) {
-        this.completed = completed;
+    public void setLessonCompleted(Boolean lessonCompleted) {
+        this.lessonCompleted = lessonCompleted;
+    }
+
+    public Boolean getQuizCompleted() {
+        return quizCompleted;
+    }
+
+    public void setQuizCompleted(Boolean quizCompleted) {
+        this.quizCompleted = quizCompleted;
     }
 
     public User getUser() {

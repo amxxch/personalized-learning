@@ -21,14 +21,13 @@ public class UserService {
     }
 
     public List<User> getUserByName(String name) {
-//        return userRepository.findAll().stream()
-//                .filter(user -> user.getName().toLowerCase().contains(name.toLowerCase()))
-//                .collect(Collectors.toList());
         return userRepository.findByNameContaining(name);
     }
 
-    public Optional<User> getUserById(Long userId) {
-        return userRepository.findByUserId(userId);
+    public User getUserByUserId(Long userId) {
+
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User Not Found"));
     }
 
     public User addUser(User user) {

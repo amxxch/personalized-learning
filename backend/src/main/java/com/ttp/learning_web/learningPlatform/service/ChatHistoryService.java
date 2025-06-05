@@ -22,13 +22,10 @@ import java.util.stream.Collectors;
 public class ChatHistoryService {
 
     private final ChatHistoryRepository chatHistoryRepository;
-    private final LessonBubbleService lessonBubbleService;
 
     @Autowired
-    public ChatHistoryService(ChatHistoryRepository chatHistoryRepository,
-                              LessonBubbleService lessonBubbleService) {
+    public ChatHistoryService(ChatHistoryRepository chatHistoryRepository) {
         this.chatHistoryRepository = chatHistoryRepository;
-        this.lessonBubbleService = lessonBubbleService;
     }
 
     public List<ChatHistory> getAllChatHistory() {
@@ -98,11 +95,22 @@ public class ChatHistoryService {
                 .orElse(null);
     }
 
+    public ChatHistory getLatestChatHistoryByUserIdAndCourseId(Long userId, Long courseId) {
+        List<ChatHistory> chatHistoryList = chatHistoryRepository.findByUser_UserIdAndCourse_CourseId(userId, courseId);
+
+        return chatHistoryList.stream()
+                .max(Comparator.comparingLong(ChatHistory::getChatId))
+                .orElse(null);
+    }
+
     public ChatHistory addChatHistory(ChatHistory chatHistory) {
         return chatHistoryRepository.save(chatHistory);
     }
 
     public void addChatbotMsgHistory(User user, Skill skill, LessonBubble bubble) {
+        /**
+         * This function is for adding the chat history that is related to some bubble.
+        * */
         ChatHistory latestChatBubble = getLatestChatHistoryByUserIdAndSkillId(user.getUserId(), skill.getSkillId());
         int nextChatHistoryOrder = (latestChatBubble == null) ? 1 : latestChatBubble.getContentOrder() + 1;
 
@@ -119,10 +127,12 @@ public class ChatHistoryService {
         chatHistoryRepository.save(newChat);
     }
 
-    public void addCustomizedMsgHistory(User user, Skill skill, String content, Sender sender) {
+    public void addCustomizedMsgHistory(User user, Skill skill, String content, Sender sender, ContentType contentType) {
+        /**
+         * This function is for adding any chat history that is not related to any specific bubble.
+         * */
         ChatHistory latestChatBubble = getLatestChatHistoryByUserIdAndSkillId(user.getUserId(), skill.getSkillId());
         int nextChatHistoryOrder = latestChatBubble == null ? 1 : latestChatBubble.getContentOrder() + 1;
-        ContentType contentType = sender == Sender.CHATBOT ? ContentType.GPT : ContentType.TEXT;
 
         ChatHistory newChat = new ChatHistory(
                 user,
@@ -140,7 +150,7 @@ public class ChatHistoryService {
 
     public void addStillUnsureMsgHistory(User user, Skill skill) {
         String message = "I'm still unsure. Can you elaborate more?";
-        addCustomizedMsgHistory(user, skill, message, Sender.USER);
+        addCustomizedMsgHistory(user, skill, message, Sender.USER, ContentType.UNSURE);
     }
 
     public ChatHistory changeChatHistory(ChatHistory chatHistory) {
