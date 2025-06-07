@@ -1,5 +1,6 @@
 package com.ttp.learning_web;
 
+import com.ttp.learning_web.learningPlatform.service.DotenvInitializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,12 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LearningWebApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LearningWebApplication.class, args);
+	static {
+		new DotenvInitializer();
 	}
 
-	@GetMapping
-	public String hello() {
-		return "Hello World";
+	public static void main(String[] args) {
+		SpringApplication.run(LearningWebApplication.class, args);
 	}
 }
