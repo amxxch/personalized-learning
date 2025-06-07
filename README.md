@@ -14,21 +14,29 @@ This will cover a step-by-step guideline to run the app locally.
 
 ### Start Backend Server
 1. Set up environment variable by going to `.env` file and configure your credentials for PostgreSQL Database and [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service). (The Azure OpenAI credentials can be found in *Resource Management* > *Key and Endpoints* in your resource page.)
-2. Navigate to the backend directory
+2. Install dependencies and build the project
+- Option A: Run from IntelliJ (Recommended): Click Run on `LearningWebApplication.java`.
+- Option B: Run from terminal by following below command lines:
+
+For macOS/Linux:
 
 ```bash
 cd backend
-```
-
-3. Install dependencies and build the project
-
-```bash
-mvn clean install
-```
-4. Start the server
-```bash
+source .env
 mvn spring-boot:run
 ```
+For window, please set environment manually:
+```bash
+set POSTGRES_DB_URL=your-database-url
+set POSTGRES_DB_USERNAME=your-database-username
+set POSTGRES_DB_PW=your-database-password
+set AZURE_OPENAI_API_KEY=your-azure-openai-resource-api-key
+set AZURE_OPENAI_ENDPOINT=your-azure-openai-resource-endpoint
+
+cd backend
+mvn spring-boot:run
+```
+
 The backend should now be running at `http://localhost:8080`
 
 ### Start Frontend Website
