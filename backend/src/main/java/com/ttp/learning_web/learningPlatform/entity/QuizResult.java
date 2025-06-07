@@ -1,13 +1,11 @@
 package com.ttp.learning_web.learningPlatform.entity;
 
-import com.ttp.learning_web.learningPlatform.enums.ChoiceLetter;
 import jakarta.persistence.*;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "quiz_results")
+@Table(name = "quiz_result")
 public class QuizResult {
 
     @Id

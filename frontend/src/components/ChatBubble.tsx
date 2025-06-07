@@ -8,6 +8,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { GrFormNextLink } from "react-icons/gr";
 import { IoReloadOutline } from "react-icons/io5";
 import { MdLogout } from "react-icons/md";
+import { MdQuestionMark } from "react-icons/md";
 
 import { Message, QuizChoice } from '../dto/response';
 import QuizTimeAnim from './QuizTimeAnim';
@@ -65,7 +66,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
     console.log('num of quiz: ', numOfQuiz);
   }, [numOfQuiz]);
 
-  const handleLessonOptionClick = async (option: 'next' | 'rephrase' | 'quit') => {
+  const handleLessonOptionClick = async (option: 'next' | 'rephrase' | 'quit' | 'restart') => {
     setLoading(true);
 
     try {
@@ -164,6 +165,24 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         // send API request
         // setMessages([...messages, 'Quit message']);
         window.location.href = '/';
+      } else if (option === 'restart') {
+        try {
+          const response = await axios.delete('http://localhost:8080/api/v1/learning');
+
+          setMessages([]);
+          setSkillId(1);
+          setBubbleId(1);
+          setNumOfQuiz(0);
+        } catch (error) {
+          console.error('Error restarting lesson:', error);
+          const errorMessage: Message = {
+            sender: 'ASSISTANT',
+            type: 'TEXT',
+            content: 'An error occurred while restarting the lesson. Please try again.'
+          };
+          setMessages(prevMessages => [...prevMessages, errorMessage]);
+          return;
+        }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -193,6 +212,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
           content: 'Please enter a question before sending.'
         };
         setMessages(prevMessages => [...prevMessages, warningMessage]);
+        return;
       }
       
       // send api
@@ -243,6 +263,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         params: {
           userId: userId,
           skillId: skillId,
+          questionNum: numOfQuiz + 1,
         }
       });
       
@@ -327,6 +348,9 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
       setMessages(prevMessages => [...prevMessages, errorMessage]);
       setQuizEvalTime(true);
     } finally {
+      setQuizEvalTime(false); // to be changed after adding more quiz
+      setQuizTime(false);
+      setEnabledInput(true);
       setLoading(false);
     }
   }
@@ -358,7 +382,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         sender: 'ASSISTANT',
         type: 'QUIZ',
         content: data,
-      }
+      };
       setMessages(prevMessages => [...prevMessages, resultMessage]);
       setNumOfQuiz(prev => prev + 1);
       setEnabledInput(true);
@@ -442,11 +466,19 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
                     <MdLogout className='text-2xl'/>
                   </button>
                   <button 
+                    onClick={() => handleLessonOptionClick('restart')} 
+                    className="btn btn-accent btn-md text-lg mr-2 px-6"
+                  >
+                    Restart the lesson
+                    <IoReloadOutline className='text-2xl mb-1'/>
+                  </button>
+                  <button 
                     onClick={() => handleLessonOptionClick('rephrase')} 
-                    className="btn btn-secondary btn-md text-lg mr-2 px-8"
+                    className="btn btn-secondary btn-md text-lg mr-2 px-6"
+                    disabled={messages.length === 0}
                   >
                     Still Unsure
-                    <IoReloadOutline className='text-2xl'/>
+                    <MdQuestionMark className='text-2xl mb-1'/>
                   </button>
                   <button 
                     onClick={() => {
@@ -505,13 +537,13 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleInputSend()}
-              disabled={!enabledInput}
+              disabled={!enabledInput || messages.length === 0}
               placeholder="Ask a question"
             />
             <button 
               className="btn btn-accent" 
               onClick={handleInputSend}
-              disabled={!enabledInput}
+              disabled={!enabledInput || messages.length === 0}
             >
                 Send
             </button>

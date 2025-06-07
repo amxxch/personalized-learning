@@ -154,7 +154,6 @@ public class LearningService {
             Please rewrite or elaborate on this content to make it clearer and easier to understand for the student. Focus on clarity and conceptual breakdown, and feel free to restructure the explanation to aid understanding. Please provide examples where necessary.
             """, skill.getCourse().getTitle(), skill.getSkillName(), mastery.getMasteryLevel(), latestChatHistory.getContent());
 
-//        String answer = aiService.chat(prompt);
         String answer = openAIService.prompt(userId, courseId, prompt);
         chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT);
         return new GPTResponse(answer, Status.COMPLETED);
@@ -175,7 +174,6 @@ public class LearningService {
             """, masteryService.getMasteryByUserIdAndSkillId(userId, skillId).getMasteryLevel(),
                 skill.getSkillName(), skill.getCourse().getTitle(), question, unrelatedAnswer);
 
-//        String answer = aiService.chat(prompt);
         String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
         if (!answer.equals(unrelatedAnswer)) {
             // Save to chat history only if the question is related to the lesson

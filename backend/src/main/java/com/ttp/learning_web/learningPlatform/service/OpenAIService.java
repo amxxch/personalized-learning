@@ -53,7 +53,6 @@ public class OpenAIService {
         }
 
         chatMessages.add(new ChatRequestUserMessage(userMessage));
-        historyService.addGPTChatHistory(userId, courseId, Sender.USER, userMessage);
 
         ChatCompletions chatCompletions = client.getChatCompletions(
                 deploymentOrModelId,
@@ -63,6 +62,7 @@ public class OpenAIService {
         ChatChoice choice = chatCompletions.getChoices().getFirst();
         String assistantReply = choice.getMessage().getContent();
         chatMessages.add(new ChatRequestAssistantMessage(assistantReply));
+        historyService.addGPTChatHistory(userId, courseId, Sender.USER, userMessage);
         historyService.addGPTChatHistory(userId, courseId, Sender.ASSISTANT, assistantReply);
 
         return assistantReply;

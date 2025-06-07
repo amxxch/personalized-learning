@@ -5,7 +5,7 @@ import com.ttp.learning_web.learningPlatform.enums.ChoiceLetter;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "quiz_choices")
+@Table(name = "quiz_choice")
 public class QuizChoice {
 
     @Id

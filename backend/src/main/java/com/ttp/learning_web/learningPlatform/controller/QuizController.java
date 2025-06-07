@@ -24,9 +24,10 @@ public class QuizController {
     @GetMapping("/next-quiz-question")
     public ResponseEntity<QuizQuestionDTO> nextQuizQuestion(
             @RequestParam Long userId,
-            @RequestParam Long skillId
+            @RequestParam Long skillId,
+            @RequestParam int questionNum
     ) {
-        return ResponseEntity.ok(quizService.handleNextQuestion(userId, skillId));
+        return ResponseEntity.ok(quizService.handleNextQuestion(userId, skillId, questionNum));
     }
 
     @GetMapping("/submit-answer")

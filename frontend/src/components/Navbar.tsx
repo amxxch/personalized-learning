@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 const NavBar = () => {
     const { pathname } = useLocation();
-    const disabledHref = pathname.includes('/chatt');
+    const disabledHref = pathname.includes('/chat');
 
     useEffect(() => {
         console.log("Current path:", pathname);

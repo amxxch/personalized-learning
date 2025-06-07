@@ -22,7 +22,6 @@ public class QuizService {
     private final UserService userService;
     private final SkillService skillService;
     private final ProgressService progressService;
-    private final AiService aiService;
     private final OpenAIService openAIService;
 
 
@@ -34,7 +33,6 @@ public class QuizService {
                        UserService userService,
                        SkillService skillService,
                        ProgressService progressService,
-                       AiService aiService,
                        OpenAIService openAIService) {
         this.quizQuestionService = quizQuestionService;
         this.quizChoiceService = quizChoiceService;
@@ -44,11 +42,10 @@ public class QuizService {
         this.userService = userService;
         this.skillService = skillService;
         this.progressService = progressService;
-        this.aiService = aiService;
         this.openAIService = openAIService;
     }
 
-    public QuizQuestionDTO handleNextQuestion(Long userId, Long skillId) {
+    public QuizQuestionDTO handleNextQuestion(Long userId, Long skillId, int questionNum) {
         User user = userService.getUserByUserId(userId);
         Skill skill = skillService.getSkillBySkillId(skillId);
         Mastery mastery = masteryService.getMasteryByUserIdAndSkillId(userId, skillId);
@@ -71,7 +68,18 @@ public class QuizService {
                 quizChoiceDTOList.add(quizChoiceDTO);
             }
 
-            String questionBubble = question.getQuestion() + "\n\n\n\n" + choiceStr;
+            String questionBubble = "**Quiz** **Question** **#** **" + (questionNum) + "**\n\n" +
+                    question.getQuestion() + "\n\n\n\n" + choiceStr;
+
+            if (questionNum == 1) {
+                chatHistoryService.addCustomizedMsgHistory(
+                        user,
+                        skill,
+                        "**Quiz** **Time!** **Let's** **answer** **the** **following** **question**",
+                        Sender.ASSISTANT,
+                        ContentType.TEXT
+                );
+            }
 
             chatHistoryService.addCustomizedMsgHistory(
                     user,
@@ -175,7 +183,7 @@ public class QuizService {
                 skill,
                 solution,
                 Sender.ASSISTANT,
-                ContentType.QUIZ
+                ContentType.GPT
         );
 
         return solution;
@@ -230,11 +238,11 @@ public class QuizService {
         String introMsg = String.format("""
                 **Congratulations! You have completed the quiz for this chapter** 🎉 Here are the results:\n\n
                 You answered **%d** out of **%d** questions correctly.\n\n
-                Your current mastery level for this chapter is **%.2f/1**.\n\n
+                Your current mastery level for this chapter is **%.2f/1.00**.\n\n
                 """, numOfCorrectQuiz, numOfQuiz, avgMasteryLevel);
 
         String evalMsg = introMsg + answer;
-        chatHistoryService.addCustomizedMsgHistory(user, skill, evalMsg, Sender.ASSISTANT, ContentType.QUIZ);
+        chatHistoryService.addCustomizedMsgHistory(user, skill, evalMsg, Sender.ASSISTANT, ContentType.GPT);
 
         return evalMsg;
 
