@@ -7,11 +7,13 @@ import com.ttp.learning_web.learningPlatform.dto.QuizChoiceDTO;
 import com.ttp.learning_web.learningPlatform.dto.QuizQuestionDTO;
 import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.*;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class QuizService {
 
     private final QuizQuestionService quizQuestionService;
@@ -23,27 +25,6 @@ public class QuizService {
     private final SkillService skillService;
     private final ProgressService progressService;
     private final OpenAIService openAIService;
-
-
-    public QuizService(QuizQuestionService quizQuestionService,
-                       QuizChoiceService quizChoiceService,
-                       QuizResultService quizResultService,
-                       MasteryService masteryService,
-                       ChatHistoryService chatHistoryService,
-                       UserService userService,
-                       SkillService skillService,
-                       ProgressService progressService,
-                       OpenAIService openAIService) {
-        this.quizQuestionService = quizQuestionService;
-        this.quizChoiceService = quizChoiceService;
-        this.quizResultService = quizResultService;
-        this.masteryService = masteryService;
-        this.chatHistoryService = chatHistoryService;
-        this.userService = userService;
-        this.skillService = skillService;
-        this.progressService = progressService;
-        this.openAIService = openAIService;
-    }
 
     public QuizQuestionDTO handleNextQuestion(Long userId, Long skillId, int questionNum) {
         User user = userService.getUserByUserId(userId);

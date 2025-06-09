@@ -1,30 +1,76 @@
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import axios from 'axios';
 import CourseChatPage from './pages/CourseChatPage';
-import Layout from './Layout';
 import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignUpPage';
+import { useAuth } from './context/AuthContext';
+import RouteWithLayout from './components/RouteWithLayout';
+import ProfileSetupPage from './pages/ProfileSetupPage';
 
 function App() {
+
+  const { setUserId, setUserToken } = useAuth();
+
+  axios.interceptors.response.use(
+    response => response,
+    error => {
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        setUserToken('');
+        setUserId(0);
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
+          window.location.href = "/login";
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <HomePage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/courses/:courseTitle/chat"
-          element={
-            <Layout>
-              <CourseChatPage />
-            </Layout>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <HomePage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/courses/:courseTitle/chat"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <CourseChatPage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <RouteWithLayout>
+            <LoginPage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <RouteWithLayout>
+            <SignupPage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/profile-setup"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <ProfileSetupPage />
+          </RouteWithLayout>
+        }
+      />
+    </Routes>
   );
 }
 

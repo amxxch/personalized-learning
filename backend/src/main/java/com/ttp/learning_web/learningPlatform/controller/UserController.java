@@ -1,11 +1,14 @@
 package com.ttp.learning_web.learningPlatform.controller;
 
+import com.ttp.learning_web.learningPlatform.dto.CurrentUserResponse;
 import com.ttp.learning_web.learningPlatform.entity.User;
 import com.ttp.learning_web.learningPlatform.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,25 +21,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public List<User> getUsers() {
-        return userService.getAllUsers();
-    }
+    @GetMapping("/me")
+    public ResponseEntity<CurrentUserResponse> getCurrentUser(Authentication authentication) {
+        String email = authentication.getName();
 
-    @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        User newUser = userService.addUser(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
-    }
-
-    @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
-        User updatedUser = userService.updateUser(user);
-
-        if (updatedUser == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        CurrentUserResponse currentUserResponse = userService.getCurrentUser(email);
+        return new ResponseEntity<>(currentUserResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")

@@ -2,23 +2,20 @@ import { Link } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import { FaUser } from "react-icons/fa";
 import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const NavBar = () => {
     const { pathname } = useLocation();
     const disabledHref = pathname.includes('/chat');
-
-    useEffect(() => {
-        console.log("Current path:", pathname);
-        console.log("Disabled href:", disabledHref);
-    });
+    const { logout } = useAuth();
 
     return (
         <div className="navbar bg-base-300 shadow-sm">
             <div className="flex-1">
                 {disabledHref ? (
-                    <span className="btn btn-ghost text-xl">LearningBot</span>
+                    <span className="btn btn-ghost text-xl font-mono">LearningBot</span>
                 ) : (
-                    <Link to="/" className="btn btn-ghost text-xl">LearningBot</Link>
+                    <Link to="/" className="btn btn-ghost text-xl font-mono">LearningBot</Link>
                 )}
             </div>
             <div className="flex-none">
@@ -31,7 +28,8 @@ const NavBar = () => {
                         className="menu menu-sm dropdown-content bg-base-100 rounded-box text-center text-xl z-1 mt-3 w-32 p-2 shadow">
                         <li><Link to="/">Profile</Link></li>
                         <li><Link to="/">Progress</Link></li>
-                        <li><Link to="/">Logout</Link></li>
+                        <li><Link to="/" onClick={(e) => { e.preventDefault(); logout(); }}>Logout</Link></li>
+                        
                     </ul>
                 </div>
             </div>

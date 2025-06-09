@@ -2,6 +2,7 @@ package com.ttp.learning_web.learningPlatform.service;
 
 import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.repository.QuizResultRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,24 +10,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class QuizResultService {
     private final QuizResultRepository quizResultRepository;
     private final QuizQuestionService quizQuestionService;
     private final SkillService skillService;
     private final UserService userService;
     private final QuizChoiceService quizChoiceService;
-
-    public QuizResultService(QuizResultRepository quizResultRepository,
-                             QuizQuestionService quizQuestionService,
-                             SkillService skillService,
-                             UserService userService,
-                             QuizChoiceService quizChoiceService) {
-        this.quizResultRepository = quizResultRepository;
-        this.quizQuestionService = quizQuestionService;
-        this.skillService = skillService;
-        this.userService = userService;
-        this.quizChoiceService = quizChoiceService;
-    }
 
     public List<QuizResult> getQuizResultsBySkillIdAndUserId(Long skillId, Long userId) {
         User user = userService.getUserByUserId(userId);

@@ -9,6 +9,7 @@ import com.ttp.learning_web.learningPlatform.enums.ContentType;
 import com.ttp.learning_web.learningPlatform.enums.Sender;
 import com.ttp.learning_web.learningPlatform.repository.ChatHistoryRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,14 +20,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class ChatHistoryService {
 
     private final ChatHistoryRepository chatHistoryRepository;
-
-    @Autowired
-    public ChatHistoryService(ChatHistoryRepository chatHistoryRepository) {
-        this.chatHistoryRepository = chatHistoryRepository;
-    }
 
     public List<ChatHistory> getAllChatHistory() {
         return chatHistoryRepository.findAll();

@@ -10,8 +10,9 @@ import { IoReloadOutline } from "react-icons/io5";
 import { MdLogout } from "react-icons/md";
 import { MdQuestionMark } from "react-icons/md";
 
-import { Message, QuizChoice } from '../dto/response';
+import { Message } from '../dto/response';
 import QuizTimeAnim from './QuizTimeAnim';
+import { useAuth } from '../context/AuthContext';
 
 
 interface ChatBubbleProps {
@@ -37,7 +38,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
   const [input, setInput] = useState('');
   const [datetime, setDatetime] = useState(new Date().toLocaleString());
 
-  const [userId] = useState(1);
+  const { userId, userToken } = useAuth();
   const [courseId] = useState(1);
   const [skillId, setSkillId] = useState(initialSkillId);
   const [bubbleId, setBubbleId] = useState(initialBubbleId);
@@ -74,6 +75,9 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         // send API request
 
         const response = await axios.get('http://localhost:8080/api/v1/learning/next-bubble', {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          },
           params: {
             userId: userId,
             courseId: courseId,
@@ -143,6 +147,9 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
 
         // send API request to rephrase the lesson
         const response = await axios.get('http://localhost:8080/api/v1/learning/rephrase', {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          },
           params: {
             userId: userId,
             courseId: courseId
@@ -167,7 +174,11 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
         window.location.href = '/';
       } else if (option === 'restart') {
         try {
-          const response = await axios.delete('http://localhost:8080/api/v1/learning');
+          const response = await axios.delete('http://localhost:8080/api/v1/learning', {
+            headers: {
+              Authorization: `Bearer ${userToken}`
+            },
+          });
 
           setMessages([]);
           setSkillId(1);
@@ -223,6 +234,9 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
 
       try {
         const response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          },
           params: {
             userId: userId,
             skillId: skillId,
@@ -260,6 +274,9 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
 
     try {
       const response = await axios.get('http://localhost:8080/api/v1/quiz/next-quiz-question', {
+        headers: {
+          Authorization: `Bearer ${userToken}`
+        },
         params: {
           userId: userId,
           skillId: skillId,
@@ -317,6 +334,9 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
 
     try {
       const response = await axios.get('http://localhost:8080/api/v1/quiz/evaluate', {
+        headers: {
+          Authorization: `Bearer ${userToken}`
+        },
         params: {
           userId: userId,
           skillId: skillId,
@@ -367,6 +387,9 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
     try {
       setLoading(true);
       const response = await axios.get('http://localhost:8080/api/v1/quiz/submit-answer', {
+        headers: {
+          Authorization: `Bearer ${userToken}`
+        },
         params: {
           userId: userId,
           questionId: quizId,

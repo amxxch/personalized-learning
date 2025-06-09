@@ -3,6 +3,7 @@ package com.ttp.learning_web.learningPlatform.service;
 import com.ttp.learning_web.learningPlatform.entity.Course;
 import com.ttp.learning_web.learningPlatform.repository.CourseRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,13 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@AllArgsConstructor
 public class CourseService {
     private final CourseRepository courseRepository;
-
-    @Autowired
-    public CourseService(CourseRepository courseRepository) {
-        this.courseRepository = courseRepository;
-    }
 
     public List<Course> getAllCourses() {
         return courseRepository.findAll();

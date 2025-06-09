@@ -4,6 +4,7 @@ import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.Difficulty;
 import com.ttp.learning_web.learningPlatform.repository.MasteryRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,20 +15,12 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 @Component
+@AllArgsConstructor
 public class MasteryService {
 
     private final MasteryRepository masteryRepository;
     private final UserService userService;
     private final SkillService skillService;
-
-    @Autowired
-    public MasteryService(MasteryRepository masteryRepository,
-                          UserService userService,
-                          SkillService skillService) {
-        this.masteryRepository = masteryRepository;
-        this.userService = userService;
-        this.skillService = skillService;
-    }
 
     public List<Mastery> getAllMastery() {
         return masteryRepository.findAll();

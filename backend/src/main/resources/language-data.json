@@ -1,0 +1,16 @@
+[
+  { "languageName": "Python" },
+  { "languageName": "Java" },
+  { "languageName": "C++" },
+  { "languageName": "JavaScript" },
+  { "languageName": "TypeScript" },
+  { "languageName": "SQL" },
+  { "languageName": "PHP" },
+  { "languageName": "HTML" },
+  { "languageName": "CSS" },
+  { "languageName": "Go" },
+  { "languageName": "Ruby" },
+  { "languageName": "Rust" },
+  { "languageName": "Swift" },
+  { "languageName": "Kotlin" }
+]

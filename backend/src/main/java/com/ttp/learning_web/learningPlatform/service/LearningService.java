@@ -5,11 +5,13 @@ import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.ContentType;
 import com.ttp.learning_web.learningPlatform.enums.Sender;
 import com.ttp.learning_web.learningPlatform.enums.Status;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class LearningService {
 
     private final UserService userService;
@@ -22,28 +24,6 @@ public class LearningService {
     private final QuizResultService quizResultService;
     private final GPTChatHistoryService gptChatHistoryService;
     private final OpenAIService openAIService;
-
-    public LearningService(UserService userService,
-                           CourseService courseService,
-                           SkillService skillService,
-                           ProgressService progressService,
-                           LessonBubbleService lessonBubbleService,
-                           MasteryService masteryService,
-                           ChatHistoryService chatHistoryService,
-                           QuizResultService quizResultService,
-                           GPTChatHistoryService gptChatHistoryService,
-                           OpenAIService openAIService) {
-        this.userService = userService;
-        this.courseService = courseService;
-        this.skillService = skillService;
-        this.progressService = progressService;
-        this.lessonBubbleService = lessonBubbleService;
-        this.masteryService = masteryService;
-        this.chatHistoryService = chatHistoryService;
-        this.quizResultService = quizResultService;
-        this.gptChatHistoryService = gptChatHistoryService;
-        this.openAIService = openAIService;
-    }
 
     public NextBubbleResponse handleNextBubble(Long userId,
                                                Long courseId,

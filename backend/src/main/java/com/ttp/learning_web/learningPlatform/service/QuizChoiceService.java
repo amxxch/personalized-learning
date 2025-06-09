@@ -5,15 +5,13 @@ import com.ttp.learning_web.learningPlatform.entity.QuizQuestion;
 import com.ttp.learning_web.learningPlatform.entity.Skill;
 import com.ttp.learning_web.learningPlatform.enums.ChoiceLetter;
 import com.ttp.learning_web.learningPlatform.repository.QuizChoiceRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class QuizChoiceService {
     private final QuizChoiceRepository quizChoiceRepository;
-
-    public QuizChoiceService(QuizChoiceRepository quizChoiceRepository) {
-        this.quizChoiceRepository = quizChoiceRepository;
-    }
 
     public QuizChoice getChoiceByChoiceId(Long choiceId) {
         return quizChoiceRepository.findById(choiceId)

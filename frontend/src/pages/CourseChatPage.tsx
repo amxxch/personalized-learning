@@ -4,9 +4,10 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import ChatBubble from '../components/ChatBubble';
 import { Message } from '../dto/response';
+import { useAuth } from '../context/AuthContext';
 
 const CourseChatPage = () => {
-  const [userId] = useState(1);
+  const { userId, userToken } = useAuth();
   const [courseId] = useState(1);
   const [skillId, setSkillId] = useState(1);
   const [bubbleId, setBubbleId] = useState(1);
@@ -20,6 +21,9 @@ const CourseChatPage = () => {
       try {
         setLoading(true);
         const response = await axios.get('http://localhost:8080/api/v1/chat-history/by-course', {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          },
           params: {
             userId: userId,
             courseId: courseId

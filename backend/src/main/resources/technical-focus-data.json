@@ -1,0 +1,12 @@
+[
+  { "techFocusName": "Web Development" },
+  { "techFocusName": "Machine Learning" },
+  { "techFocusName": "Data Science" },
+  { "techFocusName": "Mobile Development" },
+  { "techFocusName": "Game Development" },
+  { "techFocusName": "Cybersecurity" },
+  { "techFocusName": "Cloud Computing" },
+  { "techFocusName": "Embedded Systems" },
+  { "techFocusName": "DevOps" },
+  { "techFocusName": "Computer Vision" }
+]

@@ -40,7 +40,7 @@ mvn spring-boot:run
 The backend should now be running at `http://localhost:8080`
 
 ### Start Frontend Website
-1. Install dependencies and start the server
+Install dependencies and start the server
 ```bash
 cd frontend
 npm install

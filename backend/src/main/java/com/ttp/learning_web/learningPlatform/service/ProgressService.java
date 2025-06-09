@@ -3,6 +3,7 @@ package com.ttp.learning_web.learningPlatform.service;
 import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.repository.ProgressRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@AllArgsConstructor
 public class ProgressService {
 
     private final ProgressRepository progressRepository;
@@ -17,19 +19,6 @@ public class ProgressService {
     private final CourseService courseService;
     private final SkillService skillService;
     private final LessonBubbleService lessonBubbleService;
-
-    @Autowired
-    public ProgressService(ProgressRepository progressRepository,
-                           UserService userService,
-                           CourseService courseService,
-                           SkillService skillService,
-                           LessonBubbleService lessonBubbleService) {
-        this.progressRepository = progressRepository;
-        this.userService = userService;
-        this.courseService = courseService;
-        this.skillService = skillService;
-        this.lessonBubbleService = lessonBubbleService;
-    }
 
     public List<Progress> getAllProgresses() {
         return progressRepository.findAll();
