@@ -7,6 +7,8 @@ import SignupPage from './pages/SignUpPage';
 import { useAuth } from './context/AuthContext';
 import RouteWithLayout from './components/RouteWithLayout';
 import ProfileSetupPage from './pages/ProfileSetupPage';
+import WelcomePage from './pages/WelcomePage';
+import UserProfilePage from './pages/UserProfilePage';
 
 function App() {
 
@@ -39,7 +41,7 @@ function App() {
         }
       />
       <Route
-        path="/courses/:courseTitle/chat"
+        path="/courses/:courseId/chat"
         element={
           <RouteWithLayout isPrivate={true}>
             <CourseChatPage />
@@ -70,6 +72,23 @@ function App() {
           </RouteWithLayout>
         }
       />
+      <Route
+        path="/welcome"
+        element={
+          <RouteWithLayout>
+            <WelcomePage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <UserProfilePage />
+          </RouteWithLayout>
+        }
+      />
+
     </Routes>
   );
 }

@@ -19,10 +19,11 @@ interface ChatBubbleProps {
     initialMessages: Message[];
     initialSkillId?: number;
     initialBubbleId?: number;
+    courseId: number;
 }
 
 
-const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 } : ChatBubbleProps) => {
+const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1, courseId } : ChatBubbleProps) => {
 
   const maxQuizQuestion = 5;
 
@@ -39,7 +40,6 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
   const [datetime, setDatetime] = useState(new Date().toLocaleString());
 
   const { userId, userToken } = useAuth();
-  const [courseId] = useState(1);
   const [skillId, setSkillId] = useState(initialSkillId);
   const [bubbleId, setBubbleId] = useState(initialBubbleId);
   const [quizId, setQuizId] = useState(1);
@@ -61,6 +61,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1 }
   useEffect(() => {
     console.log('Skill ID:', skillId);
     console.log('Bubble ID:', bubbleId);
+    console.log('Course ID:', courseId);
   }, [skillId, bubbleId]);
 
   useEffect(() => {

@@ -21,6 +21,8 @@
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.6.0",
     "react-scripts": "5.0.1",
+    "react-spinner": "^0.2.7",
+    "react-spinners": "^0.17.0",
     "react-syntax-highlighter": "^15.6.1",
     "typescript": "^4.9.5",
     "typewriter-effect": "^2.22.0",

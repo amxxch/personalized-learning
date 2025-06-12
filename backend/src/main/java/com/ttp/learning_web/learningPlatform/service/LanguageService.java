@@ -23,4 +23,8 @@ public class LanguageService {
     public void addAllLanguages(List<Language> languages) {
         languageRepository.saveAll(languages);
     }
+
+    public String getLanguageStringByUserId(Long userId) {
+        return "ok";
+    }
 }

@@ -2,6 +2,9 @@ package com.ttp.learning_web.learningPlatform.entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "technical_focus")
 public class TechnicalFocus {
@@ -13,6 +16,9 @@ public class TechnicalFocus {
 
     @Column(name = "tech_focus_name")
     private String techFocusName;
+
+    @ManyToMany(mappedBy = "technicalFocuses")
+    private Set<Course> courses = new HashSet<>();
 
     public TechnicalFocus() {
     }

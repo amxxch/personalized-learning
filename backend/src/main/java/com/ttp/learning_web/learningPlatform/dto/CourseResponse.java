@@ -1,17 +1,22 @@
 package com.ttp.learning_web.learningPlatform.dto;
 
-import com.ttp.learning_web.learningPlatform.entity.Language;
-import com.ttp.learning_web.learningPlatform.entity.TechnicalFocus;
-
 import java.util.List;
 
-public class CourseDTO {
+public class CourseResponse {
+    private Long courseId;
     private String title;
     private String description;
-    private List<SkillDTO> skills;
     private List<String> language;
-    private List<String> technicalFocuses;
+    private List<String> techFocus;
     private String level;
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
+    }
 
     public String getTitle() {
         return title;
@@ -19,14 +24,6 @@ public class CourseDTO {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public List<SkillDTO> getSkills() {
-        return skills;
-    }
-
-    public void setSkills(List<SkillDTO> skills) {
-        this.skills = skills;
     }
 
     public String getDescription() {
@@ -45,12 +42,12 @@ public class CourseDTO {
         this.language = language;
     }
 
-    public List<String> getTechnicalFocuses() {
-        return technicalFocuses;
+    public List<String> getTechFocus() {
+        return techFocus;
     }
 
-    public void setTechnicalFocuses(List<String> technicalFocuses) {
-        this.technicalFocuses = technicalFocuses;
+    public void setTechFocus(List<String> techFocus) {
+        this.techFocus = techFocus;
     }
 
     public String getLevel() {

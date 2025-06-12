@@ -10,7 +10,7 @@ module.exports = {
   },
   plugins: [require('daisyui')],
   daisyui: {
-    themes: ["winter", "cupcake", "bumblebee", "pastel", "nord", "valentine"],
+    themes: ["winter", "cupcake", "bumblebee", "pastel", "nord", "valentine", "halloween"],
   },
 }
 

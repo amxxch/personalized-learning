@@ -1,0 +1,250 @@
+[
+  {
+    "title": "C++ Programming Fundamentals",
+    "description": "Learn the fundamentals of C++ programming including syntax, object-oriented concepts, and memory management to build efficient applications in game development, embedded systems, and more.",
+    "language": ["C++"],
+    "technicalFocuses": ["Game Development", "Embedded Systems", "Computer Vision", "Cybersecurity"],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Python Programming Fundamentals",
+    "description": "Start programming with Python by mastering basic syntax, data types, control flow, functions, and modules for versatile applications from web to data science.",
+    "language": ["Python"],
+    "technicalFocuses": ["Data Science", "Machine Learning", "Web Development", "DevOps"],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Web Development with JavaScript",
+    "description": "Build interactive websites by learning JavaScript essentials, DOM manipulation, event handling, and asynchronous programming.",
+    "language": ["JavaScript"],
+    "technicalFocuses": ["Web Development"],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Advanced JavaScript Frameworks (React, Angular, Vue)",
+    "description": "Deep dive into popular JavaScript frameworks to create scalable, maintainable, and modern front-end web applications.",
+    "language": ["JavaScript", "TypeScript"],
+    "technicalFocuses": ["Web Development"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Mobile App Development with Kotlin",
+    "description": "Learn to develop Android apps using Kotlin, covering UI design, lifecycle management, and integration with device features.",
+    "language": ["Kotlin"],
+    "technicalFocuses": ["Mobile Development"],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "iOS Development with Swift",
+    "description": "Build native iOS applications using Swift, exploring Swift syntax, UIKit, and Apple’s development tools.",
+    "language": ["Swift"],
+    "technicalFocuses": ["Mobile Development"],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Data Science with Python and Pandas",
+    "description": "Explore data manipulation, cleaning, and analysis techniques using Python’s Pandas library to uncover insights from datasets.",
+    "language": ["Python"],
+    "technicalFocuses": ["Data Science"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Machine Learning with Python and Scikit-Learn",
+    "description": "Understand core machine learning algorithms and their implementation using Python’s Scikit-Learn for predictive modeling.",
+    "language": ["Python"],
+    "technicalFocuses": ["Machine Learning"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Deep Learning and Neural Networks",
+    "description": "Master deep learning fundamentals and build neural networks with TensorFlow and PyTorch for advanced AI applications.",
+    "language": ["Python"],
+    "technicalFocuses": ["Machine Learning", "Computer Vision"],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Cloud Fundamentals with AWS/Azure/GCP",
+    "description": "Get introduced to cloud computing concepts, services, and deployment models across leading cloud platforms.",
+    "language": [],
+    "technicalFocuses": ["Cloud Computing"],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Cloud Architecture and Deployment",
+    "description": "Learn to design and deploy scalable cloud infrastructures using Infrastructure as Code and automation tools.",
+    "language": ["Bash", "Python", "YAML"],
+    "technicalFocuses": ["Cloud Computing", "DevOps"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Cybersecurity Fundamentals",
+    "description": "Gain foundational knowledge of cybersecurity principles, threats, and protective measures to safeguard systems.",
+    "language": ["Python", "Bash"],
+    "technicalFocuses": ["Cybersecurity"],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Secure Programming and Ethical Hacking",
+    "description": "Learn secure coding practices and ethical hacking techniques to identify and fix vulnerabilities in software.",
+    "language": ["C", "C++", "Python", "Assembly"],
+    "technicalFocuses": ["Cybersecurity"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Embedded Systems Programming with C and C++",
+    "description": "Program microcontrollers and embedded devices using C and C++ to build real-time, resource-constrained applications.",
+    "language": ["C", "C++"],
+    "technicalFocuses": ["Embedded Systems"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Computer Vision with OpenCV and C++/Python",
+    "description": "Apply computer vision techniques like image processing, object detection, and tracking using OpenCV libraries.",
+    "language": ["C++", "Python"],
+    "technicalFocuses": ["Computer Vision"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Game Development with Unity and C#",
+    "description": "Create 2D and 3D games using Unity engine and C#, covering game mechanics, physics, and UI design.",
+    "language": ["C#"],
+    "technicalFocuses": ["Game Development"],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Advanced Game Engine Programming with C++",
+    "description": "Develop high-performance game engines and systems with advanced C++ programming concepts.",
+    "language": ["C++"],
+    "technicalFocuses": ["Game Development"],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Rust Programming for Systems and Safety-Critical Applications",
+    "description": "Learn Rust to build safe and efficient systems software with modern memory safety guarantees.",
+    "language": ["Rust"],
+    "technicalFocuses": ["Embedded Systems", "Cybersecurity"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Android Game Development with Java and OpenGL",
+    "description": "Develop visually rich Android games using Java and OpenGL for graphics rendering.",
+    "language": ["Java"],
+    "technicalFocuses": ["Mobile Development", "Game Development"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Backend Development with Node.js and Express",
+    "description": "Build scalable server-side applications and RESTful APIs using Node.js and Express framework.",
+    "language": ["JavaScript"],
+    "technicalFocuses": ["Web Development", "Cloud Computing"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Microservices Architecture and Development",
+    "description": "Design and implement microservices-based applications using Java, Go, or Python for modular, scalable systems.",
+    "language": ["Java", "Go", "Python"],
+    "technicalFocuses": ["Cloud Computing", "DevOps"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Go Programming for Scalable Cloud Services",
+    "description": "Learn Go language fundamentals and build fast, concurrent cloud-native applications.",
+    "language": ["Go"],
+    "technicalFocuses": ["Cloud Computing", "DevOps"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Network Programming and Protocols in C",
+    "description": "Understand network protocols and develop socket-based network applications using C.",
+    "language": ["C"],
+    "technicalFocuses": ["Cybersecurity", "Embedded Systems"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "AI for Computer Vision: Object Detection and Segmentation",
+    "description": "Implement advanced AI techniques for object detection and segmentation tasks in images and videos.",
+    "language": ["Python"],
+    "technicalFocuses": ["Computer Vision", "Machine Learning"],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Automation Scripting with Python and Bash",
+    "description": "Automate routine tasks and system administration with scripting in Python and Bash.",
+    "language": ["Python", "Bash"],
+    "technicalFocuses": ["Cybersecurity", "DevOps", "Cloud Computing"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "HTML Fundamentals",
+    "description": "Learn the building blocks of the web by mastering HTML syntax, elements, and page structure to create well-formed web pages.",
+    "language": ["HTML"],
+    "technicalFocuses": ["Web Development"],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "CSS Fundamentals",
+    "description": "Understand how to style and layout web pages using CSS, including selectors, box model, flexbox, and responsive design techniques.",
+    "language": ["CSS"],
+    "technicalFocuses": ["Web Development"],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Advanced CSS and Responsive Design",
+    "description": "Explore advanced CSS features such as animations, transitions, grid layout, and build responsive websites that work across devices.",
+    "language": ["CSS"],
+    "technicalFocuses": ["Web Development"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "PHP Programming Fundamentals",
+    "description": "Learn the basics of PHP scripting for server-side web development including syntax, variables, control structures, and form handling.",
+    "language": ["PHP"],
+    "technicalFocuses": ["Web Development"],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Building Dynamic Websites with PHP and MySQL",
+    "description": "Develop dynamic, database-driven websites by integrating PHP with MySQL for data storage, retrieval, and user interaction.",
+    "language": ["PHP", "SQL"],
+    "technicalFocuses": ["Web Development"],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Modern PHP Frameworks: Laravel",
+    "description": "Master PHP development using the Laravel framework to build robust, scalable, and maintainable web applications.",
+    "language": ["PHP"],
+    "technicalFocuses": ["Web Development"],
+    "level": "ADVANCED",
+    "skills": []
+  }
+]

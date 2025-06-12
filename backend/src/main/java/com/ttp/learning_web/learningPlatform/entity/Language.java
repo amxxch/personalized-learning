@@ -2,6 +2,9 @@ package com.ttp.learning_web.learningPlatform.entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "languages")
 public class Language {
@@ -13,6 +16,9 @@ public class Language {
 
     @Column(name = "language_name")
     private String languageName;
+
+    @ManyToMany(mappedBy = "languages")
+    private Set<Course> courses = new HashSet<>();
 
     public Language() {
     }
@@ -36,5 +42,13 @@ public class Language {
 
     public void setLanguageName(String name) {
         this.languageName = name;
+    }
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
     }
 }

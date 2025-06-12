@@ -1,6 +1,5 @@
 {
-    "title": "Introduction to C++ Programming",
-    "description": "This course introduces students to the C++ programming language, teaching them the fundamentals of computer science using CS50-inspired lessons adapted for C++.",
+    "title": "C++ Programming Fundamentals",
     "skills": [
       {
         "skillName": "C++ Basics and Syntax",

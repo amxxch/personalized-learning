@@ -20,9 +20,8 @@ public class CourseController {
     }
 
     @GetMapping
-    public List<Course> getCourses() {
-        return courseService.getAllCourses();
-//        return "get course";
+    public ResponseEntity<?> getCourses() {
+        return ResponseEntity.ok(courseService.getAllCourses());
     }
 
     @PostMapping

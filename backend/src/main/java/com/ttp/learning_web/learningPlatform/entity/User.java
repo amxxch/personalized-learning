@@ -46,22 +46,15 @@ public class User {
     private Date createdAt = new Date();
 
     @ManyToMany
-    @JoinTable(
-            name = "user_preferred_language",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "language_id")
-    )
-    private Set<Language> preferredLanguages = new HashSet<>();
+    @JoinTable(name = "user_known_language", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "language_id"))
+    private Set<Language> knownLanguages = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(
-            name = "user_technical_focus",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "focus_id")
-    )
+    @JoinTable(name = "user_technical_focus", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "tech_focus_id"))
     private Set<TechnicalFocus> technicalFocuses = new HashSet<>();
 
-    public User() {}
+    public User() {
+    }
 
     public User(String email, String password, String name) {
         this.name = name;
@@ -149,12 +142,12 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public Set<Language> getPreferredLanguages() {
-        return preferredLanguages;
+    public Set<Language> getKnownLanguages() {
+        return knownLanguages;
     }
 
-    public void setPreferredLanguages(Set<Language> preferredLanguages) {
-        this.preferredLanguages = preferredLanguages;
+    public void setKnownLanguages(Set<Language> knownLanguages) {
+        this.knownLanguages = knownLanguages;
     }
 
     public Set<TechnicalFocus> getTechnicalFocuses() {

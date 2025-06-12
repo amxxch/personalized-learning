@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ttp.learning_web.learningPlatform.dto.*;
 import com.ttp.learning_web.learningPlatform.entity.*;
+import com.ttp.learning_web.learningPlatform.enums.CourseLevel;
 import com.ttp.learning_web.learningPlatform.repository.LanguageRepository;
 import com.ttp.learning_web.learningPlatform.repository.TechnicalFocusRepository;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @AllArgsConstructor
@@ -34,30 +38,50 @@ public class DataLoader implements CommandLineRunner {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        File lessonJsonFile = new File("src/main/resources/lesson-data.json");
+        File cppJsonFile = new File("src/main/resources/cpp-lesson-data.json");
         File languageJsonFile = new File("src/main/resources/language-data.json");
         File techFocusJsonFile = new File("src/main/resources/technical-focus-data.json");
-
-        CourseDTO courseDTO = mapper.readValue(lessonJsonFile, CourseDTO.class);
+        File courseJsonFile = new File("src/main/resources/course-data-2.json");
 
         List<Language> languages = mapper.readValue(languageJsonFile, new TypeReference<List<Language>>() {});
         List<TechnicalFocus> techFocuses = mapper.readValue(techFocusJsonFile, new TypeReference<List<TechnicalFocus>>() {});
+        List<CourseDTO> courseDTO = mapper.readValue(courseJsonFile, new TypeReference<List<CourseDTO>>() {});
 
         languageService.addAllLanguages(languages);
         technicalFocusService.addAllTechnicalFocus(techFocuses);
 
         // Create and save Course
-        Course course = new Course();
-        course.setTitle(courseDTO.getTitle());
-        course.setDescription(courseDTO.getDescription());
-        course = courseService.addCourse(course);
+        for (CourseDTO c : courseDTO) {
+            Course course = new Course();
+            course.setTitle(c.getTitle());
+            course.setDescription(c.getDescription());
+            course.setLevel(CourseLevel.valueOf(c.getLevel()));
+
+            Set<Language> courseLanguages = new HashSet<>();
+            for (String languageName : c.getLanguage()) {
+                courseLanguages.add(languageService.getLanguageByName(languageName));
+            }
+            course.setLanguages(courseLanguages);
+
+            Set<TechnicalFocus> courseTechFocuses = new HashSet<>();
+            for (String techFocusName: c.getTechnicalFocuses()) {
+                courseTechFocuses.add(technicalFocusService.findTechnicalFocusByName(techFocusName));
+            }
+            course.setTechnicalFocuses(courseTechFocuses);
+
+            courseService.addCourse(course);
+        }
+
+        // Add lesson inside some courses
+        CourseDTO cppCourseDTO = mapper.readValue(cppJsonFile, CourseDTO.class);
+        Course cppCourse = courseService.getCoursesByCourseName(cppCourseDTO.getTitle()).get(0);
 
         // Create and save each skill in course
-        for (SkillDTO skillDTO : courseDTO.getSkills()) {
+        for (SkillDTO skillDTO : cppCourseDTO.getSkills()) {
             Skill skill = new Skill();
             skill.setSkillName(skillDTO.getSkillName());
             skill.setSkillOrder(skillDTO.getSkillOrder());
-            skill.setCourse(course);
+            skill.setCourse(cppCourse);
 
             skill = skillService.addSkill(skill);
 

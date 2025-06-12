@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.*;
 public class LearningController {
 
     private final LearningService learningService;
+    private final OpenAIService openAIService;
 
-    public LearningController(LearningService learningService) {
+    public LearningController(LearningService learningService, OpenAIService openAIService) {
         this.learningService = learningService;
+        this.openAIService = openAIService;
     }
 
     @GetMapping("/next-bubble")
@@ -45,5 +47,11 @@ public class LearningController {
     public ResponseEntity<String> reset() {
         learningService.handleDeleteAll();
         return ResponseEntity.ok("All progresses, mastery, chat history, gpt chat history, and quiz results are deleted.");
+    }
+
+    @PostMapping("gpt")
+    public ResponseEntity<?> gpt(@RequestBody String question) {
+        String ans = openAIService.learningPrompt(Long.parseLong("1"), Long.parseLong("1"), question);
+        return ResponseEntity.ok(ans);
     }
 }

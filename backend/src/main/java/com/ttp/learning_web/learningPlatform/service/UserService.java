@@ -3,6 +3,7 @@ package com.ttp.learning_web.learningPlatform.service;
 import com.ttp.learning_web.learningPlatform.dto.AuthResponse;
 import com.ttp.learning_web.learningPlatform.dto.CurrentUserResponse;
 import com.ttp.learning_web.learningPlatform.dto.ProfileSetupRequest;
+import com.ttp.learning_web.learningPlatform.dto.UserDTO;
 import com.ttp.learning_web.learningPlatform.entity.Language;
 import com.ttp.learning_web.learningPlatform.entity.TechnicalFocus;
 import com.ttp.learning_web.learningPlatform.entity.User;
@@ -27,9 +28,30 @@ public class UserService {
     private final TechnicalFocusService technicalFocusService;
 
     public User getUserByUserId(Long userId) {
-
         return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
+    }
+
+    public UserDTO getUserDTOByUserId(Long userId) {
+
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User Not Found"));
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserId(userId);
+        userDTO.setEmail(user.getEmail());
+        userDTO.setName(user.getName());
+        userDTO.setCareerGoal(user.getCareerGoal());
+        userDTO.setExperienceLevel(user.getExperienceLevel());
+        userDTO.setWeeklyLearningHours(user.getWeeklyLearningHours());
+        userDTO.setKnownLanguages(user.getKnownLanguages().stream()
+                .map(Language::getLanguageName)
+                .toList());
+        userDTO.setTechnicalFocuses(user.getTechnicalFocuses().stream()
+                .map(TechnicalFocus::getTechFocusName)
+                .toList());
+
+        return userDTO;
     }
 
     public User getUserByEmail(String email) {
@@ -46,8 +68,7 @@ public class UserService {
         return new CurrentUserResponse(
                 user.getUserId(),
                 user.getProfileSetup(),
-                user.getName()
-        );
+                user.getName());
     }
 
     public AuthResponse verifyLogin(String email, String password) {
@@ -80,7 +101,7 @@ public class UserService {
         Long userId = profileSetupRequest.getUserId();
         Optional<User> existingUser = userRepository.findByUserId(userId);
 
-        Set<Language> languages = profileSetupRequest.getPreferredLanguages().stream()
+        Set<Language> languages = profileSetupRequest.getKnownLanguages().stream()
                 .map(languageService::getLanguageByName)
                 .collect(Collectors.toSet());
 
@@ -93,7 +114,7 @@ public class UserService {
             user.setCareerGoal(profileSetupRequest.getCareerGoal());
             user.setWeeklyLearningHours(profileSetupRequest.getWeeklyLearningHours());
             user.setExperienceLevel(profileSetupRequest.getExperienceLevel());
-            user.setPreferredLanguages(languages);
+            user.setKnownLanguages(languages);
             user.setTechnicalFocuses(technicalFocuses);
             user.setProfileSetup(true);
 

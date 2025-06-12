@@ -206,7 +206,7 @@ public class QuizService {
                 resultSummary
         );
 
-        String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
+        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), prompt);
         progress.setQuizCompleted(true);
         progressService.updateProgress(progress);
 
@@ -256,7 +256,7 @@ public class QuizService {
                 mastery.getMasteryLevel()
         );
 
-        String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
+        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), prompt);
         int retries = 0;
         final int maxRetries = 5;
 
@@ -266,7 +266,7 @@ public class QuizService {
                     Please return only the updated mastery score as a number between 0.0 and 1.0. For example: 0.78.
                     Do not include any explanation, text, formatting, or additional symbols. Only return the number.
                     """;
-            answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), reGenPrompt);
+            answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), reGenPrompt);
             retries++;
         }
 
@@ -327,7 +327,7 @@ public class QuizService {
             """, masteryService.getMasteryByUserIdAndSkillId(userId, skillId).getMasteryLevel(),
                 skill.getSkillName(), skill.getCourse().getTitle(), question, lastQuiz, unrelatedAnswer);
 
-        String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
+        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), prompt);
         if (!answer.equals(unrelatedAnswer)) {
             // Save to chat history only if the question is related to the lesson
             chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.TEXT);

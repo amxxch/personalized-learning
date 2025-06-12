@@ -11,22 +11,23 @@ public class ProfileSetupRequest {
     private String careerGoal;
     private Integer weeklyLearningHours;
     private String experienceLevel;
-    private Set<String> preferredLanguages;
+    private Set<String> knownLanguages;
     private Set<String> technicalFocuses;
 
-    public ProfileSetupRequest() {}
+    public ProfileSetupRequest() {
+    }
 
     public ProfileSetupRequest(Long userId,
-                               String careerGoal,
-                               String experienceLevel,
-                               Integer weeklyLearningHours,
-                               Set<String> preferredLanguages,
-                               Set<String> technicalFocuses) {
+            String careerGoal,
+            String experienceLevel,
+            Integer weeklyLearningHours,
+            Set<String> knownLanguages,
+            Set<String> technicalFocuses) {
         this.userId = userId;
         this.careerGoal = careerGoal;
         this.experienceLevel = experienceLevel;
         this.weeklyLearningHours = weeklyLearningHours;
-        this.preferredLanguages = preferredLanguages;
+        this.knownLanguages = knownLanguages;
         this.technicalFocuses = technicalFocuses;
     }
 
@@ -62,12 +63,12 @@ public class ProfileSetupRequest {
         this.experienceLevel = experienceLevel;
     }
 
-    public Set<String> getPreferredLanguages() {
-        return preferredLanguages;
+    public Set<String> getKnownLanguages() {
+        return knownLanguages;
     }
 
-    public void setPreferredLanguages(Set<String> preferredLanguages) {
-        this.preferredLanguages = preferredLanguages;
+    public void setKnownLanguages(Set<String> knownLanguages) {
+        this.knownLanguages = knownLanguages;
     }
 
     public Set<String> getTechnicalFocuses() {
