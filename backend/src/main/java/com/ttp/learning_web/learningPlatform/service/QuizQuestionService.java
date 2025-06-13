@@ -3,23 +3,16 @@ package com.ttp.learning_web.learningPlatform.service;
 import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.Difficulty;
 import com.ttp.learning_web.learningPlatform.repository.QuizQuestionRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class QuizQuestionService {
     private final QuizQuestionRepository quizQuestionRepository;
     private final SkillService skillService;
-
-    public QuizQuestionService(QuizQuestionRepository quizQuestionRepository,
-                               SkillService skillService) {
-        this.quizQuestionRepository = quizQuestionRepository;
-        this.skillService = skillService;
-    }
 
     public QuizQuestion getQuizQuestionByQuestionId(Long questionId) {
         return quizQuestionRepository.findById(questionId)

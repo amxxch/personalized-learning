@@ -5,11 +5,13 @@ import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.ContentType;
 import com.ttp.learning_web.learningPlatform.enums.Sender;
 import com.ttp.learning_web.learningPlatform.enums.Status;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class LearningService {
 
     private final UserService userService;
@@ -22,28 +24,6 @@ public class LearningService {
     private final QuizResultService quizResultService;
     private final GPTChatHistoryService gptChatHistoryService;
     private final OpenAIService openAIService;
-
-    public LearningService(UserService userService,
-                           CourseService courseService,
-                           SkillService skillService,
-                           ProgressService progressService,
-                           LessonBubbleService lessonBubbleService,
-                           MasteryService masteryService,
-                           ChatHistoryService chatHistoryService,
-                           QuizResultService quizResultService,
-                           GPTChatHistoryService gptChatHistoryService,
-                           OpenAIService openAIService) {
-        this.userService = userService;
-        this.courseService = courseService;
-        this.skillService = skillService;
-        this.progressService = progressService;
-        this.lessonBubbleService = lessonBubbleService;
-        this.masteryService = masteryService;
-        this.chatHistoryService = chatHistoryService;
-        this.quizResultService = quizResultService;
-        this.gptChatHistoryService = gptChatHistoryService;
-        this.openAIService = openAIService;
-    }
 
     public NextBubbleResponse handleNextBubble(Long userId,
                                                Long courseId,
@@ -154,7 +134,7 @@ public class LearningService {
             Please rewrite or elaborate on this content to make it clearer and easier to understand for the student. Focus on clarity and conceptual breakdown, and feel free to restructure the explanation to aid understanding. Please provide examples where necessary.
             """, skill.getCourse().getTitle(), skill.getSkillName(), mastery.getMasteryLevel(), latestChatHistory.getContent());
 
-        String answer = openAIService.prompt(userId, courseId, prompt);
+        String answer = openAIService.learningPrompt(userId, courseId, prompt);
         chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT);
         return new GPTResponse(answer, Status.COMPLETED);
     }
@@ -174,7 +154,7 @@ public class LearningService {
             """, masteryService.getMasteryByUserIdAndSkillId(userId, skillId).getMasteryLevel(),
                 skill.getSkillName(), skill.getCourse().getTitle(), question, unrelatedAnswer);
 
-        String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
+        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), prompt);
         if (!answer.equals(unrelatedAnswer)) {
             // Save to chat history only if the question is related to the lesson
             chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.TEXT);

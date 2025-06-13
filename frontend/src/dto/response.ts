@@ -1,7 +1,10 @@
 export interface Course {
     courseId: number;
-    courseTitle: string;
+    title: string;
     description: string;
+    language: string[];
+    level: string;
+    techFocus: string[];
 }
 
 export interface User {
@@ -62,3 +65,18 @@ export interface QuizChoice {
     content: string;
     choiceLetter: 'A' | 'B' | 'C' | 'D';
 }
+
+export const techFocusOptions = [
+    "Web Development",
+    "Machine Learning",
+    "Data Science",
+    "Mobile Development",
+    "Game Development",
+    "Cybersecurity",
+    "Cloud Computing",
+    "Embedded Systems",
+    "DevOps",
+    "Computer Vision"
+  ] as const;
+  
+export type TechTopic = typeof techFocusOptions[number];

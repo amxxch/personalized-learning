@@ -1,11 +1,16 @@
 package com.ttp.learning_web.learningPlatform.controller;
 
+import com.ttp.learning_web.learningPlatform.dto.CurrentUserResponse;
+import com.ttp.learning_web.learningPlatform.dto.UserDTO;
 import com.ttp.learning_web.learningPlatform.entity.User;
+import com.ttp.learning_web.learningPlatform.service.CourseRoadmapService;
 import com.ttp.learning_web.learningPlatform.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,30 +18,29 @@ import java.util.Optional;
 @RequestMapping(path = "api/v1/user")
 public class UserController {
     private final UserService userService;
+    private final CourseRoadmapService courseRoadmapService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, CourseRoadmapService courseRoadmapService) {
         this.userService = userService;
+        this.courseRoadmapService = courseRoadmapService;
     }
 
-    @GetMapping
-    public List<User> getUsers() {
-        return userService.getAllUsers();
+    @GetMapping("/me")
+    public ResponseEntity<CurrentUserResponse> getCurrentUser(Authentication authentication) {
+        String email = authentication.getName();
+
+        CurrentUserResponse currentUserResponse = userService.getCurrentUser(email);
+        return new ResponseEntity<>(currentUserResponse, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        User newUser = userService.addUser(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    @GetMapping("/roadmap")
+    public ResponseEntity<?> findRoadmap(@RequestParam Long userId) {
+        return new ResponseEntity<>(courseRoadmapService.getAllTechFocusRoadmapByUserId(userId), HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
-        User updatedUser = userService.updateUser(user);
-
-        if (updatedUser == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    @GetMapping()
+    public ResponseEntity<UserDTO> getUser(@RequestParam Long userId) {
+        return new ResponseEntity<>(userService.getUserDTOByUserId(userId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")

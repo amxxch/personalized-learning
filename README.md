@@ -32,6 +32,7 @@ set POSTGRES_DB_USERNAME=your-database-username
 set POSTGRES_DB_PW=your-database-password
 set AZURE_OPENAI_API_KEY=your-azure-openai-resource-api-key
 set AZURE_OPENAI_ENDPOINT=your-azure-openai-resource-endpoint
+set JWT_SECRET=your-32-character-key
 
 cd backend
 mvn spring-boot:run
@@ -40,7 +41,7 @@ mvn spring-boot:run
 The backend should now be running at `http://localhost:8080`
 
 ### Start Frontend Website
-1. Install dependencies and start the server
+Install dependencies and start the server
 ```bash
 cd frontend
 npm install

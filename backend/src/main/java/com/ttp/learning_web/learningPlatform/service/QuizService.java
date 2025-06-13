@@ -7,11 +7,13 @@ import com.ttp.learning_web.learningPlatform.dto.QuizChoiceDTO;
 import com.ttp.learning_web.learningPlatform.dto.QuizQuestionDTO;
 import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.*;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class QuizService {
 
     private final QuizQuestionService quizQuestionService;
@@ -23,27 +25,6 @@ public class QuizService {
     private final SkillService skillService;
     private final ProgressService progressService;
     private final OpenAIService openAIService;
-
-
-    public QuizService(QuizQuestionService quizQuestionService,
-                       QuizChoiceService quizChoiceService,
-                       QuizResultService quizResultService,
-                       MasteryService masteryService,
-                       ChatHistoryService chatHistoryService,
-                       UserService userService,
-                       SkillService skillService,
-                       ProgressService progressService,
-                       OpenAIService openAIService) {
-        this.quizQuestionService = quizQuestionService;
-        this.quizChoiceService = quizChoiceService;
-        this.quizResultService = quizResultService;
-        this.masteryService = masteryService;
-        this.chatHistoryService = chatHistoryService;
-        this.userService = userService;
-        this.skillService = skillService;
-        this.progressService = progressService;
-        this.openAIService = openAIService;
-    }
 
     public QuizQuestionDTO handleNextQuestion(Long userId, Long skillId, int questionNum) {
         User user = userService.getUserByUserId(userId);
@@ -225,7 +206,7 @@ public class QuizService {
                 resultSummary
         );
 
-        String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
+        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), prompt);
         progress.setQuizCompleted(true);
         progressService.updateProgress(progress);
 
@@ -275,7 +256,7 @@ public class QuizService {
                 mastery.getMasteryLevel()
         );
 
-        String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
+        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), prompt);
         int retries = 0;
         final int maxRetries = 5;
 
@@ -285,7 +266,7 @@ public class QuizService {
                     Please return only the updated mastery score as a number between 0.0 and 1.0. For example: 0.78.
                     Do not include any explanation, text, formatting, or additional symbols. Only return the number.
                     """;
-            answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), reGenPrompt);
+            answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), reGenPrompt);
             retries++;
         }
 
@@ -346,7 +327,7 @@ public class QuizService {
             """, masteryService.getMasteryByUserIdAndSkillId(userId, skillId).getMasteryLevel(),
                 skill.getSkillName(), skill.getCourse().getTitle(), question, lastQuiz, unrelatedAnswer);
 
-        String answer = openAIService.prompt(userId, skill.getCourse().getCourseId(), prompt);
+        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), prompt);
         if (!answer.equals(unrelatedAnswer)) {
             // Save to chat history only if the question is related to the lesson
             chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.TEXT);

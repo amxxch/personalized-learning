@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     void deleteByUserId(Long userId);
 
+    Optional<User> findByEmail(String email);
+
     Optional<User> findByUserId(Long userId);
 
     List<User> findByNameContaining(String name);

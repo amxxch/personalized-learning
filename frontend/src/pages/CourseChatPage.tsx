@@ -2,17 +2,19 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import ChatBubble from '../components/ChatBubble';
 import { Message } from '../dto/response';
+import { useAuth } from '../context/AuthContext';
 
 const CourseChatPage = () => {
-  const [userId] = useState(1);
-  const [courseId] = useState(1);
+  const { userId, userToken } = useAuth();
   const [skillId, setSkillId] = useState(1);
   const [bubbleId, setBubbleId] = useState(1);
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
 
   const [loading, setLoading] = useState(false);
+  const { courseId } = useParams();
 
   useEffect(() => {
     // fetch chat history
@@ -20,6 +22,9 @@ const CourseChatPage = () => {
       try {
         setLoading(true);
         const response = await axios.get('http://localhost:8080/api/v1/chat-history/by-course', {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          },
           params: {
             userId: userId,
             courseId: courseId
@@ -102,6 +107,7 @@ const CourseChatPage = () => {
           initialMessages={initialMessages} 
           initialSkillId={skillId} 
           initialBubbleId={bubbleId} 
+          courseId={parseInt(courseId!)}
           />
         )}
     </div>

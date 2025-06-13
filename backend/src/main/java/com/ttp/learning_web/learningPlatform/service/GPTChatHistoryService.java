@@ -10,24 +10,18 @@ import com.ttp.learning_web.learningPlatform.entity.User;
 import com.ttp.learning_web.learningPlatform.enums.Sender;
 import com.ttp.learning_web.learningPlatform.repository.GPTChatHistoryRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class GPTChatHistoryService {
     private final GPTChatHistoryRepository gptChatHistoryRepository;
     private final UserService userService;
     private final CourseService courseService;
-
-    public GPTChatHistoryService(GPTChatHistoryRepository gptChatHistoryRepository,
-                                 UserService userService,
-                                 CourseService courseService) {
-        this.gptChatHistoryRepository = gptChatHistoryRepository;
-        this.userService = userService;
-        this.courseService = courseService;
-    }
 
     public List<ChatRequestMessage> findRequestMessagesByUserIdAndCourseId(Long userId, Long courseId) {
         User user = userService.getUserByUserId(userId);

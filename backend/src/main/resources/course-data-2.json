@@ -1,0 +1,935 @@
+[
+  {
+    "title": "C++ Programming Fundamentals",
+    "description": "C++ Programming for Beginners designed for students with no prior programming experience, serving as a foundation for various technical paths.",
+    "language": [
+      "C++"
+    ],
+    "technicalFocuses": [
+      "Embedded Systems",
+      "Game Development",
+      "Computer Vision"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Responsive Web Design with HTML & CSS",
+    "description": "Responsive Web Design with HTML & CSS course focusing on web development, tools, and real-world projects.",
+    "language": [
+      "HTML",
+      "CSS"
+    ],
+    "technicalFocuses": [
+      "Web Development"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "JavaScript for Dynamic Web Applications",
+    "description": "JavaScript for Dynamic Web Applications course focusing on web development, tools, and real-world projects.",
+    "language": [
+      "JavaScript"
+    ],
+    "technicalFocuses": [
+      "Web Development"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "React.js and Redux for Front-End Mastery",
+    "description": "React.js and Redux for Front-End Mastery course focusing on web development, tools, and real-world projects.",
+    "language": [
+      "JavaScript"
+    ],
+    "technicalFocuses": [
+      "Web Development"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Backend APIs with Node.js and Express",
+    "description": "Backend APIs with Node.js and Express course focusing on web development, tools, and real-world projects.",
+    "language": [
+      "JavaScript",
+      "Node.js"
+    ],
+    "technicalFocuses": [
+      "Web Development"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Full-Stack Web Development with MERN",
+    "description": "Full-Stack Web Development with MERN course focusing on web development, tools, and real-world projects.",
+    "language": [
+      "JavaScript",
+      "MongoDB"
+    ],
+    "technicalFocuses": [
+      "Web Development"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Intro to Machine Learning with Scikit-learn",
+    "description": "Intro to Machine Learning with Scikit-learn course focusing on machine learning, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Machine Learning"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Deep Learning with TensorFlow and Keras",
+    "description": "Deep Learning with TensorFlow and Keras course focusing on machine learning, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Machine Learning"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Reinforcement Learning for Games and Robotics",
+    "description": "Reinforcement Learning for Games and Robotics course focusing on machine learning, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Machine Learning"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Python for Data Analysis",
+    "description": "Python for Data Analysis course focusing on data science, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Data Science"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Data Visualization with Matplotlib and Seaborn",
+    "description": "Data Visualization with Matplotlib and Seaborn course focusing on data science, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Data Science"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Statistical Inference and Hypothesis Testing",
+    "description": "Statistical Inference and Hypothesis Testing course focusing on data science, tools, and real-world projects.",
+    "language": [
+      "R",
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Data Science"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Big Data Analytics with Spark",
+    "description": "Big Data Analytics with Spark course focusing on data science, tools, and real-world projects.",
+    "language": [
+      "Scala",
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Data Science"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Android App Development with Kotlin",
+    "description": "Android App Development with Kotlin course focusing on mobile development, tools, and real-world projects.",
+    "language": [
+      "Kotlin"
+    ],
+    "technicalFocuses": [
+      "Mobile Development"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "iOS Development with SwiftUI",
+    "description": "iOS Development with SwiftUI course focusing on mobile development, tools, and real-world projects.",
+    "language": [
+      "Swift"
+    ],
+    "technicalFocuses": [
+      "Mobile Development"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Cross-platform Apps with Flutter",
+    "description": "Cross-platform Apps with Flutter course focusing on mobile development, tools, and real-world projects.",
+    "language": [
+      "Dart"
+    ],
+    "technicalFocuses": [
+      "Mobile Development"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Mobile Backend with Firebase",
+    "description": "Mobile Backend with Firebase course focusing on mobile development, tools, and real-world projects.",
+    "language": [
+      "JavaScript"
+    ],
+    "technicalFocuses": [
+      "Mobile Development"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Advanced Android with Jetpack Compose",
+    "description": "Advanced Android with Jetpack Compose course focusing on mobile development, tools, and real-world projects.",
+    "language": [
+      "Kotlin"
+    ],
+    "technicalFocuses": [
+      "Mobile Development"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Game Development with Unity and C#",
+    "description": "Game Development with Unity and C# course focusing on game development, tools, and real-world projects.",
+    "language": [
+      "C#"
+    ],
+    "technicalFocuses": [
+      "Game Development"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "2D Game Design with Godot",
+    "description": "2D Game Design with Godot course focusing on game development, tools, and real-world projects.",
+    "language": [
+      "GDScript"
+    ],
+    "technicalFocuses": [
+      "Game Development"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Multiplayer Game Development in Unity",
+    "description": "Multiplayer Game Development in Unity course focusing on game development, tools, and real-world projects.",
+    "language": [
+      "C#"
+    ],
+    "technicalFocuses": [
+      "Game Development"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Cybersecurity Fundamentals",
+    "description": "Cybersecurity Fundamentals course focusing on cybersecurity, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Cybersecurity"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Ethical Hacking and Penetration Testing",
+    "description": "Ethical Hacking and Penetration Testing course focusing on cybersecurity, tools, and real-world projects.",
+    "language": [
+      "Python",
+      "Bash"
+    ],
+    "technicalFocuses": [
+      "Cybersecurity"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Advanced Network Security and Cryptography",
+    "description": "Advanced Network Security and Cryptography course focusing on cybersecurity, tools, and real-world projects.",
+    "language": [
+      "C",
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Cybersecurity"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Cloud Basics with AWS",
+    "description": "Cloud Basics with AWS course focusing on cloud computing, tools, and real-world projects.",
+    "language": [
+      "YAML",
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Cloud Computing"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Deploying Applications with Docker and Kubernetes",
+    "description": "Deploying Applications with Docker and Kubernetes course focusing on cloud computing, tools, and real-world projects.",
+    "language": [
+      "YAML",
+      "Bash"
+    ],
+    "technicalFocuses": [
+      "Cloud Computing"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Cloud Infrastructure as Code with Terraform",
+    "description": "Cloud Infrastructure as Code with Terraform course focusing on cloud computing, tools, and real-world projects.",
+    "language": [
+      "HCL",
+      "Bash"
+    ],
+    "technicalFocuses": [
+      "Cloud Computing"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Embedded C Programming",
+    "description": "Embedded C Programming course focusing on embedded systems, tools, and real-world projects.",
+    "language": [
+      "C"
+    ],
+    "technicalFocuses": [
+      "Embedded Systems"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Microcontroller Programming with Arduino",
+    "description": "Microcontroller Programming with Arduino course focusing on embedded systems, tools, and real-world projects.",
+    "language": [
+      "C++"
+    ],
+    "technicalFocuses": [
+      "Embedded Systems"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Real-Time Systems with FreeRTOS",
+    "description": "Real-Time Systems with FreeRTOS course focusing on embedded systems, tools, and real-world projects.",
+    "language": [
+      "C",
+      "C++"
+    ],
+    "technicalFocuses": [
+      "Embedded Systems"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Intro to DevOps and CI/CD Pipelines",
+    "description": "Intro to DevOps and CI/CD Pipelines course focusing on devops, tools, and real-world projects.",
+    "language": [
+      "Bash"
+    ],
+    "technicalFocuses": [
+      "DevOps"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Automating Infrastructure with Ansible",
+    "description": "Automating Infrastructure with Ansible course focusing on devops, tools, and real-world projects.",
+    "language": [
+      "YAML",
+      "Python"
+    ],
+    "technicalFocuses": [
+      "DevOps"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Monitoring and Logging with Prometheus and Grafana",
+    "description": "Monitoring and Logging with Prometheus and Grafana course focusing on devops, tools, and real-world projects.",
+    "language": [
+      "Go",
+      "Bash"
+    ],
+    "technicalFocuses": [
+      "DevOps"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Image Processing with OpenCV and Python",
+    "description": "Image Processing with OpenCV and Python course focusing on computer vision, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Computer Vision"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Object Detection with YOLOv8",
+    "description": "Object Detection with YOLOv8 course focusing on computer vision, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Computer Vision"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Advanced Computer Vision with Deep Learning",
+    "description": "Advanced Computer Vision with Deep Learning course focusing on computer vision, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Computer Vision"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Advanced CSS Animations and Transitions",
+    "description": "Advanced CSS Animations and Transitions course focusing on web development, tools, and real-world projects.",
+    "language": [
+      "CSS"
+    ],
+    "technicalFocuses": [
+      "Web Development"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Web Performance Optimization Techniques",
+    "description": "Web Performance Optimization Techniques course focusing on web development, tools, and real-world projects.",
+    "language": [
+      "JavaScript"
+    ],
+    "technicalFocuses": [
+      "Web Development"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Progressive Web Apps with React",
+    "description": "Progressive Web Apps with React course focusing on web development, tools, and real-world projects.",
+    "language": [
+      "JavaScript"
+    ],
+    "technicalFocuses": [
+      "Web Development"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Feature Engineering for ML Models",
+    "description": "Feature Engineering for ML Models course focusing on machine learning, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Machine Learning"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Explainable AI and Model Interpretability",
+    "description": "Explainable AI and Model Interpretability course focusing on machine learning, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Machine Learning"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Natural Language Processing with Transformers",
+    "description": "Natural Language Processing with Transformers course focusing on machine learning, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Machine Learning"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Exploratory Data Analysis with Pandas",
+    "description": "Exploratory Data Analysis with Pandas course focusing on data science, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Data Science"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Machine Learning for Data Science Projects",
+    "description": "Machine Learning for Data Science Projects course focusing on data science, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Data Science"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Data Wrangling with Python",
+    "description": "Data Wrangling with Python course focusing on data science, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Data Science"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Mobile UI/UX Design Principles",
+    "description": "Mobile UI/UX Design Principles course focusing on mobile development, tools, and real-world projects.",
+    "language": [
+      "Figma"
+    ],
+    "technicalFocuses": [
+      "Mobile Development"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Integrating REST APIs in Mobile Apps",
+    "description": "Integrating REST APIs in Mobile Apps course focusing on mobile development, tools, and real-world projects.",
+    "language": [
+      "Dart",
+      "Kotlin"
+    ],
+    "technicalFocuses": [
+      "Mobile Development"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Secure Mobile App Development",
+    "description": "Secure Mobile App Development course focusing on mobile development, tools, and real-world projects.",
+    "language": [
+      "Swift",
+      "Kotlin"
+    ],
+    "technicalFocuses": [
+      "Mobile Development"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Game Physics with Unity",
+    "description": "Game Physics with Unity course focusing on game development, tools, and real-world projects.",
+    "language": [
+      "C#"
+    ],
+    "technicalFocuses": [
+      "Game Development"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Shader Programming in Unity",
+    "description": "Shader Programming in Unity course focusing on game development, tools, and real-world projects.",
+    "language": [
+      "HLSL",
+      "C#"
+    ],
+    "technicalFocuses": [
+      "Game Development"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Game Audio Integration",
+    "description": "Game Audio Integration course focusing on game development, tools, and real-world projects.",
+    "language": [
+      "C#",
+      "FMOD"
+    ],
+    "technicalFocuses": [
+      "Game Development"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Intro to Network Protocols and Security",
+    "description": "Intro to Network Protocols and Security course focusing on cybersecurity, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Cybersecurity"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Web Application Security with OWASP",
+    "description": "Web Application Security with OWASP course focusing on cybersecurity, tools, and real-world projects.",
+    "language": [
+      "JavaScript",
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Cybersecurity"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Digital Forensics and Incident Response",
+    "description": "Digital Forensics and Incident Response course focusing on cybersecurity, tools, and real-world projects.",
+    "language": [
+      "Python",
+      "Bash"
+    ],
+    "technicalFocuses": [
+      "Cybersecurity"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Cloud Services Comparison: AWS, Azure, GCP",
+    "description": "Cloud Services Comparison: AWS, Azure, GCP course focusing on cloud computing, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Cloud Computing"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Serverless Computing with AWS Lambda",
+    "description": "Serverless Computing with AWS Lambda course focusing on cloud computing, tools, and real-world projects.",
+    "language": [
+      "Python",
+      "JavaScript"
+    ],
+    "technicalFocuses": [
+      "Cloud Computing"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Kubernetes Operators and Custom Controllers",
+    "description": "Kubernetes Operators and Custom Controllers course focusing on cloud computing, tools, and real-world projects.",
+    "language": [
+      "Go",
+      "YAML"
+    ],
+    "technicalFocuses": [
+      "Cloud Computing"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "IoT Basics with Raspberry Pi",
+    "description": "IoT Basics with Raspberry Pi course focusing on embedded systems, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Embedded Systems"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Interfacing Sensors and Actuators",
+    "description": "Interfacing Sensors and Actuators course focusing on embedded systems, tools, and real-world projects.",
+    "language": [
+      "C",
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Embedded Systems"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Low-Power Embedded Systems Design",
+    "description": "Low-Power Embedded Systems Design course focusing on embedded systems, tools, and real-world projects.",
+    "language": [
+      "C"
+    ],
+    "technicalFocuses": [
+      "Embedded Systems"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Git and GitHub for DevOps",
+    "description": "Git and GitHub for DevOps course focusing on devops, tools, and real-world projects.",
+    "language": [
+      "Bash"
+    ],
+    "technicalFocuses": [
+      "DevOps"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "CI/CD with GitHub Actions",
+    "description": "CI/CD with GitHub Actions course focusing on devops, tools, and real-world projects.",
+    "language": [
+      "YAML"
+    ],
+    "technicalFocuses": [
+      "DevOps"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Infrastructure Monitoring with ELK Stack",
+    "description": "Infrastructure Monitoring with ELK Stack course focusing on devops, tools, and real-world projects.",
+    "language": [
+      "Bash"
+    ],
+    "technicalFocuses": [
+      "DevOps"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Facial Recognition with OpenCV",
+    "description": "Facial Recognition with OpenCV course focusing on computer vision, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Computer Vision"
+    ],
+    "level": "INTERMEDIATE",
+    "skills": []
+  },
+  {
+    "title": "Edge AI: Deploying Vision Models to Mobile",
+    "description": "Edge AI: Deploying Vision Models to Mobile course focusing on computer vision, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Computer Vision"
+    ],
+    "level": "ADVANCED",
+    "skills": []
+  },
+  {
+    "title": "Intro to Image Classification",
+    "description": "Intro to Image Classification course focusing on computer vision, tools, and real-world projects.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Computer Vision"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Programming Fundamentals with Python",
+    "description": "Programming Fundamentals with Python designed for students with no prior programming experience, serving as a foundation for various technical paths.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Web Development",
+      "Data Science",
+      "Machine Learning"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Introduction to Programming with Java",
+    "description": "Introduction to Programming with Java designed for students with no prior programming experience, serving as a foundation for various technical paths.",
+    "language": [
+      "Java"
+    ],
+    "technicalFocuses": [
+      "Mobile Development",
+      "Cloud Computing"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Understanding Algorithms and Data Structures",
+    "description": "Understanding Algorithms and Data Structures designed for students with no prior programming experience, serving as a foundation for various technical paths.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Web Development",
+      "Machine Learning",
+      "Data Science",
+      "Mobile Development",
+      "Game Development",
+      "Cybersecurity",
+      "Cloud Computing",
+      "Embedded Systems",
+      "DevOps",
+      "Computer Vision"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Version Control with Git and GitHub",
+    "description": "Version Control with Git and GitHub designed for students with no prior programming experience, serving as a foundation for various technical paths.",
+    "language": [
+      "Bash"
+    ],
+    "technicalFocuses": [
+      "Web Development",
+      "DevOps",
+      "Cloud Computing"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Problem Solving with Programming",
+    "description": "Problem Solving with Programming designed for students with no prior programming experience, serving as a foundation for various technical paths.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Web Development",
+      "Machine Learning",
+      "Data Science",
+      "Mobile Development",
+      "Game Development",
+      "Cybersecurity",
+      "Cloud Computing",
+      "Embedded Systems",
+      "DevOps",
+      "Computer Vision"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Computer Science Basics",
+    "description": "Computer Science Basics designed for students with no prior programming experience, serving as a foundation for various technical paths.",
+    "language": [
+      "Python"
+    ],
+    "technicalFocuses": [
+      "Web Development",
+      "Machine Learning",
+      "Data Science",
+      "Mobile Development",
+      "Game Development",
+      "Cybersecurity",
+      "Cloud Computing",
+      "Embedded Systems",
+      "DevOps",
+      "Computer Vision"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  },
+  {
+    "title": "Introduction to Databases with SQL",
+    "description": "Introduction to Databases with SQL designed for students with no prior programming experience, serving as a foundation for various technical paths.",
+    "language": [
+      "SQL"
+    ],
+    "technicalFocuses": [
+      "Data Science",
+      "Web Development"
+    ],
+    "level": "BEGINNER",
+    "skills": []
+  }
+]

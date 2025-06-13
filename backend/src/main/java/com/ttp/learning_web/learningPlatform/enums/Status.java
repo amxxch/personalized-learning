@@ -5,5 +5,6 @@ public enum Status {
     CONTINUE,
     FAILED,
     QUIZ,
-    REVIEW
+    REVIEW,
+    LOCKED
 }

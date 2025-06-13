@@ -1,25 +1,54 @@
 package com.ttp.learning_web.learningPlatform.service;
 
+import com.ttp.learning_web.learningPlatform.dto.CourseResponse;
 import com.ttp.learning_web.learningPlatform.entity.Course;
+import com.ttp.learning_web.learningPlatform.entity.Language;
+import com.ttp.learning_web.learningPlatform.entity.TechnicalFocus;
 import com.ttp.learning_web.learningPlatform.repository.CourseRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class CourseService {
     private final CourseRepository courseRepository;
 
-    @Autowired
-    public CourseService(CourseRepository courseRepository) {
-        this.courseRepository = courseRepository;
-    }
+    public List<CourseResponse> getAllCourses() {
+        List<Course> courseList = courseRepository.findAll();
 
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+        List<CourseResponse> courseResponseList = new ArrayList<>();
+        for (Course course : courseList) {
+            CourseResponse courseResponse = new CourseResponse();
+            courseResponse.setCourseId(course.getCourseId());
+            courseResponse.setTitle(course.getTitle());
+            courseResponse.setDescription(course.getDescription());
+            courseResponse.setLevel(course.getLevel().name());
+
+            Set<Language> languageSet = course.getLanguages();
+            List<String> languageNameList = languageSet.stream()
+                    .map(Language::getLanguageName)
+                    .toList();
+
+            Set<TechnicalFocus> technicalFocusSet = course.getTechnicalFocuses();
+            List<String> techFocusNameList = technicalFocusSet.stream()
+                    .map(TechnicalFocus::getTechFocusName)
+                    .toList();
+
+            courseResponse.setLanguage(languageNameList);
+            courseResponse.setTechFocus(techFocusNameList);
+
+            courseResponseList.add(courseResponse);
+        }
+
+        return courseResponseList;
     }
 
     public Course getCourseByCourseId(Long courseId) {
@@ -32,7 +61,7 @@ public class CourseService {
     }
 
     public int getCount() {
-        List<Course> courses = getAllCourses();
+        List<Course> courses = courseRepository.findAll();
         return courses.size();
     }
 

@@ -4,6 +4,7 @@ import com.ttp.learning_web.learningPlatform.entity.Course;
 import com.ttp.learning_web.learningPlatform.entity.Skill;
 import com.ttp.learning_web.learningPlatform.repository.SkillRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,15 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@AllArgsConstructor
 public class SkillService {
     private final SkillRepository skillRepository;
     private final CourseService courseService;
-
-    @Autowired
-    public SkillService(SkillRepository skillRepository, CourseService courseService) {
-        this.skillRepository = skillRepository;
-        this.courseService = courseService;
-    }
 
     public List<Skill> getAllSkills() {
         return skillRepository.findAll();

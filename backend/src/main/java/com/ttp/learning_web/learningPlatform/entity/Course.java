@@ -1,9 +1,12 @@
 package com.ttp.learning_web.learningPlatform.entity;
 
+import com.ttp.learning_web.learningPlatform.enums.CourseLevel;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
@@ -19,6 +22,25 @@ public class Course {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToMany
+    @JoinTable(
+            name = "course_language",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id")
+    )
+    private Set<Language> languages = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "course_technical_focus",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "tech_focus_id")
+    )
+    private Set<TechnicalFocus> technicalFocuses = new HashSet<>();
+
+    @Column(name = "level")
+    private CourseLevel level;
 
     public Course() {}
 
@@ -52,6 +74,30 @@ public class Course {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<Language> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(Set<Language> languages) {
+        this.languages = languages;
+    }
+
+    public CourseLevel getLevel() {
+        return level;
+    }
+
+    public void setLevel(CourseLevel level) {
+        this.level = level;
+    }
+
+    public Set<TechnicalFocus> getTechnicalFocuses() {
+        return technicalFocuses;
+    }
+
+    public void setTechnicalFocuses(Set<TechnicalFocus> technicalFocuses) {
+        this.technicalFocuses = technicalFocuses;
     }
 
     @Override

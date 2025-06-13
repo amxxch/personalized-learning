@@ -4,6 +4,7 @@ import com.ttp.learning_web.learningPlatform.entity.LessonBubble;
 import com.ttp.learning_web.learningPlatform.entity.Skill;
 import com.ttp.learning_web.learningPlatform.repository.LessonBubbleRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,16 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@AllArgsConstructor
 public class LessonBubbleService {
 
     private final LessonBubbleRepository lessonBubbleRepository;
     private final SkillService skillService;
-
-    @Autowired
-    public LessonBubbleService(LessonBubbleRepository lessonBubbleRepository, SkillService skillService) {
-        this.lessonBubbleRepository = lessonBubbleRepository;
-        this.skillService = skillService;
-    }
 
     public List<LessonBubble> getAllBubbles() {
         return lessonBubbleRepository.findAll();
