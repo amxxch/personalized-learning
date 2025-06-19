@@ -1,18 +1,13 @@
 package com.ttp.learning_web.learningPlatform.controller;
 
-import com.ttp.learning_web.learningPlatform.dto.CurrentUserResponse;
+import com.ttp.learning_web.learningPlatform.dto.UserStatusResponse;
 import com.ttp.learning_web.learningPlatform.dto.UserDTO;
-import com.ttp.learning_web.learningPlatform.entity.User;
 import com.ttp.learning_web.learningPlatform.service.CourseRoadmapService;
 import com.ttp.learning_web.learningPlatform.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Currency;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/user")
@@ -26,11 +21,11 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<CurrentUserResponse> getCurrentUser(Authentication authentication) {
+    public ResponseEntity<UserStatusResponse> getCurrentUser(Authentication authentication) {
         String email = authentication.getName();
 
-        CurrentUserResponse currentUserResponse = userService.getCurrentUser(email);
-        return new ResponseEntity<>(currentUserResponse, HttpStatus.OK);
+        UserStatusResponse userStatusResponse = userService.getCurrentUser(email);
+        return new ResponseEntity<>(userStatusResponse, HttpStatus.OK);
     }
 
     @GetMapping("/roadmap")

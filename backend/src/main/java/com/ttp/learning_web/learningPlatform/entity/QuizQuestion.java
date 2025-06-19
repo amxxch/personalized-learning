@@ -23,9 +23,6 @@ public class QuizQuestion {
     @Column(name = "difficulty", nullable = false)
     private Difficulty difficulty;
 
-    @Column(name = "quiz_type", nullable = false)
-    private QuestionType questionType;
-
     @Column(name = "question", columnDefinition = "TEXT", nullable = false)
     private String question;
 
@@ -33,7 +30,6 @@ public class QuizQuestion {
     @JsonManagedReference
     private List<QuizChoice> quizChoices;
 
-    // TODO: not sure of this format
     @Column(name = "solution", columnDefinition = "TEXT", nullable = false)
     private String expectedAnswer;
 
@@ -45,7 +41,6 @@ public class QuizQuestion {
     public QuizQuestion(Long questionId,
                         Skill skill,
                         Difficulty difficulty,
-                        QuestionType questionType,
                         String question,
                         List<QuizChoice> quizChoices,
                         String expectedAnswer,
@@ -53,7 +48,6 @@ public class QuizQuestion {
         this.questionId = questionId;
         this.skill = skill;
         this.difficulty = difficulty;
-        this.questionType = questionType;
         this.question = question;
         this.quizChoices = quizChoices;
         this.expectedAnswer = expectedAnswer;
@@ -63,14 +57,12 @@ public class QuizQuestion {
     public QuizQuestion(Long questionId,
                         Skill skill,
                         Difficulty difficulty,
-                        QuestionType questionType,
                         String question,
                         String expectedAnswer,
                         String explanation) {
         this.questionId = questionId;
         this.skill = skill;
         this.difficulty = difficulty;
-        this.questionType = questionType;
         this.question = question;
         this.expectedAnswer = expectedAnswer;
         this.explanation = explanation;
@@ -108,28 +100,12 @@ public class QuizQuestion {
         this.question = question;
     }
 
-    public QuestionType getQuizType() {
-        return questionType;
-    }
-
-    public void setQuizType(QuestionType questionType) {
-        this.questionType = questionType;
-    }
-
     public String getExpectedAnswer() {
         return expectedAnswer;
     }
 
     public void setExpectedAnswer(String solution) {
         this.expectedAnswer = solution;
-    }
-
-    public QuestionType getQuestionType() {
-        return questionType;
-    }
-
-    public void setQuestionType(QuestionType questionType) {
-        this.questionType = questionType;
     }
 
     public List<QuizChoice> getQuizChoices() {

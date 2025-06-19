@@ -43,10 +43,18 @@ public class LearningController {
         return ResponseEntity.ok(learningService.handleAskQuestion(question, userId, skillId));
     }
 
+    @GetMapping("/isAssessmentDone")
+    public ResponseEntity<Boolean> isAssessmentDone(
+            @RequestParam Long userId,
+            @RequestParam Long courseId
+    ) {
+        return ResponseEntity.ok(learningService.hasUserCompletedInitialAssessment(userId, courseId));
+    }
+
     @DeleteMapping
     public ResponseEntity<String> reset() {
         learningService.handleDeleteAll();
-        return ResponseEntity.ok("All progresses, mastery, chat history, gpt chat history, and quiz results are deleted.");
+        return ResponseEntity.ok("All progresses, chat history, gpt chat history, and quiz results are deleted.");
     }
 
     @PostMapping("gpt")

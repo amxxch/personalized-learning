@@ -32,7 +32,7 @@ public class MasteryService {
 
     public Mastery getMasteryByUserIdAndSkillId(Long userId, Long skillId) {
         return masteryRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId)
-                .orElseThrow(() -> new RuntimeException("Mastery Not Found"));
+                .orElse(null);
     }
 
     public List<Mastery> getMasteryByUserId(Long userId) {
@@ -49,6 +49,11 @@ public class MasteryService {
 
         User user = userService.getUserByUserId(userId);
         Skill skill = skillService.getSkillBySkillId(skillId);
+
+        Mastery existingMastery = getMasteryByUserIdAndSkillId(userId, skillId);
+        if (existingMastery != null) {
+            return updateMastery(mastery);
+        }
 
         mastery.setUser(user);
         mastery.setSkill(skill);
@@ -127,19 +132,23 @@ public class MasteryService {
 
         Difficulty difficulty = quizQuestion.getDifficulty();
         Double currentMasteryLevel = mastery.getMasteryLevel();
-        mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.05));
+//        mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.05));
 
-//        if (difficulty == Difficulty.EASY) {
-//            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.05));
-//        } else if (difficulty == Difficulty.MEDIUM) {
-//            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.1));
-//        } else if (difficulty == Difficulty.HARD) {
-//            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.15));
-//        }
+        if (difficulty == Difficulty.EASY) {
+            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.075));
+        } else if (difficulty == Difficulty.MEDIUM) {
+            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.15));
+        } else if (difficulty == Difficulty.HARD) {
+            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.2));
+        }
         updateMastery(mastery);
     }
 
-
+    public Difficulty getDifficultyBasedOnMastery(double masteryLevel) {
+        if (masteryLevel <= 0.34) return Difficulty.EASY;
+        else if (masteryLevel <= 0.64) return Difficulty.MEDIUM;
+        else return Difficulty.HARD;
+    }
 
     @Transactional
     public void deleteMasteryById(Long masteryId) {

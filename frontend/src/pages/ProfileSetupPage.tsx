@@ -13,7 +13,7 @@ export default function HomePage() {
         <div>
             {!isProfileSetup && 
                 <div 
-                className="flex flex-col items-center min-h-screen min-w-screen p-8 sm:p-20 gap-8 font-[family-name:var(--font-geist-sans)]"
+                className="flex flex-col items-center min-h-screen min-w-screen p-8 sm:p-20 gap-6 font-[family-name:var(--font-geist-sans)]"
                 style={{
                     backgroundImage: isStart ? '' : 'url("")',
                     backgroundSize: 'cover',
@@ -38,13 +38,13 @@ export default function HomePage() {
                 {isStart ? 
                     <ProfileSetupForm setIsStart={setIsStart} />
                 : (
-                    <div className="max-w-5xl mx-auto p-6 bg-white rounded-2xl shadow-md mt-4">
-                    <div className="text-center">
-                        <p className="text-gray-600 text-lg mt-2">Please set up your profile before getting started for a personalized learning path!</p>
-                        <button className="btn btn btn-outline btn-secondary mt-6 px-6 py-2 text-lg text-white rounded-lg" onClick={() => setIsStart(true)}>
-                            Get Started
-                        </button>
-                    </div>
+                    <div className="max-w-5xl mx-auto p-6 bg-white rounded-2xl shadow-md mt-2">
+                        <div className="text-center">
+                            <p className="text-gray-600 text-lg mt-2">Please set up your profile before getting started for a personalized learning path!</p>
+                            <button className="btn btn btn-outline btn-secondary mt-6 px-6 py-2 text-lg text-white rounded-lg" onClick={() => setIsStart(true)}>
+                                Get Started
+                            </button>
+                        </div>
                     </div>
                 )}
                 </div>

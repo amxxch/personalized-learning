@@ -1,11 +1,12 @@
 package com.ttp.learning_web.learningPlatform.service;
 
 import com.ttp.learning_web.learningPlatform.entity.LessonBubble;
+import com.ttp.learning_web.learningPlatform.entity.Mastery;
 import com.ttp.learning_web.learningPlatform.entity.Skill;
+import com.ttp.learning_web.learningPlatform.enums.Difficulty;
 import com.ttp.learning_web.learningPlatform.repository.LessonBubbleRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class LessonBubbleService {
 
     private final LessonBubbleRepository lessonBubbleRepository;
+    private final MasteryService masteryService;
     private final SkillService skillService;
 
     public List<LessonBubble> getAllBubbles() {
@@ -33,6 +35,32 @@ public class LessonBubbleService {
 
     public Optional<LessonBubble> getBubbleByBubbleOrder(Long skillId, Integer bubbleOrder) {
         return lessonBubbleRepository.findBySkill_SkillIdAndBubbleOrder(skillId, bubbleOrder);
+    }
+
+    public List<LessonBubble> getAllBubblesByUserSkill(Long skillId, Long userId) {
+        Mastery mastery = masteryService.getMasteryByUserIdAndSkillId(userId, skillId);
+
+        if (mastery == null) {
+            throw new RuntimeException("Mastery Not Found");
+        }
+
+        Double masteryLevel = mastery.getMasteryLevel();
+
+        List<LessonBubble> allBubbles = getAllBubblesBySkillId(skillId);
+
+        Difficulty difficulty = masteryService.getDifficultyBasedOnMastery(masteryLevel);
+
+        if (difficulty == Difficulty.EASY) {
+            return allBubbles;
+        } else if (difficulty == Difficulty.MEDIUM) {
+            return allBubbles.stream()
+                    .filter(bubble -> bubble.getDifficulty() != Difficulty.EASY)
+                    .toList();
+        } else {
+            return allBubbles.stream()
+                    .filter(bubble -> bubble.getDifficulty() == Difficulty.HARD)
+                    .toList();
+        }
     }
 
     public LessonBubble addBubble(LessonBubble bubble) {
@@ -58,7 +86,7 @@ public class LessonBubbleService {
             return bubbleToUpdate;
 
         }
-        return null;
+        return addBubble(bubble);
     }
 
     @Transactional

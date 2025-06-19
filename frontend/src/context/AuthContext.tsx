@@ -73,7 +73,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setUserToken(token);
             localStorage.setItem('token', token);
             console.log('Login successful, token set:', token);
-        } catch (error) {
+        } catch (error: any) {
+            if (error.response?.data?.errorMessage) {
+                throw new Error(error.response.data.errorMessage);
+              }
             throw error; // rethrow the error to handle it in the component
         }
     };
@@ -90,7 +93,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const signup = async (email: string, password: string, name: string) => {
         try {
             const response = await axios.post('http://localhost:8080/api/v1/auth/signup', {
-
                 email: email,
                 password: password,
                 name: name
@@ -100,7 +102,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setUserToken(token);
             localStorage.setItem('token', token);
             console.log('Sign up successful, token set:', token);
-        } catch (error) {
+        } catch (error: any) {
+            if (error.response?.data?.errorMessage) {
+                throw new Error(error.response.data.errorMessage);
+              }
             throw error; // rethrow the error to handle it in the component
         }
     }

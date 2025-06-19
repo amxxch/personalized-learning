@@ -2,15 +2,14 @@ package com.ttp.learning_web.learningPlatform.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ttp.learning_web.learningPlatform.dto.GPTResponse;
-import com.ttp.learning_web.learningPlatform.dto.QuizChoiceDTO;
-import com.ttp.learning_web.learningPlatform.dto.QuizQuestionDTO;
+import com.ttp.learning_web.learningPlatform.dto.*;
 import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -25,6 +24,7 @@ public class QuizService {
     private final SkillService skillService;
     private final ProgressService progressService;
     private final OpenAIService openAIService;
+    private final CourseService courseService;
 
     public QuizQuestionDTO handleNextQuestion(Long userId, Long skillId, int questionNum) {
         User user = userService.getUserByUserId(userId);
@@ -32,7 +32,7 @@ public class QuizService {
         Mastery mastery = masteryService.getMasteryByUserIdAndSkillId(userId, skillId);
 
         Double masteryLevel = mastery.getMasteryLevel();
-        Difficulty difficulty = getDifficultyBasedOnMastery(masteryLevel);
+        Difficulty difficulty = masteryService.getDifficultyBasedOnMastery(masteryLevel);
 
         QuizQuestion question = getRandomQuestion(skillId, userId, difficulty);   // Note that it can be null
         if (question != null) {
@@ -73,7 +73,6 @@ public class QuizService {
             QuizQuestionDTO quizQuestionDTO = new QuizQuestionDTO(
                     question.getQuestionId(),
                     question.getDifficulty(),
-                    question.getQuestionType(),
                     question.getQuestion(),
                     quizChoiceDTOList
             );
@@ -84,17 +83,11 @@ public class QuizService {
         }
     }
 
-    private Difficulty getDifficultyBasedOnMastery(double masteryLevel) {
-        if (masteryLevel <= 0.3) return Difficulty.EASY;
-        else if (masteryLevel <= 0.6) return Difficulty.MEDIUM;
-        else return Difficulty.HARD;
-    }
-
     private QuizQuestion getRandomQuestion(Long skillId,
                                           Long userId,
                                           Difficulty difficulty) {
         List<QuizQuestion> quizQuestions = quizQuestionService.getAllQuizQuestionsBySkillIdAndDifficulty(skillId, difficulty);
-        Set<Long> pastQuestionIds = quizResultService.get24hrLatestQuizIdBySkillIdAndUserId(skillId, userId);
+        Set<Long> pastQuestionIds = userId == null ? null : quizResultService.get24hrLatestQuizIdBySkillIdAndUserId(skillId, userId);
         List<QuizQuestion> newQuestions;
 
         if (pastQuestionIds != null && pastQuestionIds.size() > 0) {
@@ -149,7 +142,8 @@ public class QuizService {
                 quizQuestion,
                 selectedChoice,
                 isCorrect,
-                new Date()
+                new Date(),
+                QuizType.POST_CHAPTER
         ));
 
         String solution = "Your answer is " +
@@ -334,5 +328,111 @@ public class QuizService {
             chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT);
         }
         return new GPTResponse(answer, Status.COMPLETED);
+    }
+
+    public List<QuizQuestionDTO> getInitialAssessment(Long courseId) {
+        List<Skill> skills = skillService.getSkillsByCourseId(courseId);
+        List<QuizQuestionDTO> quizQuestionDTOList = new ArrayList<>();
+
+        for (Skill skill : skills) {
+            Difficulty skillDifficulty = skill.getDifficulty();
+
+            // Every skill has 1 easy question
+            QuizQuestion question1 = getRandomQuestion(skill.getSkillId(), null, Difficulty.EASY);
+            if (question1 != null) {
+                QuizQuestionDTO questionDTO1 = generateQuizQuestionDTO(question1);
+                quizQuestionDTOList.add(questionDTO1);
+            }
+
+            QuizQuestion question2 = getRandomQuestion(skill.getSkillId(), null, Difficulty.MEDIUM);
+            if (question2 != null) {
+                QuizQuestionDTO questionDTO2 = generateQuizQuestionDTO(question2);
+                quizQuestionDTOList.add(questionDTO2);
+            }
+
+            if (skillDifficulty == Difficulty.EASY) {
+                QuizQuestion question3 = getRandomQuestion(skill.getSkillId(), null, Difficulty.HARD);
+                if (question3 != null) {
+                    QuizQuestionDTO questionDTO3 = generateQuizQuestionDTO(question3);
+                    quizQuestionDTOList.add(questionDTO3);
+                }
+            }
+        }
+
+        return quizQuestionDTOList;
+    }
+
+    public QuizQuestionDTO generateQuizQuestionDTO(QuizQuestion question) {
+        List<QuizChoiceDTO> quizChoiceDTOList = new ArrayList<>();
+        for (QuizChoice quizChoice : question.getQuizChoices()) {
+            QuizChoiceDTO quizChoiceDTO = new QuizChoiceDTO(
+                    quizChoice.getChoiceLetter(),
+                    quizChoice.getContent()
+            );
+            quizChoiceDTOList.add(quizChoiceDTO);
+        }
+        QuizQuestionDTO questionDTO = new QuizQuestionDTO(
+                question.getQuestionId(),
+                question.getDifficulty(),
+                question.getQuestion(),
+                quizChoiceDTOList
+        );
+
+        return questionDTO;
+    }
+
+    public List<AssessmentAnsResponse> submitAssessment(AsssessmentAnsRequest request) {
+        Long userId = request.getUserId();
+        Map<Difficulty, Double> weight = Map.of(
+                Difficulty.EASY, 0.25,
+                Difficulty.MEDIUM, 0.325,
+                Difficulty.HARD, 0.425
+        );
+
+        List<AssessmentAnsDTO> qnaList = request.getQnaList();
+
+        List<AssessmentAnsResponse> ansResponseList = new ArrayList<>();
+
+        Map<Long, List<AssessmentAnsDTO>> answerBySkill = qnaList.stream()
+                .collect(Collectors.groupingBy(ans -> {
+                    QuizQuestion question = quizQuestionService.getQuizQuestionByQuestionId(ans.getQuestionId());
+                    return question.getSkill().getSkillId();
+                }));
+
+        for (Long skillId : answerBySkill.keySet()) {
+            List<AssessmentAnsDTO> answers = answerBySkill.get(skillId);
+            Double weightedScore = 0.0;
+            Double totalWeight = 0.0;
+
+            for (AssessmentAnsDTO ans : answers) {
+                QuizQuestion question = quizQuestionService.getQuizQuestionByQuestionId(ans.getQuestionId());
+                Difficulty difficulty = question.getDifficulty();
+                System.out.println("Skill id: " + skillId);
+                System.out.println("ChoiceLetter: " + ans.getChoiceLetterStr());
+                ChoiceLetter selectedChoice = ChoiceLetter.valueOf(ans.getChoiceLetterStr());
+                ChoiceLetter correctChoice = ChoiceLetter.valueOf(question.getExpectedAnswer());
+                totalWeight += weight.get(difficulty);
+                if (Objects.equals(ans.getChoiceLetterStr(), question.getExpectedAnswer())) {
+                    weightedScore += weight.get(difficulty);
+                }
+
+                ansResponseList.add(new AssessmentAnsResponse(
+                        question.getQuestionId(),
+                        selectedChoice,
+                        correctChoice
+                ));
+            }
+
+            Double rawMastery = weightedScore / totalWeight;
+            Double cap = Math.min(0.2 + 0.15 * answers.size(), 0.7);
+            Double finalMastery = rawMastery * cap;
+            masteryService.addMastery(new Mastery(
+                    userService.getUserByUserId(userId),
+                    skillService.getSkillBySkillId(skillId),
+                    finalMastery
+            ));
+        }
+
+        return ansResponseList;
     }
 }

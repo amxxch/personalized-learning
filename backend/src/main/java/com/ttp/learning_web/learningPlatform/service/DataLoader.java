@@ -5,14 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ttp.learning_web.learningPlatform.dto.*;
 import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.CourseLevel;
-import com.ttp.learning_web.learningPlatform.repository.LanguageRepository;
-import com.ttp.learning_web.learningPlatform.repository.TechnicalFocusRepository;
+import com.ttp.learning_web.learningPlatform.enums.Difficulty;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +28,8 @@ public class DataLoader implements CommandLineRunner {
     private final QuizQuestionService quizQuestionService;
     private final LanguageService languageService;
     private final TechnicalFocusService technicalFocusService;
+    private final CodingExerciseService codingExerciseService;
+    private final TestCaseService testCaseService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -41,7 +43,7 @@ public class DataLoader implements CommandLineRunner {
         File cppJsonFile = new File("src/main/resources/cpp-lesson-data.json");
         File languageJsonFile = new File("src/main/resources/language-data.json");
         File techFocusJsonFile = new File("src/main/resources/technical-focus-data.json");
-        File courseJsonFile = new File("src/main/resources/course-data-2.json");
+        File courseJsonFile = new File("src/main/resources/course-data.json");
 
         List<Language> languages = mapper.readValue(languageJsonFile, new TypeReference<List<Language>>() {});
         List<TechnicalFocus> techFocuses = mapper.readValue(techFocusJsonFile, new TypeReference<List<TechnicalFocus>>() {});
@@ -81,6 +83,7 @@ public class DataLoader implements CommandLineRunner {
             Skill skill = new Skill();
             skill.setSkillName(skillDTO.getSkillName());
             skill.setSkillOrder(skillDTO.getSkillOrder());
+            skill.setDifficulty(skillDTO.getDifficulty());
             skill.setCourse(cppCourse);
 
             skill = skillService.addSkill(skill);
@@ -105,7 +108,6 @@ public class DataLoader implements CommandLineRunner {
                     quizQuestion.setQuestion(quizQuestionDTO.getQuestion());
                     quizQuestion.setSkill(skill);
                     quizQuestion.setDifficulty(quizQuestionDTO.getDifficulty());
-                    quizQuestion.setQuestionType(quizQuestionDTO.getQuestionType());
                     quizQuestion.setExpectedAnswer(String.valueOf(quizQuestionDTO.getExpectedAnswer()));
                     quizQuestion.setExplanation(quizQuestionDTO.getExplanation());
 
@@ -119,6 +121,29 @@ public class DataLoader implements CommandLineRunner {
                         quizChoice.setContent(quizChoiceDTO.getContent());
 
                         quizChoiceService.addQuizChoice(quizChoice);
+                    }
+                }
+            }
+
+            if (skillDTO.getCodingExercises() != null) {
+                for (CodingExerciseDTO codingExerciseDTO : skillDTO.getCodingExercises()) {
+                    CodingExercise codingExercise = new CodingExercise();
+                    codingExercise.setSkill(skill);
+                    codingExercise.setTitle(codingExerciseDTO.getTitle());
+                    codingExercise.setTask(codingExerciseDTO.getTask());
+                    codingExercise.setStarterCode(codingExerciseDTO.getStarterCode());
+                    codingExercise.setDifficulty(codingExerciseDTO.getDifficulty());
+                    codingExercise.setHint(codingExerciseDTO.getHint());
+
+                    codingExerciseService.addCodingExercise(codingExercise);
+
+                    for (TestCaseDTO testCaseDTO : codingExerciseDTO.getTestCases()) {
+                        TestCase testCase = new TestCase();
+                        testCase.setExercise(codingExercise);
+                        testCase.setInput(testCaseDTO.getInput());
+                        testCase.setOutput(testCaseDTO.getOutput());
+
+                        testCaseService.addTestCase(testCase);
                     }
                 }
             }

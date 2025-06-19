@@ -11,10 +11,17 @@ This will cover a step-by-step guideline to run the app locally.
 - [Maven](https://maven.apache.org/install.html)
 - *PostgreSQL* (Make sure your PostgreSQL server is running and a database is created.)
 - [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service) (You will need to create a resource and deployment for gpt-4.1-mini)
+- docker
 
 ### Start Backend Server
 1. Set up environment variable by going to `.env` file and configure your credentials for PostgreSQL Database and [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service). (The Azure OpenAI credentials can be found in *Resource Management* > *Key and Endpoints* in your resource page.)
-2. Install dependencies and build the project
+2. Build the Docker image for C++ execution (only needed once):
+
+```bash
+docker pull gcc:12
+docker build -t cpp-runner ./docker
+```
+3. Install dependencies and build the project
 - Option A: Run from IntelliJ (Recommended): Click Run on `LearningWebApplication.java`.
 - Option B: Run from terminal by following below command lines:
 

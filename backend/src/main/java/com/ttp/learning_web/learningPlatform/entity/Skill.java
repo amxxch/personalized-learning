@@ -1,5 +1,6 @@
 package com.ttp.learning_web.learningPlatform.entity;
 
+import com.ttp.learning_web.learningPlatform.enums.Difficulty;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -24,14 +25,19 @@ public class Skill {
     @Column(name = "skill_order", nullable = false)
     private Integer skillOrder;
 
+    @Column(name = "difficulty", nullable = false)
+    private Difficulty difficulty;
+
     public Skill() {}
 
     public Skill(Course course,
                  Integer skillOrder,
-                 String skillName) {
+                 String skillName,
+                 Difficulty difficulty) {
         this.course = course;
         this.skillOrder = skillOrder;
         this.skillName = skillName;
+        this.difficulty = difficulty;
     }
 
     public Integer getSkillOrder() {
@@ -64,5 +70,13 @@ public class Skill {
 
     public void setSkillId(Long skillId) {
         this.skillId = skillId;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
     }
 }

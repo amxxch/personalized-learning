@@ -2,6 +2,9 @@ package com.ttp.learning_web.learningPlatform.controller;
 
 import com.ttp.learning_web.learningPlatform.entity.Course;
 import com.ttp.learning_web.learningPlatform.service.CourseService;
+import com.ttp.learning_web.learningPlatform.service.LearningService;
+import com.ttp.learning_web.learningPlatform.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,18 +13,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(path = "api/v1/course")
 public class CourseController {
     private final CourseService courseService;
+    private final LearningService learningService;
 
-    @Autowired
-    public CourseController(CourseService courseService) {
-        this.courseService = courseService;
-    }
-
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> getCourses() {
         return ResponseEntity.ok(courseService.getAllCourses());
+    }
+
+    @GetMapping("/overview")
+    public ResponseEntity<?> getCourseOverview(
+            @RequestParam Long courseId,
+            @RequestParam Long userId
+    ) {
+        return ResponseEntity.ok(learningService.getCourseOverview(courseId, userId));
     }
 
     @PostMapping

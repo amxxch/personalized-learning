@@ -1,14 +1,14 @@
 package com.ttp.learning_web.learningPlatform.dto;
 
-public class CurrentUserResponse {
+public class UserStatusResponse {
     private Long userId;
     private boolean isProfileSetup;
     private String name;
 
-    public CurrentUserResponse() {
+    public UserStatusResponse() {
     }
 
-    public CurrentUserResponse(Long userId, boolean isProfileSetup, String name) {
+    public UserStatusResponse(Long userId, boolean isProfileSetup, String name) {
         this.userId = userId;
         this.isProfileSetup = isProfileSetup;
         this.name = name;

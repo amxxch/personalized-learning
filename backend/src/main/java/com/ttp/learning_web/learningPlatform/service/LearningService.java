@@ -8,7 +8,9 @@ import com.ttp.learning_web.learningPlatform.enums.Status;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -36,7 +38,8 @@ public class LearningService {
         Progress currentProgress = progressService.getIncompleteProgressByCourseIdAndUserId(courseId, userId);
         int currentSkillIndex = skill.getSkillOrder() - 1;
 
-        List<LessonBubble> bubbles = lessonBubbleService.getAllBubblesBySkillId(skillId);
+        List<LessonBubble> bubbles = lessonBubbleService.getAllBubblesByUserSkill(skillId, userId);
+        System.out.println("Bubble sizes: " + bubbles.size());
         List<Skill> skills = skillService.getSkillsByCourseId(courseId);
         List<Progress> progresses = progressService.getProgressByCourseIdAndUserId(courseId, userId);
 
@@ -53,7 +56,9 @@ public class LearningService {
                 currentSkillIndex++;
             }
             Skill nextSkill = skills.get(currentSkillIndex);
-            LessonBubble firstBubble = lessonBubbleService.getAllBubblesBySkillId(nextSkill.getSkillId()).getFirst();
+            System.out.println(nextSkill.getSkillId());
+            LessonBubble firstBubble = lessonBubbleService.getAllBubblesByUserSkill(nextSkill.getSkillId(), userId).getFirst();
+//            LessonBubble firstBubble = lessonBubbleService.getAllBubblesBySkillId(nextSkill.getSkillId()).getFirst();
             progressService.addProgress(new Progress(false, false, user, course, nextSkill, firstBubble));
             masteryService.addMastery(new Mastery(user, nextSkill));
             chatHistoryService.addChatbotMsgHistory(user, nextSkill, firstBubble);
@@ -79,7 +84,7 @@ public class LearningService {
             masteryService.increaseMasteryByBubble(mastery, currentBubble);
 
             // Check if user has reached the end of current skill's bubbles
-            if (currentBubble.getBubbleOrder() >= bubbles.size()) {
+            if (currentBubble.getBubbleOrder() >= bubbles.getLast().getBubbleOrder()) {
                 // If completed, mark the current skill lesson as completed
                 progressService.markSkillLessonComplete(currentProgress);
 
@@ -88,7 +93,8 @@ public class LearningService {
 
             } else {
                 // Continue with the next bubble in the current skill
-                LessonBubble nextBubble = bubbles.get(currentBubble.getBubbleOrder());
+//                LessonBubble nextBubble = bubbles.get(currentBubble.getBubbleOrder());
+                LessonBubble nextBubble = bubbles.stream().filter(b -> b.getBubbleOrder() == currentBubble.getBubbleOrder() + 1).findFirst().get();
                 currentProgress.setBubble(nextBubble);
                 progressService.updateProgress(currentProgress);
                 chatHistoryService.addChatbotMsgHistory(user, skill, nextBubble);
@@ -164,11 +170,65 @@ public class LearningService {
     }
 
     public void handleDeleteAll() {
-        masteryService.deleteAllMastery();
         chatHistoryService.deleteAllChatHistory();
         progressService.deleteAllProgress();
         quizResultService.deleteAllQuizResults();
         gptChatHistoryService.deleteAllGPTChatHistory();
+    }
+
+    public boolean hasUserCompletedInitialAssessment(Long userId, Long courseId) {
+        Course course = courseService.getCourseByCourseId(courseId);
+
+        List<Skill> skillList = skillService.getAllSkills().stream()
+                .filter(skill -> skill.getCourse() == course)
+                .toList();
+
+        List<Mastery> masteryList = masteryService.getMasteryByUserId(userId).stream()
+                .filter(mastery -> skillList.contains(mastery.getSkill()))
+                .toList();
+
+        System.out.println("Mastery List: " + masteryList.size());
+        System.out.println("Skill List: " + skillList.size());
+
+        return skillList.size() == masteryList.size();
+    }
+
+    public CourseOverview getCourseOverview(Long courseId, Long userId) {
+        Course course = courseService.getCourseByCourseId(courseId);
+        User user = userService.getUserByUserId(userId);
+
+        CourseOverview courseOverview = new CourseOverview();
+        courseOverview.setCourseId(course.getCourseId());
+        courseOverview.setTitle(course.getTitle());
+        courseOverview.setDescription(course.getDescription());
+        courseOverview.setLevel(course.getLevel().name());
+        courseOverview.setLanguage(course.getLanguages().stream().map(Language::getLanguageName).collect(Collectors.toSet()));
+        courseOverview.setTechFocus(course.getTechnicalFocuses().stream().map(TechnicalFocus::getTechFocusName).collect(Collectors.toSet()));
+        courseOverview.setAssessmentDone(hasUserCompletedInitialAssessment(userId, courseId));
+
+        List<SkillOverview> skillOverviewList = new ArrayList<>();
+
+        for (Skill skill : skillService.getSkillsByCourseId(courseId)) {
+            SkillOverview skillOverview = new SkillOverview();
+            skillOverview.setSkillId(skill.getSkillId());
+            skillOverview.setSkillName(skill.getSkillName());
+            skillOverview.setDifficulty(skill.getDifficulty().name());
+            skillOverview.setSkillOrder(skill.getSkillOrder());
+
+            Progress progress = progressService.getProgressByUserIdAndSkillId(userId, skill.getSkillId());
+            if (progress != null) {
+                skillOverview.setUnlocked(true);
+                skillOverview.setCompleted(progress.getQuizCompleted() && progress.getLessonCompleted());
+            } else {
+                skillOverview.setUnlocked(false);
+                skillOverview.setCompleted(false);
+            }
+            skillOverviewList.add(skillOverview);
+        }
+
+        courseOverview.setSkills(skillOverviewList);
+
+        return courseOverview;
     }
 
     // TODO: This is for the handling next skill after reviewing done

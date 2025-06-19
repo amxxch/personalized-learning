@@ -1,6 +1,5 @@
-'use client';
-
 import React, { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
@@ -19,15 +18,16 @@ interface ChatBubbleProps {
     initialMessages: Message[];
     initialSkillId?: number;
     initialBubbleId?: number;
-    courseId: number;
+    courseId: number | null;
 }
 
 
-const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1, courseId } : ChatBubbleProps) => {
+const ChatBubble = ({ initialMessages, initialSkillId = 0, initialBubbleId = 1, courseId } : ChatBubbleProps) => {
 
   const maxQuizQuestion = 5;
 
   const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [isNewChapter, setIsNewChapter] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [quizTime, setQuizTime] = useState(false);
@@ -45,10 +45,17 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1, 
   const [quizId, setQuizId] = useState(1);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+  const navigate = useNavigate();
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+  
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    console.log("Initial messages", initialMessages);
+    console.log("Messages updated:", messages);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -57,16 +64,6 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1, 
 
     return () => clearTimeout(timer);
   }, [quizTimeAnim]);
-
-  useEffect(() => {
-    console.log('Skill ID:', skillId);
-    console.log('Bubble ID:', bubbleId);
-    console.log('Course ID:', courseId);
-  }, [skillId, bubbleId]);
-
-  useEffect(() => {
-    console.log('num of quiz: ', numOfQuiz);
-  }, [numOfQuiz]);
 
   const handleLessonOptionClick = async (option: 'next' | 'rephrase' | 'quit' | 'restart') => {
     setLoading(true);
@@ -102,19 +99,21 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1, 
             sender: 'ASSISTANT',
             type: data.nextBubble.contentType,
             content: data.nextBubble.content,
-            topic: data.nextBubble.topic,
             skillId: data.nextBubble.skillId,
             skillName: data.nextBubble.skillName,
             bubbleOrder: data.nextBubble.bubbleOrder
           };
 
           // Update state with new bubble and progress
-          setSkillId(data.nextBubble.skillId);
+          if (skillId !== data.nextBubble.skillId) {
+            setIsNewChapter(true);
+            setSkillId(data.nextBubble.skillId);
+          } else {
+            setIsNewChapter(false);
+          }
+
           setBubbleId(data.nextBubble.bubbleId);
           setMessages(prevMessages => [...prevMessages, newBubble]);
-
-          // TODO: find a way to detect if this is the last bubble and call for quiz page
-          // Actually, might be able to handle it in backend learning endpoint
 
           console.log("Bubble ID:", bubbleId);
           console.log("Skill ID:", skillId);
@@ -125,8 +124,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1, 
               const quizTimeMessage: Message = {
                 sender: 'ASSISTANT',
                 type: 'QUIZ',
-                content: "",
-                topic: "Quiz Time! Let's answer the following question"
+                content: "Quiz Time! Let's answer the following question"
               };
               setMessages(prevMessages => [...prevMessages, quizTimeMessage]);
 
@@ -172,7 +170,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1, 
       } else if (option === 'quit') {
         // send API request
         // setMessages([...messages, 'Quit message']);
-        window.location.href = '/';
+        navigate(`/course/overview/${courseId}`, { replace: true });
       } else if (option === 'restart') {
         try {
           const response = await axios.delete('http://localhost:8080/api/v1/learning', {
@@ -269,6 +267,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1, 
   }
 
   const handleNextQuiz = async () => {
+    setIsNewChapter(false);
     setQuizTime(true);
     setLoading(true);
     setEnabledInput(false);
@@ -447,9 +446,9 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1, 
             <div className={`chat-bubble ${msg.type === 'QUIZ' ? 'bg-yellow-200 text-black text-lg ml-5' :
                 msg.sender === 'USER' ? 'bg-orange-400 text-white text-lg mr-5' : 'bg-gray-300 text-black text-lg ml-5'}`}>
 
-              {msg.skillName && msg.skillId && (msg.bubbleOrder && msg.bubbleOrder === 1) &&
-               <p className="font-bold mb-2">Chapter {msg.skillId}: {msg.skillName}</p>
-               }
+              {msg.skillName && msg.skillId && isNewChapter &&
+                <p className="font-bold mb-2">Chapter {msg.skillId}: {msg.skillName}</p>
+              }
 
               {msg.topic && <p className="font-bold mb-2">{msg.topic}</p>}
               {(msg.type === 'TEXT' || msg.type === 'GPT' || msg.type === 'QUIZ')  && <ReactMarkdown>{msg.content}</ReactMarkdown>}
@@ -489,13 +488,13 @@ const ChatBubble = ({ initialMessages, initialSkillId = 1, initialBubbleId = 1, 
                     Quit
                     <MdLogout className='text-2xl'/>
                   </button>
-                  <button 
+                  {/* <button 
                     onClick={() => handleLessonOptionClick('restart')} 
                     className="btn btn-accent btn-md text-lg mr-2 px-6"
                   >
                     Restart the lesson
                     <IoReloadOutline className='text-2xl mb-1'/>
-                  </button>
+                  </button> */}
                   <button 
                     onClick={() => handleLessonOptionClick('rephrase')} 
                     className="btn btn-secondary btn-md text-lg mr-2 px-6"

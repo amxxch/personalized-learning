@@ -32,7 +32,7 @@ public class ProgressService {
     public Progress getProgressByUserIdAndSkillId(Long userId,
                                                   Long skillId) {
         return progressRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId)
-                .orElseThrow(() -> new RuntimeException("Progress Not Found"));
+                .orElse(null);
     }
 
     public List<Progress> getProgressByUserId(Long userId) {

@@ -1,9 +1,9 @@
 package com.ttp.learning_web.learningPlatform.service;
 
+import com.ttp.learning_web.learningPlatform.dto.CourseOverview;
 import com.ttp.learning_web.learningPlatform.dto.CourseResponse;
-import com.ttp.learning_web.learningPlatform.entity.Course;
-import com.ttp.learning_web.learningPlatform.entity.Language;
-import com.ttp.learning_web.learningPlatform.entity.TechnicalFocus;
+import com.ttp.learning_web.learningPlatform.dto.SkillOverview;
+import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.repository.CourseRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;

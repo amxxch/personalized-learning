@@ -42,7 +42,7 @@ const ProfileOverview = () => {
     .catch(error => {
         console.error('Error fetching profile overview data:', error);
     });
-}, []);
+}, [userId]);
 
   const handleEditProfile = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();

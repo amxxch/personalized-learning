@@ -44,7 +44,7 @@ public class CourseRoadmapService {
                 roadmapResponse.setCourseId(roadmap.getCourse().getCourseId());
                 roadmapResponse.setCourseTitle(roadmap.getCourse().getTitle());
                 roadmapResponse.setCourseLevel(roadmap.getCourse().getLevel());
-                roadmapResponse.setEstimatedDurationWeeks(roadmapResponse.getEstimatedDurationWeeks());
+                roadmapResponse.setEstimatedDurationWeeks(roadmap.getEstimatedWeeks());
                 roadmapResponse.setRationale(roadmap.getRationale());
                 roadmapResponse.setLanguages(roadmap.getCourse().getLanguages().stream()
                         .map(Language::getLanguageName)

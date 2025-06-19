@@ -1,7 +1,7 @@
 package com.ttp.learning_web.learningPlatform.service;
 
 import com.ttp.learning_web.learningPlatform.dto.AuthResponse;
-import com.ttp.learning_web.learningPlatform.dto.CurrentUserResponse;
+import com.ttp.learning_web.learningPlatform.dto.UserStatusResponse;
 import com.ttp.learning_web.learningPlatform.dto.ProfileSetupRequest;
 import com.ttp.learning_web.learningPlatform.dto.UserDTO;
 import com.ttp.learning_web.learningPlatform.entity.Language;
@@ -60,12 +60,12 @@ public class UserService {
                 .orElse(null);
     }
 
-    public CurrentUserResponse getCurrentUser(String email) {
+    public UserStatusResponse getCurrentUser(String email) {
         User user = getUserByEmail(email);
         if (user == null) {
             throw new BadRequestException("User Not Found");
         }
-        return new CurrentUserResponse(
+        return new UserStatusResponse(
                 user.getUserId(),
                 user.getProfileSetup(),
                 user.getName());
@@ -73,20 +73,35 @@ public class UserService {
 
     public AuthResponse verifyLogin(String email, String password) {
         User user = getUserByEmail(email);
+        AuthResponse response = new AuthResponse();
+        String errorMessage = "";
         if (user == null) {
-            throw new RuntimeException("Account with this mail doesn't exist");
+            errorMessage = "Account with this mail doesn't exist";
+            response.setErrorMessage(errorMessage);
+            response.setSuccess(false);
+            return response;
         }
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Wrong password");
+            errorMessage = "Incorrect password";
+            response.setErrorMessage(errorMessage);
+            response.setSuccess(false);
+            return response;
         }
         String token = JwtTokenUtil.generateToken(user.getUserId(), email);
-        return new AuthResponse(token);
+        response.setToken(token);
+        response.setSuccess(true);
+        return response;
     }
 
     public AuthResponse addUser(String email, String password, String name) {
         User existingUser = getUserByEmail(email);
+        AuthResponse response = new AuthResponse();
+        String errorMessage = "";
         if (existingUser != null) {
-            throw new RuntimeException("Account with this mail already exists.");
+            errorMessage = "User already exists";
+            response.setErrorMessage(errorMessage);
+            response.setSuccess(false);
+            return response;
         }
         User user = new User(email, passwordEncoder.encode(password), name);
         userRepository.save(user);
@@ -94,7 +109,10 @@ public class UserService {
         Long userId = user.getUserId();
         String verificationToken = JwtTokenUtil.generateToken(userId, email);
 
-        return new AuthResponse(verificationToken);
+        response.setToken(verificationToken);
+        response.setSuccess(true);
+
+        return response;
     }
 
     public User updateUser(ProfileSetupRequest profileSetupRequest) {

@@ -41,8 +41,8 @@ const LoginPage = () => {
             window.location.href = '/';
           })
           .catch((error) => {
-            console.error('Login failed:', error);
-            setError('Login failed.' + error.error);
+            console.error('Login failed:', error.message);
+            setError('Login failed: ' + error.message);
           });
 
     };

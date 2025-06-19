@@ -1,5 +1,6 @@
 package com.ttp.learning_web.learningPlatform.entity;
 
+import com.ttp.learning_web.learningPlatform.enums.QuizType;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -29,11 +30,15 @@ public class QuizResult {
     @JoinColumn(name = "choice_id", nullable = false)
     private QuizChoice selectedAnswer;
 
-    @Column(name = "isCorrect", nullable = false)
+    @Column(name = "is_correct", nullable = false)
     private Boolean isCorrect;
 
     @Column(name = "submitted_at", nullable = false)
     private Date submittedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "quiz_type", nullable = false)
+    private QuizType quizType;
 
     public QuizResult() {}
 
@@ -42,13 +47,15 @@ public class QuizResult {
                       QuizQuestion quizQuestion,
                       QuizChoice selectedAnswer,
                       Boolean isCorrect,
-                      Date submittedAt) {
+                      Date submittedAt,
+                      QuizType quizType) {
         this.user = user;
         this.skill = skill;
         this.quizQuestion = quizQuestion;
         this.selectedAnswer = selectedAnswer;
         this.isCorrect = isCorrect;
         this.submittedAt = submittedAt;
+        this.quizType = quizType;
     }
 
     public Long getQuizResultId() {
@@ -105,5 +112,13 @@ public class QuizResult {
 
     public void setSubmittedAt(Date submittedAt) {
         this.submittedAt = submittedAt;
+    }
+
+    public QuizType getQuizType() {
+        return quizType;
+    }
+
+    public void setQuizType(QuizType quizType) {
+        this.quizType = quizType;
     }
 }

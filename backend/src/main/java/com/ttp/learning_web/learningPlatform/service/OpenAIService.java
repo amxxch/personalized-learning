@@ -59,9 +59,9 @@ public class OpenAIService {
                 **Your Task:**
                 %s
                 1. Select and order the most relevant courses.
-                2. Feel free to skip the courses that you think the student already learn and understand it based on their profile data.
-                2. Estimate how many weeks each course would take based on the user's weekly learning hours.
-                3. Make sure the progression makes sense (e.g., beginner to advanced).
+                2. Feel free to skip the courses that you think the student already learn and understand it based on their experience year. For example, if the user already have multiple years of experience, we can assume they should have the basic understanding and can skip the beginner level course.
+                3. Estimate how many weeks each course would take based on the user's weekly learning hours.
+                r. Make sure the progression makes sense (e.g., beginner to advanced).
                 4. Output exactly only a JSON roadmap with the following format without any introductions, conclusions, or backtick:
                 
                 {
@@ -86,7 +86,7 @@ public class OpenAIService {
                   ]
                 }
                 
-                Note that for courseTitle, courseId, and languages, please follow the exact information as shown in the available courses.
+                Note that for courseTitle and courseId, please follow the exact information as shown in the available courses.
                 
                 """, userProfile, availableCourses, note);
         chatMessages.add(new ChatRequestUserMessage(systemPrompt));

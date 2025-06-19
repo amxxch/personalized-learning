@@ -5,5 +5,6 @@ public enum ChoiceLetter {
     A,
     B,
     C,
-    D
+    D,
+    E
 }

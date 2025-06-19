@@ -48,8 +48,8 @@ const handleSignUp = (event: React.FormEvent<HTMLButtonElement>) => {
         window.location.href = '/';
       })
       .catch((error) => {
-        console.error('Sign up failed:', error);
-        setError('Sign up failed.' + error.message);
+        console.error('Sign up failed: ', error.message);
+        setError('Sign up failed: ' + error.message);
       });
 
 };

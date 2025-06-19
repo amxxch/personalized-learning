@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import LoadingSpinner from './LoadingSpinner';
 
 interface ProfileSetupProps {
     setIsStart: (value: boolean) => void;
@@ -63,7 +64,7 @@ const ProfileSetupForm = ({ setIsStart } : ProfileSetupProps) => {
         .catch(error => {
             console.error('Error fetching profile setup data:', error);
         });
-    }, []);
+    }, [userId]);
 
     const handleSubmit = (e: React.FormEvent) => {
         setIsLoading(true);
@@ -132,127 +133,123 @@ const ProfileSetupForm = ({ setIsStart } : ProfileSetupProps) => {
     }
 
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-white rounded-2xl shadow-md mt-4">
+    <div className="max-w-5xl mx-auto p-6 bg-white rounded-2xl shadow-md mt-2">
         <div className="space-y-6">
-            { isLoading &&
-                <div className="flex justify-center items-center p-4">
-                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-800"></div>
-                </div>
-            }
+            { isLoading && <LoadingSpinner message="Setting up your profile..." /> }
             { !isLoading &&
             <div>
-            <h2 className="text-2xl font-bold text-gray-800 text-center">Let's Set Up Your Profile</h2>
-            <p className="text-gray-600 text-center">This will help us personalize your learning path.</p>
-            
-            <form className="space-y-8">
+                <h2 className="text-2xl font-bold text-gray-800 text-center">Let's Set Up Your Profile</h2>
+                <p className="text-gray-600 text-center">This will help us personalize your learning path.</p>
+                
+                <form className="space-y-8">
 
-                {/* Experience Level */}
-                <div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-3">Years of Experience in Programming</h2>
-                    <div className="flex gap-6">
-                    {["Less than 1 year", "1-2 years", "3-5 years","6-9 years", "10+ years"].map(level => (
-                        <label key={level} className="flex items-center gap-2 text-gray-700">
-                        <input 
-                            type="radio" 
-                            name="experience" 
-                            value={level} 
-                            checked={experienceLevel === level}
-                            className="radio radio-sm border-rose-300 checked:bg-rose-300" 
-                            onChange={(e) => setExperienceLevel(e.target.value)}
+                    {/* Experience Level */}
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-800 my-3">Years of Experience in Programming</h2>
+                        <div className="flex gap-6">
+                        {["Less than 1 year", "1-2 years", "3-5 years","6-9 years", "10+ years"].map(level => (
+                            <label key={level} className="flex items-center gap-2 text-gray-700">
+                            <input 
+                                type="radio" 
+                                name="experience" 
+                                value={level} 
+                                checked={experienceLevel === level}
+                                className="radio radio-sm border-rose-300 checked:bg-rose-300" 
+                                onChange={(e) => setExperienceLevel(e.target.value)}
+                            />
+                            {level}
+                            </label>
+                        ))}
+                        </div>
+                    </div>
+
+                    {/* Known Languages */}
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-800 mb-3">Known Tools or Framework</h2>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        {languages.map(lang => (
+                            <label key={lang} className="flex items-center gap-2 text-gray-700">
+                            <input 
+                                type="checkbox" 
+                                name="knownLanguages" 
+                                value={lang} 
+                                className="checkbox checkbox-xs" 
+                                checked={selectedLanguages.includes(lang)}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setSelectedLanguages(prev => 
+                                        prev.includes(value) ? prev.filter(l => l !== value) : [...prev, value]
+                                    );
+                                }}
+                            />
+                            {lang}
+                            </label>
+                        ))}
+                        </div>
+                    </div>
+
+                    {/* Technical Focus */}
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-800 mb-3">Technical Focus</h2>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        {techFocus.map(tech => (
+                            <label key={tech} className="flex items-center gap-2 text-gray-700">
+                            <input 
+                                type="checkbox" 
+                                name="technicalFocus" 
+                                value={tech} 
+                                className="checkbox checkbox-neutral checkbox-xs" 
+                                checked={selectedTechFocus.includes(tech)}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setSelectedTechFocus(prev => 
+                                        prev.includes(value) ? prev.filter(t => t !== value) : [...prev, value]
+                                    );
+                                }}
+                            />
+                            {tech}
+                            </label>
+                        ))}
+                        </div>
+                    </div>
+
+                    {/* Career Goal */}
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-800 mb-3">Career Goal</h2>
+                        <input
+                            type="text"
+                            className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-rose-500 focus:border-rose-500"
+                            placeholder="e.g. Frontend Developer, ML Engineer"
+                            name="careerGoal"
+                            value={careerGoal}
+                            onChange={(e) => setCareerGoal(e.target.value)}
                         />
-                        {level}
-                        </label>
-                    ))}
                     </div>
-                </div>
 
-                {/* Known Languages */}
-                <div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-3">Known Tools or Framework</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    {languages.map(lang => (
-                        <label key={lang} className="flex items-center gap-2 text-gray-700">
+                    {/* Learning Hours per Week */}
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-800 mb-3">How many hours you plan to spend per week?</h2>
+                        <div className="flex items-center gap-4">
                         <input 
-                            type="checkbox" 
-                            name="knownLanguages" 
-                            value={lang} 
-                            className="checkbox checkbox-xs" 
-                            checked={selectedLanguages.includes(lang)}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                setSelectedLanguages(prev => 
-                                    prev.includes(value) ? prev.filter(l => l !== value) : [...prev, value]
-                                );
-                            }}
+                            type="range" 
+                            name="learningHourPerWeek"
+                            min="0"
+                            max="24" 
+                            className="range range-xs"
+                            onChange={(e) => setLearningHours(parseInt(e.target.value))}
                         />
-                        {lang}
-                        </label>
-                    ))}
+                        <span className="text-rose-400 font-bold text-lg">{learningHours} hrs</span>
+                        </div>
                     </div>
-                </div>
 
-                {/* Technical Focus */}
-                <div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-3">Technical Focus</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    {techFocus.map(tech => (
-                        <label key={tech} className="flex items-center gap-2 text-gray-700">
-                        <input 
-                            type="checkbox" 
-                            name="technicalFocus" 
-                            value={tech} 
-                            className="checkbox checkbox-neutral checkbox-xs" 
-                            checked={selectedTechFocus.includes(tech)}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                setSelectedTechFocus(prev => 
-                                    prev.includes(value) ? prev.filter(t => t !== value) : [...prev, value]
-                                );
-                            }}
-                        />
-                        {tech}
-                        </label>
-                    ))}
-                    </div>
-                </div>
-
-                {/* Career Goal */}
-                <div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-3">Career Goal</h2>
-                    <input
-                        type="text"
-                        className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-rose-500 focus:border-rose-500"
-                        placeholder="e.g. Frontend Developer, ML Engineer"
-                        name="careerGoal"
-                        value={careerGoal}
-                        onChange={(e) => setCareerGoal(e.target.value)}
-                    />
-                </div>
-
-                {/* Learning Hours per Week */}
-                <div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-3">How many hours you plan to spend per week?</h2>
-                    <div className="flex items-center gap-4">
-                    <input 
-                        type="range" 
-                        name="learningHourPerWeek"
-                        min="0"
-                        max="24" 
-                        className="range range-xs"
-                        onChange={(e) => setLearningHours(parseInt(e.target.value))}
-                    />
-                    <span className="text-rose-400 font-bold text-lg">{learningHours} hrs</span>
-                    </div>
-                </div>
-
-                <button
-                    type="submit"
-                    className="w-full bg-rose-300 text-white font-bold py-2 px-4 rounded-lg hover:bg-rose-400 transition"
-                    onClick={handleSubmit}
-                >
-                    Submit Profile
-                </button>
-            </form>
+                    <button
+                        type="submit"
+                        className="w-full bg-rose-300 text-white font-bold py-2 px-4 rounded-lg hover:bg-rose-400 transition"
+                        onClick={handleSubmit}
+                    >
+                        Submit Profile
+                    </button>
+                </form>
             </div>
             }
         </div>

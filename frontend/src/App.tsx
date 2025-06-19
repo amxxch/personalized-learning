@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import CourseChatPage from './pages/CourseChatPage';
 import HomePage from './pages/HomePage';
@@ -9,6 +9,9 @@ import RouteWithLayout from './components/RouteWithLayout';
 import ProfileSetupPage from './pages/ProfileSetupPage';
 import WelcomePage from './pages/WelcomePage';
 import UserProfilePage from './pages/UserProfilePage';
+import AssessmentPage from './pages/AssessmentPage';
+import CodeEditor from './pages/CodeExercisePage';
+import CourseOverviewPage from './pages/CourseOverviewPage';
 
 function App() {
 
@@ -41,10 +44,18 @@ function App() {
         }
       />
       <Route
-        path="/courses/:courseId/chat"
+        path="/course/:courseId/full-lesson"
         element={
           <RouteWithLayout isPrivate={true}>
             <CourseChatPage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/course/overview/:courseId"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <CourseOverviewPage />
           </RouteWithLayout>
         }
       />
@@ -85,6 +96,22 @@ function App() {
         element={
           <RouteWithLayout isPrivate={true}>
             <UserProfilePage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/assessment/:courseId"
+        element={
+          <RouteWithLayout>
+            <AssessmentPage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/exercise/:courseId/:skillId"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <CodeEditor />
           </RouteWithLayout>
         }
       />

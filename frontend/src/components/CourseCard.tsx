@@ -61,7 +61,7 @@ const CourseCard = ( {
 
   return (
     <div className="rounded-2xl shadow-md hover:shadow-xl overflow-hidden bg-white transition-all duration-300">
-      <Link to={`/courses/${courseId}/chat`} className="block">
+      <Link to={`/course/overview/${courseId}`} className="block">
         <div className="p-4 space-y-2">
           {/* <img src={image} alt={title} className="w-full h-48 object-cover" /> */}
           <h3 className="text-lg font-semibold text-gray-800">{title}</h3>

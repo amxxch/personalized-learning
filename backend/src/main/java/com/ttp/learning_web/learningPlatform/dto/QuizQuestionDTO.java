@@ -10,7 +10,6 @@ import java.util.List;
 public class QuizQuestionDTO {
     private Long questionId;
     private Difficulty difficulty;
-    private QuestionType questionType;
     private String question;
     private ChoiceLetter expectedAnswer;
     private String explanation;
@@ -20,28 +19,11 @@ public class QuizQuestionDTO {
 
     public QuizQuestionDTO(Long questionId,
                            Difficulty difficulty,
-                           QuestionType questionType,
                            String question,
                            List<QuizChoiceDTO> quizChoices) {
         this.questionId = questionId;
         this.difficulty = difficulty;
-        this.questionType = questionType;
         this.question = question;
-        this.quizChoices = quizChoices;
-    }
-
-    public QuizQuestionDTO(Long questionId,
-                           Difficulty difficulty,
-                           QuestionType questionType,
-                           String question,
-                           ChoiceLetter expectedAnswer,
-                           String explanation,
-                           List<QuizChoiceDTO> quizChoices) {
-        this.difficulty = difficulty;
-        this.questionType = questionType;
-        this.question = question;
-        this.expectedAnswer = expectedAnswer;
-        this.explanation = explanation;
         this.quizChoices = quizChoices;
     }
 
@@ -59,14 +41,6 @@ public class QuizQuestionDTO {
 
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
-    }
-
-    public QuestionType getQuestionType() {
-        return questionType;
-    }
-
-    public void setQuestionType(QuestionType questionType) {
-        this.questionType = questionType;
     }
 
     public String getQuestion() {

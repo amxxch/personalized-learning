@@ -2,9 +2,11 @@ export interface Course {
     courseId: number;
     title: string;
     description: string;
-    language: string[];
     level: string;
+    language: string[];
     techFocus: string[];
+    skills: Skill[];
+    assessmentDone: boolean;
 }
 
 export interface User {
@@ -16,7 +18,9 @@ export interface Skill {
     skillId: number;
     skillName: string;
     skillOrder: number;
-    course: Course;
+    difficulty: string;
+    completed: boolean;
+    unlocked: boolean;
 }
 
 export interface Bubble {
@@ -61,9 +65,29 @@ export interface Message {
     bubbleId?: number;
   }
 
+export interface QuizQuestion {
+    questionId: number;
+    question: string;
+    difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+    quizChoices: QuizChoice[];
+}
+
 export interface QuizChoice {
     content: string;
-    choiceLetter: 'A' | 'B' | 'C' | 'D';
+    choiceLetter: 'A' | 'B' | 'C' | 'D' | 'E';
+}
+
+export interface SelectedAnswer {
+    questionId: number;
+    choiceIndex: number;
+    correctIndex?: number;
+    isCorrect?: boolean;
+}
+
+export interface QuizSolution {
+    questionId: number;
+    selectedChoice: string;
+    correctChoice: string;
 }
 
 export const techFocusOptions = [
@@ -80,3 +104,26 @@ export const techFocusOptions = [
   ] as const;
   
 export type TechTopic = typeof techFocusOptions[number];
+
+export interface CodeExercise {
+    exerciseId: number;
+    title: string;
+    task: string;
+    starterCode: string;
+    hint: string;
+    difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+    testCases: TestCase[];
+}
+
+export interface TestCase {
+    input: string;
+    output: string;
+}
+
+export interface CodeOutput {
+    success: boolean;
+    input: string;
+    output: string;
+    expectedOutput: string;
+    testcaseId: number;
+}

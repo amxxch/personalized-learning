@@ -24,8 +24,11 @@ public class AuthController {
         String name = authDTO.getName();
 
         AuthResponse response = userService.addUser(email, password, name);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        if (response.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
     }
 
     @PostMapping("/login")
@@ -34,7 +37,11 @@ public class AuthController {
         String password = authDTO.getPassword();
 
         AuthResponse response = userService.verifyLogin(email, password);
-        return ResponseEntity.ok(response);
+        if (response.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
     }
 
     @DeleteMapping

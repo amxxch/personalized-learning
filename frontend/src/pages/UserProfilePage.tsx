@@ -14,8 +14,8 @@ const ProfilePage = () => {
 
     const tabs = [
         { label: "📔 Dashboard", key: "dashboard" },
-        { label: "📊 Learning Stats", key: "stats" },
         { label: "🗺️ Course Planner", key: "planner" },
+        { label: "📊 Learning Stats", key: "stats" },
         { label: "🎖️ Achievement", key: "achievement" },
     ];
 
@@ -36,7 +36,7 @@ const ProfilePage = () => {
         .catch(error => {
             console.error('Error fetching profile overview data:', error);
         });
-    }, []);
+    }, [userId]);
 
   return (
     <div className="min-h-screen flex">
