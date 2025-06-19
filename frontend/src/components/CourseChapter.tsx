@@ -24,6 +24,7 @@ const CourseChapter = ({ chapter, assessmentDone } : CourseChapterProps) => {
                 ...prev,
                 unlocked: false,
             }))
+
         }
     }, []);
 
@@ -40,8 +41,8 @@ const CourseChapter = ({ chapter, assessmentDone } : CourseChapterProps) => {
             <div className="flex justify-between items-center">
                 {/* Status */}
                 <div className="min-w-[70px] flex">
-                    {chapter.unlocked ? (
-                        chapter.completed ? (
+                    {thisChapter.unlocked ? (
+                        thisChapter.completed ? (
                             <FaCheckCircle className="text-4xl text-green-600" />
                         ) : (
                             <FaPlayCircle className="text-4xl text-orange-500" />
@@ -54,20 +55,20 @@ const CourseChapter = ({ chapter, assessmentDone } : CourseChapterProps) => {
                 <div className="flex-1">
                     {/* Chapter Name */}
                     <h2 className="text-xl font-semibold text-gray-800">
-                        Chapter {chapter.skillOrder} : {chapter.skillName}
+                        Chapter {thisChapter.skillOrder} : {thisChapter.skillName}
                     </h2>
                     {/* Action Buttons */}
                     <div className="flex gap-4 flex-wrap mt-4">
                         <button
                         className="bg-yellow-500 text-white rounded-xl px-4 py-2 font-medium shadow-md hover:bg-yellow-600 disabled:opacity-50"
-                        disabled={!chapter.unlocked}
+                        disabled={!thisChapter.unlocked}
                         onClick={handleSpecificLesson}
                         >
                         <RiLoopLeftFill className='inline mb-1 text-lg mr-2' />Review Lesson
                         </button>
                         <button
                         className="bg-emerald-600 text-white rounded-xl px-4 py-2 font-medium shadow-md hover:bg-emerald-700 disabled:opacity-50"
-                        disabled={!chapter.unlocked}
+                        disabled={!thisChapter.unlocked}
                         onClick={handleExercise}
                         >
                         <FaLaptopCode className='inline mb-1 text-lg mr-2' />Coding Exercise
