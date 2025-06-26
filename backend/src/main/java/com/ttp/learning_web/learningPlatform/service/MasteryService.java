@@ -21,6 +21,7 @@ public class MasteryService {
     private final MasteryRepository masteryRepository;
     private final UserService userService;
     private final SkillService skillService;
+    private final CourseService courseService;
 
     public List<Mastery> getAllMastery() {
         return masteryRepository.findAll();
@@ -33,6 +34,14 @@ public class MasteryService {
     public Mastery getMasteryByUserIdAndSkillId(Long userId, Long skillId) {
         return masteryRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId)
                 .orElse(null);
+    }
+
+    public List<Mastery> getMasteryByUserIdAndCourseId(Long userId, Long courseId) {
+        List<Mastery> masteryList = getMasteryByUserId(userId);
+        List<Skill> skillList = skillService.getSkillsByCourseId(courseId);
+        return masteryList.stream()
+                .filter(m -> skillList.contains(m.getSkill()))
+                .toList();
     }
 
     public List<Mastery> getMasteryByUserId(Long userId) {

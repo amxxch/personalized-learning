@@ -19,6 +19,10 @@ public class GPTChatHistory {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
+    @ManyToOne
+    @JoinColumn(name = "skill_id")
+    private Skill skill;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "sender", nullable = false)
     private Sender sender;
@@ -36,6 +40,18 @@ public class GPTChatHistory {
         this.course = course;
         this.sender = sender;
         this.content = content;
+    }
+
+    public GPTChatHistory(User user,
+                          Course course,
+                          Sender sender,
+                          String content,
+                          Skill skill) {
+        this.user = user;
+        this.course = course;
+        this.sender = sender;
+        this.content = content;
+        this.skill = skill;
     }
 
     public Long getGptChatId() {
@@ -76,5 +92,13 @@ public class GPTChatHistory {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Skill getSkill() {
+        return skill;
+    }
+
+    public void setSkill(Skill skill) {
+        this.skill = skill;
     }
 }

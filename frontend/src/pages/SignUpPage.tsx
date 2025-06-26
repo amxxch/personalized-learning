@@ -49,7 +49,7 @@ const handleSignUp = (event: React.FormEvent<HTMLButtonElement>) => {
       })
       .catch((error) => {
         console.error('Sign up failed: ', error.message);
-        setError('Sign up failed: ' + error.message);
+        setError(error.message);
       });
 
 };

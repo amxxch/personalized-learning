@@ -102,7 +102,7 @@ const CourseRoadmapView = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
-                  onClick={() => idx === 0 && Navigate(`/courses/overview/${course.courseId}/`)}
+                  onClick={() => idx === 0 && Navigate(`/course/overview/${course.courseId}`)}
                   className={`min-w-[320px] max-w-sm bg-white rounded-2xl shadow-xl p-6 snap-start flex-shrink-0 transform transition-transform duration-300 hover:scale-105 border ${
                     idx > 0 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
                   }`}

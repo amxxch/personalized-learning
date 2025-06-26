@@ -7,5 +7,6 @@ public enum ContentType {
     CODE,
     GPT,
     UNSURE,
-    QUIZ
+    QUIZ,
+    REVIEW
 }

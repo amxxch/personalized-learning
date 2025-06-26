@@ -26,6 +26,10 @@ public class CodingExerciseResultService {
                 .orElse(null);
     }
 
+    public List<CodingExerciseResult> getAllCodingExerciseResultByUserId(Long userId) {
+        return codingExerciseResultRepository.findByUser_UserId(userId);
+    }
+
     public List<CodingExerciseResult> getAllCodingExerciseResultByUserIdAndSkillId(Long userId, Long skillId) {
         return codingExerciseResultRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId);
     }

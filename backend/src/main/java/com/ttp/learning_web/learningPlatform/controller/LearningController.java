@@ -5,16 +5,20 @@ import com.ttp.learning_web.learningPlatform.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/learning")
 public class LearningController {
 
     private final LearningService learningService;
     private final OpenAIService openAIService;
+    private final ChatHistoryService chatHistoryService;
 
-    public LearningController(LearningService learningService, OpenAIService openAIService) {
+    public LearningController(LearningService learningService, OpenAIService openAIService, ChatHistoryService chatHistoryService) {
         this.learningService = learningService;
         this.openAIService = openAIService;
+        this.chatHistoryService = chatHistoryService;
     }
 
     @GetMapping("/next-bubble")
@@ -57,9 +61,9 @@ public class LearningController {
         return ResponseEntity.ok("All progresses, chat history, gpt chat history, and quiz results are deleted.");
     }
 
-    @PostMapping("gpt")
-    public ResponseEntity<?> gpt(@RequestBody String question) {
-        String ans = openAIService.learningPrompt(Long.parseLong("1"), Long.parseLong("1"), question);
-        return ResponseEntity.ok(ans);
-    }
+//    @PostMapping("gpt")
+//    public ResponseEntity<?> gpt(@RequestBody String question) {
+//        String ans = openAIService.learningPrompt(Long.parseLong("1"), Long.parseLong("1"), question);
+//        return ResponseEntity.ok(ans);
+//    }
 }

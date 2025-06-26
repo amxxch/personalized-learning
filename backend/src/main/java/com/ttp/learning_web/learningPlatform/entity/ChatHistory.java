@@ -52,25 +52,28 @@ public class ChatHistory {
 
     public ChatHistory() {}
 
-//    For existing lesson bubbles
+    //  For existing lesson bubbles
     public ChatHistory(User user,
                        Course course,
                        Skill skill,
                        LessonBubble bubble,
                        Sender sender,
                        Date timestamp,
-                       Integer contentOrder) {
+                       Integer contentOrder,
+                       String content) {
         this.user = user;
         this.course = course;
         this.skill = skill;
         this.bubble = bubble;
         this.sender = sender;
         this.timestamp = timestamp;
-        this.content = bubble.getContent();
+        this.content = content;
         this.contentOrder = contentOrder;
         this.contentType = bubble.getContentType();
         this.topic = bubble.getTopic();
     }
+
+
 
     public ChatHistory(User user,
                        Course course,
@@ -79,7 +82,8 @@ public class ChatHistory {
                        String content,
                        Date timestamp,
                        Integer contentOrder,
-                       ContentType contentType) {
+                       ContentType contentType,
+                       String topic) {
         this.user = user;
         this.course = course;
         this.skill = skill;
@@ -88,6 +92,7 @@ public class ChatHistory {
         this.timestamp = timestamp;
         this.contentOrder = contentOrder;
         this.contentType = contentType;
+        this.topic = topic;
     }
 
     public Long getChatId() {

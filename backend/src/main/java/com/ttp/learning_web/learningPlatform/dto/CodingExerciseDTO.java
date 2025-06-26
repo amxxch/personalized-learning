@@ -12,6 +12,8 @@ public class CodingExerciseDTO {
     private Difficulty difficulty;
     private List<TestCaseDTO> testCases;
     private String hint;
+    private boolean unlocked;
+    private boolean completed;
 
     public CodingExerciseDTO() {
     }
@@ -30,6 +32,24 @@ public class CodingExerciseDTO {
         this.difficulty = difficulty;
         this.testCases = testCases;
         this.hint = hint;
+    }
+
+    public CodingExerciseDTO(Long exerciseId,
+                             String title,
+                             String task,
+                             String starterCode,
+                             Difficulty difficulty,
+                             List<TestCaseDTO> testCases,
+                             String hint,
+                             boolean completed) {
+        this.exerciseId = exerciseId;
+        this.title = title;
+        this.task = task;
+        this.starterCode = starterCode;
+        this.difficulty = difficulty;
+        this.testCases = testCases;
+        this.hint = hint;
+        this.completed = completed;
     }
 
     public Long getExerciseId() {
@@ -86,5 +106,21 @@ public class CodingExerciseDTO {
 
     public void setHint(String hint) {
         this.hint = hint;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public boolean isUnlocked() {
+        return unlocked;
+    }
+
+    public void setUnlocked(boolean unlocked) {
+        this.unlocked = unlocked;
     }
 }

@@ -32,6 +32,7 @@ const AssessmentPage = () => {
             },
             params: {
                 courseId: courseId,
+                userId: userId
             }
         })
         .then(response => {
@@ -284,7 +285,7 @@ const AssessmentPage = () => {
                         onClick={() => navigate(`/course/overview/${courseId}`)}
                         className="w-full bg-pink-600 hover:bg-pink-700 transition text-white font-semibold py-3 px-4 rounded-xl mb-6 text-lg"
                     >
-                        🚀 Start Learning Now
+                        🚀 Start Learning
                     </button>
 
                     <div className="text-gray-600 text-md text-center mb-2 font-medium">

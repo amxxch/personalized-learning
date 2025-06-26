@@ -12,4 +12,6 @@ public interface GPTChatHistoryRepository extends JpaRepository<GPTChatHistory, 
     void deleteByGptChatId(Long chatId);
 
     List<GPTChatHistory> findByUser_UserIdAndCourse_CourseId(Long userId, Long courseId);
+
+    List<GPTChatHistory> findByUser_UserIdAndSkill_SkillId(Long userId, Long skillId);
 }

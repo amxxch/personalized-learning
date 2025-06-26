@@ -4,6 +4,7 @@ public class RunExerciseRequest {
     private Long userId;
     private Long exerciseId;
     private String code;
+    private String input;
 
     public Long getUserId() {
         return userId;
@@ -27,5 +28,13 @@ public class RunExerciseRequest {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getInput() {
+        return input;
+    }
+
+    public void setInput(String input) {
+        this.input = input;
     }
 }

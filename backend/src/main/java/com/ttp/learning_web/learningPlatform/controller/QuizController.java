@@ -6,10 +6,7 @@ import com.ttp.learning_web.learningPlatform.dto.QuizQuestionDTO;
 import com.ttp.learning_web.learningPlatform.enums.ChoiceLetter;
 import com.ttp.learning_web.learningPlatform.service.QuizService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/quiz")
@@ -34,11 +31,12 @@ public class QuizController {
     public ResponseEntity<String> submitAnswer(
             @RequestParam Long userId,
             @RequestParam Long questionId,
-            @RequestParam String choiceLetterStr
+            @RequestParam String choiceLetterStr,
+            @RequestParam int questionNum
     ) {
         try {
             ChoiceLetter choiceLetter = ChoiceLetter.valueOf(choiceLetterStr);
-            return ResponseEntity.ok(quizService.submitAnswerAndGetSolution(userId, questionId, choiceLetter));
+            return ResponseEntity.ok(quizService.submitAnswerAndGetSolution(userId, questionId, choiceLetter, questionNum));
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
@@ -61,5 +59,12 @@ public class QuizController {
         return ResponseEntity.ok(quizService.getQuizEvaluation(userId, skillId));
     }
 
-//    handle review???? no actually should create new endpoint for that
+    @GetMapping("/next-review-question")
+    public ResponseEntity<?> nextReviewQuestion(
+            @RequestParam Long userId,
+            @RequestParam Long skillId,
+            @RequestParam int questionNum
+    ) {
+        return ResponseEntity.ok(quizService.handleNextReviewQuestion(userId, skillId, questionNum));
+    }
 }

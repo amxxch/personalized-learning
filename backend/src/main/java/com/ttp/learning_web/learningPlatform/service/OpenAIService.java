@@ -18,9 +18,11 @@ public class OpenAIService {
     private final String deploymentOrModelId;
     private final GPTChatHistoryService historyService;
     private final CourseService courseService;
+    private final SkillService skillService;
+    private final MasteryService masteryService;
 
     public OpenAIService(GPTChatHistoryService historyService,
-                         CourseService courseService) {
+                         CourseService courseService, SkillService skillService, MasteryService masteryService) {
         this.historyService = historyService;
         this.courseService = courseService;
 
@@ -32,6 +34,8 @@ public class OpenAIService {
                 .endpoint(endpoint)
                 .credential(new AzureKeyCredential(key))
                 .buildClient();
+        this.skillService = skillService;
+        this.masteryService = masteryService;
     }
 
     public String courseRoadmapPrompt(String userProfile, String availableCourses, String note) {
@@ -102,13 +106,17 @@ public class OpenAIService {
         return assistantReply;
     }
 
-    public String learningPrompt(Long userId, Long courseId, String userMessage) {
-        List<ChatRequestMessage> chatMessages = historyService.findRequestMessagesByUserIdAndCourseId(userId, courseId);
+    public String learningPrompt(Long userId, Long courseId, Long skillId, String userMessage) {
+        List<ChatRequestMessage> chatMessages = historyService.findRequestMessagesByUserIdAndSkillId(userId, skillId);
         String courseTitle = courseService.getCourseByCourseId(courseId).getTitle();
+        String skillName = skillService.getSkillBySkillId(skillId).getSkillName();
+        Double masteryLevel = masteryService.getMasteryByUserIdAndSkillId(userId, skillId).getMasteryLevel();
 
         if (chatMessages.isEmpty()) {
+            String unrelatedAnswer = "The question is not related to the course content. Please ask a new question.";
             String systemPrompt = String.format("""
-                You are an expert programming tutor helping a student learn in the course **%s**.
+                You are an expert programming tutor helping a student learn in the course **%s** in the chapter about **%s**
+                The student has an initial mastery level of %.2f out of 1.0.
                 
                 Your responses must:
                 - Be concise, focused, and pedagogically effective — prioritize clarity over length.
@@ -116,8 +124,11 @@ public class OpenAIService {
                 - Avoid repeating the question, unnecessary introductions, or filler phrases like "Sure!" or "Let me explain."
                 - Think step by step, but explain only what’s essential to move the student forward.
                 - Limit the response to essential points, aiming for under 200 words if possible.
-                """, courseTitle);
+                - Not restate or explain parts of the questions
+                - If the user asks a question that is unrelated to the course content, respond exactly with: "%s"
+                """, courseTitle, skillName, masteryLevel, unrelatedAnswer);
 
+            historyService.addGPTChatHistory(userId, courseId, Sender.SYSTEM, systemPrompt, skillId);
             chatMessages.add(new ChatRequestSystemMessage(systemPrompt));
         }
 
@@ -131,8 +142,8 @@ public class OpenAIService {
         ChatChoice choice = chatCompletions.getChoices().getFirst();
         String assistantReply = choice.getMessage().getContent();
         chatMessages.add(new ChatRequestAssistantMessage(assistantReply));
-        historyService.addGPTChatHistory(userId, courseId, Sender.USER, userMessage);
-        historyService.addGPTChatHistory(userId, courseId, Sender.ASSISTANT, assistantReply);
+        historyService.addGPTChatHistory(userId, courseId, Sender.USER, userMessage, skillId);
+        historyService.addGPTChatHistory(userId, courseId, Sender.ASSISTANT, assistantReply, skillId);
 
         return assistantReply;
     }

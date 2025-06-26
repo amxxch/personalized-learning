@@ -46,6 +46,7 @@ export default function CourseOverviewPage() {
             if (candidate !== null) {
                 data.skills.find(skill => skill.skillId === candidate?.skillId)!.unlocked = true;
             }
+            console.log("candidate: ", candidate);
             setCourseOverview(data);
             setCurrentChapter(candidate);
             setAssessmentDone(data.assessmentDone);
@@ -70,8 +71,6 @@ export default function CourseOverviewPage() {
                 { courseOverview && courseOverview.skills && courseOverview.skills.map((chapter, index) => (
                     <div
                     key={index}
-                    className={`bg-white p-6 rounded-2xl shadow flex flex-col lg:flex-row items-start 
-                        lg:items-center justify-between gap-4 ${chapter.unlocked ? "" : "opacity-60"}`}
                     >
                         <CourseChapter chapter={chapter} assessmentDone={assessmentDone} />
                     </div>

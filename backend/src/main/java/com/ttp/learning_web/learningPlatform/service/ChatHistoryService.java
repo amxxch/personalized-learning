@@ -13,10 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -35,9 +32,6 @@ public class ChatHistoryService {
         List<ChatHistory> chatHistoryList = chatHistoryRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId);
         return chatHistoryList.stream()
                 .map(chat -> {
-//                    if (chat.getBubble() != null) {
-//                        chat.setBubble(chat.getBubble());
-//                    }
                     Long bubbleId = chat.getBubble() != null ? chat.getBubble().getBubbleId() : null;
 
                     return new ChatHistoryDTO(
@@ -54,6 +48,24 @@ public class ChatHistoryService {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    public List<ChatHistoryDTO> getAllLessonChatHistoryByUserIdAndSkillId(
+            Long userId, Long skillId
+    ) {
+//        List<ChatHistoryDTO> chatHistoryList = getAllChatHistoryByUserIdAndSkillId(userId, skillId).stream()
+//                .filter(chat -> {
+//                    return chat.getContentType() != ContentType.QUIZ;
+//                })
+//                .toList();
+
+        List<ChatHistoryDTO> chatHistoryList = getAllChatHistoryByUserIdAndSkillId(userId, skillId).stream()
+                .filter(chat -> {
+                    return chat.getContentType() != ContentType.REVIEW;
+                })
+                .toList();
+
+        return chatHistoryList;
     }
 
     public List<ChatHistoryDTO> getAllChatHistoryByUserIdAndCourseId(
@@ -104,7 +116,7 @@ public class ChatHistoryService {
         List<ChatHistory> chatHistoryList = chatHistoryRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId);
 
         return chatHistoryList.stream()
-                .filter(ch -> ch.getContentType() == ContentType.QUIZ)
+                .filter(ch -> ch.getContentType() == ContentType.QUIZ && Objects.equals(ch.getTopic(), "QUIZ"))
                 .max(Comparator.comparingLong(ChatHistory::getChatId))
                 .orElse(null);
     }
@@ -113,7 +125,7 @@ public class ChatHistoryService {
         return chatHistoryRepository.save(chatHistory);
     }
 
-    public void addChatbotMsgHistory(User user, Skill skill, LessonBubble bubble) {
+    public void addChatbotMsgHistory(User user, Skill skill, LessonBubble bubble, String content) {
         /**
          * This function is for adding the chat history that is related to some bubble.
         * */
@@ -127,13 +139,14 @@ public class ChatHistoryService {
                 bubble,
                 Sender.ASSISTANT,
                 new Date(),
-                nextChatHistoryOrder
+                nextChatHistoryOrder,
+                content
         );
 
         chatHistoryRepository.save(newChat);
     }
 
-    public void addCustomizedMsgHistory(User user, Skill skill, String content, Sender sender, ContentType contentType) {
+    public void addCustomizedMsgHistory(User user, Skill skill, String content, Sender sender, ContentType contentType, String topic) {
         /**
          * This function is for adding any chat history that is not related to any specific bubble.
          * */
@@ -148,7 +161,8 @@ public class ChatHistoryService {
                 content,
                 new Date(),
                 nextChatHistoryOrder,
-                contentType
+                contentType,
+                topic
         );
 
         chatHistoryRepository.save(newChat);
@@ -156,7 +170,7 @@ public class ChatHistoryService {
 
     public void addStillUnsureMsgHistory(User user, Skill skill) {
         String message = "I'm still unsure. Can you elaborate more?";
-        addCustomizedMsgHistory(user, skill, message, Sender.USER, ContentType.UNSURE);
+        addCustomizedMsgHistory(user, skill, message, Sender.USER, ContentType.UNSURE, null);
     }
 
     public ChatHistory changeChatHistory(ChatHistory chatHistory) {

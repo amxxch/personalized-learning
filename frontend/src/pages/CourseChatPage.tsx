@@ -8,13 +8,14 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 const CourseChatPage = () => {
   const { userId, userToken } = useAuth();
-  const [skillId, setSkillId] = useState(1);
+  // const [skillId, setSkillId] = useState(1);
   const [bubbleId, setBubbleId] = useState(1);
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
 
   const [loading, setLoading] = useState(true);
-  const { courseId } = useParams();
+  const { courseId, skillId } = useParams();
   const parsedCourseId = courseId ? parseInt(courseId) : null;
+  const parsedSkillId = skillId ? parseInt(skillId) : null;
   const Navigate = useNavigate();
 
   useEffect(() => {
@@ -49,13 +50,24 @@ const CourseChatPage = () => {
       try {
 
         // Fetch chat history
-        const chatResponse = await axios.get('http://localhost:8080/api/v1/chat-history/by-course', {
+        // const chatResponse = await axios.get('http://localhost:8080/api/v1/chat-history/by-course', {
+        //   headers: {
+        //     Authorization: `Bearer ${userToken}`
+        //   },
+        //   params: {
+        //     userId: userId,
+        //     courseId: parsedCourseId
+        //   }
+        // });
+
+
+        const chatResponse = await axios.get('http://localhost:8080/api/v1/chat-history/by-skill', {
           headers: {
             Authorization: `Bearer ${userToken}`
           },
           params: {
             userId: userId,
-            courseId: parsedCourseId
+            skillId: parsedSkillId,
           }
         });
         const data = chatResponse.data;
@@ -82,19 +94,19 @@ const CourseChatPage = () => {
           };
         });
 
+        // Set current skillId and BubbleId
         const latestMessages = messages
           .filter((msg: any) => msg.sender === 'ASSISTANT' && msg.type !== 'GPT')
-          .sort((a: any, b: any) => a.bubbleId - b.bubbleId);
-
-        console.log('Latest messages:', latestMessages);
+          .sort((a: any, b: any) => a.chatId - b.chatId);
 
         if (latestMessages.length > 0) {
           const latestMessage = latestMessages[latestMessages.length - 1];
-          console.log('Latest one message:', latestMessage);
-          setSkillId(latestMessage.skillId || 1);
           setBubbleId(latestMessage.bubbleId || 1);
         } 
         setInitialMessages(messages);
+
+        console.log("skillId in page:", parsedSkillId);
+        console.log("Initial messages set:", messages);
 
       } catch (error) {
         console.error('Error fetching chat history:', error);
@@ -105,10 +117,6 @@ const CourseChatPage = () => {
     }
   }, [userId])
 
-  useEffect(() => {
-    console.log(initialMessages);
-  }, [initialMessages]);
-
   return (
     <div style={{ height: 'calc(100vh - 64px)' }} className="flex flex-col p-4 overflow-y-auto">
         {loading ? (
@@ -116,7 +124,7 @@ const CourseChatPage = () => {
         ) : (
           <ChatBubble 
           initialMessages={initialMessages} 
-          initialSkillId={skillId} 
+          initialSkillId={parsedSkillId || 1} 
           initialBubbleId={bubbleId} 
           courseId={parsedCourseId}
           />

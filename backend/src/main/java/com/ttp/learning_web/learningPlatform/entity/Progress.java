@@ -2,6 +2,8 @@ package com.ttp.learning_web.learningPlatform.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "progress", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "course_id", "skill_id"})
@@ -35,6 +37,9 @@ public class Progress {
     @JoinColumn(name = "bubble_id", nullable = false)
     private LessonBubble bubble;
 
+    @Column(name = "latest_update_at", nullable = false)
+    private Date latestUpdateAt;
+
     public Progress() {}
 
     public Progress(Boolean quizCompleted,
@@ -42,13 +47,15 @@ public class Progress {
                     User user,
                     Course course,
                     Skill skill,
-                    LessonBubble bubble) {
+                    LessonBubble bubble,
+                    Date latestUpdateAt) {
         this.user = user;
         this.course = course;
         this.skill = skill;
         this.bubble = bubble;
         this.lessonCompleted = lessonCompleted;
         this.quizCompleted = quizCompleted;
+        this.latestUpdateAt = latestUpdateAt;
     }
 
     public Long getProgressId() {
@@ -105,5 +112,13 @@ public class Progress {
 
     public void setBubble(LessonBubble bubble) {
         this.bubble = bubble;
+    }
+
+    public Date getLatestUpdateAt() {
+        return latestUpdateAt;
+    }
+
+    public void setLatestUpdateAt(Date latestUpdateAt) {
+        this.latestUpdateAt = latestUpdateAt;
     }
 }

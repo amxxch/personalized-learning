@@ -32,6 +32,13 @@ public class CourseController {
         return ResponseEntity.ok(learningService.getCourseOverview(courseId, userId));
     }
 
+    @GetMapping("/courses-taken")
+    public ResponseEntity<?> getCoursesTaken(
+            @RequestParam Long userId
+    ) {
+        return ResponseEntity.ok(courseService.getCourseTaken(userId));
+    }
+
     @PostMapping
     public ResponseEntity<Course> addCourse(@RequestBody Course course) {
         Course newCourse = courseService.addCourse(course);

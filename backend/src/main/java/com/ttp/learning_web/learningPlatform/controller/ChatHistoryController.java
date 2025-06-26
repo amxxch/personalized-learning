@@ -27,11 +27,11 @@ public class ChatHistoryController {
     }
 
     @GetMapping("/by-skill")
-    public List<ChatHistoryDTO> getChatHistoryBySkillId(
+    public ResponseEntity<List<ChatHistoryDTO>> getChatHistoryForChapter(
             @RequestParam Long userId,
             @RequestParam Long skillId
     ) {
-        return chatHistoryService.getAllChatHistoryByUserIdAndSkillId(userId, skillId);
+        return ResponseEntity.ok(chatHistoryService.getAllLessonChatHistoryByUserIdAndSkillId(userId, skillId));
     }
 
 

@@ -58,7 +58,8 @@ public class QuizService {
                         skill,
                         "**Quiz** **Time!** **Let's** **answer** **the** **following** **question**",
                         Sender.ASSISTANT,
-                        ContentType.TEXT
+                        ContentType.QUIZ,
+                        null
                 );
             }
 
@@ -67,17 +68,16 @@ public class QuizService {
                     skill,
                     questionBubble,
                     Sender.ASSISTANT,
-                    ContentType.QUIZ
+                    ContentType.QUIZ,
+                    "QUIZ"
             );
 
-            QuizQuestionDTO quizQuestionDTO = new QuizQuestionDTO(
+            return new QuizQuestionDTO(
                     question.getQuestionId(),
                     question.getDifficulty(),
                     question.getQuestion(),
                     quizChoiceDTOList
             );
-
-            return quizQuestionDTO;
         } else {
             return null;
         }
@@ -86,11 +86,18 @@ public class QuizService {
     private QuizQuestion getRandomQuestion(Long skillId,
                                           Long userId,
                                           Difficulty difficulty) {
-        List<QuizQuestion> quizQuestions = quizQuestionService.getAllQuizQuestionsBySkillIdAndDifficulty(skillId, difficulty);
+        List<QuizQuestion> quizQuestions;
+
+        if (difficulty == null) {
+            quizQuestions = quizQuestionService.getAllQuizQuestionsBySkillId(skillId);
+        } else {
+            quizQuestions = quizQuestionService.getAllQuizQuestionsBySkillIdAndDifficulty(skillId, difficulty);
+        }
+
         Set<Long> pastQuestionIds = userId == null ? null : quizResultService.get24hrLatestQuizIdBySkillIdAndUserId(skillId, userId);
         List<QuizQuestion> newQuestions;
 
-        if (pastQuestionIds != null && pastQuestionIds.size() > 0) {
+        if (pastQuestionIds != null && !pastQuestionIds.isEmpty()) {
             for (Long id : pastQuestionIds) {
                 System.out.println("pastQuestionId: " + id);
             }
@@ -105,13 +112,124 @@ public class QuizService {
         }
 
         System.out.println("newQuestions: " + newQuestions.size());
+        if (newQuestions.isEmpty()) {
+            return null;
+        }
         Collections.shuffle(newQuestions);
-        return newQuestions.isEmpty() ? null : newQuestions.getFirst();
+        return newQuestions.getFirst();
+    }
+
+    public QuizQuestionDTO handleNextReviewQuestion(Long userId, Long skillId, int questionNum) {
+        User user = userService.getUserByUserId(userId);
+        Skill skill = skillService.getSkillBySkillId(skillId);
+
+        Integer quizNum = quizResultService.getLatestQuizQuestionNumBySkillIdAndUserId(skill.getSkillId(), userId);
+        System.out.println("quizNum: " + quizNum);
+        System.out.println("questionNum: " + questionNum);
+
+        if (questionNum == 1) {
+            if (quizNum == null) {
+                quizNum = 1;
+            } else {
+                quizNum = quizNum + 1;
+            }
+        }
+
+        System.out.println("quizNum: " + quizNum);
+
+        QuizQuestion question = getRandomReviewQuestion(userId, skillId, quizNum);   // Note that it can be null
+        if (question != null) {
+
+            String choiceStr = "";
+
+            List<QuizChoiceDTO> quizChoiceDTOList = new ArrayList<>();
+            for (QuizChoice quizChoice : question.getQuizChoices()) {
+                QuizChoiceDTO quizChoiceDTO = new QuizChoiceDTO(
+                        quizChoice.getChoiceLetter(),
+                        quizChoice.getContent()
+                );
+                choiceStr += "**" + quizChoice.getChoiceLetter() + "**: " + quizChoice.getContent() +"\n\n";
+                quizChoiceDTOList.add(quizChoiceDTO);
+            }
+
+            String questionBubble = "**Quiz** **Question** **#** **" + (questionNum) + "**\n\n" +
+                    question.getQuestion() + "\n\n\n\n" + choiceStr;
+
+            if (questionNum == 1) {
+                chatHistoryService.addCustomizedMsgHistory(
+                        user,
+                        skill,
+                        "**Review** **Time!** **Let's** **answer** **the** **following** **question**",
+                        Sender.ASSISTANT,
+                        ContentType.REVIEW,
+                        null
+                );
+            }
+
+            chatHistoryService.addCustomizedMsgHistory(
+                    user,
+                    skill,
+                    questionBubble,
+                    Sender.ASSISTANT,
+                    ContentType.REVIEW,
+                    "QUIZ"
+            );
+
+            return new QuizQuestionDTO(
+                    question.getQuestionId(),
+                    question.getDifficulty(),
+                    question.getQuestion(),
+                    quizChoiceDTOList
+            );
+        } else {
+            return null;
+        }
+    }
+
+    public QuizQuestion getRandomReviewQuestion(Long userId, Long skillId, int quizNum) {
+        try {
+            List<QuizQuestion> quizQuestions = quizQuestionService.getAllQuizQuestionsBySkillId(skillId);
+
+            Set<Long> wrongQuestionIds = userId == null ? null : quizResultService.get48hrWrongQuizIdByUserIdAndSkillId(userId, skillId);
+            Set<Long> pastQuestionIds = userId == null ? null : quizResultService.getQuizIdFromSameQuizNum(skillId, userId, quizNum);
+
+            List<QuizQuestion> newQuestions = new ArrayList<>();
+
+            if (wrongQuestionIds != null && !wrongQuestionIds.isEmpty()) {
+                // Get the questions the user has done wrong in the past
+                newQuestions = new ArrayList<>(
+                        quizQuestions.stream()
+                                .filter(q -> (pastQuestionIds == null || !pastQuestionIds.contains(q.getQuestionId())) &&
+                                        wrongQuestionIds.contains(q.getQuestionId()))
+                                .toList()
+                );
+
+                System.out.println("newQuestions: " + newQuestions.size() + newQuestions);
+            }
+
+            if (newQuestions == null || newQuestions.isEmpty()) {
+                newQuestions = new ArrayList<>(
+                        quizQuestions.stream()
+                                .filter(q -> pastQuestionIds == null || !pastQuestionIds.contains(q.getQuestionId()))
+                                .toList()
+                );
+            }
+
+            System.out.println("newQuestions: " + newQuestions.size());
+            if (newQuestions.isEmpty()) {
+                return null;
+            }
+            Collections.shuffle(newQuestions);
+            return newQuestions.getFirst();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String submitAnswerAndGetSolution(Long userId,
-                                                   Long questionId,
-                                                   ChoiceLetter selectedLetter) {
+                                             Long questionId,
+                                             ChoiceLetter selectedLetter,
+                                             int questionNum) {
         QuizQuestion quizQuestion = quizQuestionService.getQuizQuestionByQuestionId(questionId);
         User user = userService.getUserByUserId(userId);
         Skill skill = quizQuestion.getSkill();
@@ -133,8 +251,18 @@ public class QuizService {
                 skill,
                 "Selected answer: " + selectedLetter.name(),
                 Sender.USER,
-                ContentType.TEXT
+                ContentType.QUIZ,
+                null
         );
+
+        Integer quizNum = quizResultService.getLatestQuizQuestionNumBySkillIdAndUserId(skill.getSkillId(), userId);
+        if (quizNum == null) {
+            quizNum = 1;
+        } else {
+            if (questionNum == 1) {
+                quizNum = quizNum + 1;
+            }
+        }
 
         quizResultService.addQuizResult(new QuizResult(
                 user,
@@ -143,7 +271,8 @@ public class QuizService {
                 selectedChoice,
                 isCorrect,
                 new Date(),
-                QuizType.POST_CHAPTER
+                quizNum == 1 ? QuizType.POST_CHAPTER : QuizType.REVIEW,
+                quizNum
         ));
 
         String solution = "Your answer is " +
@@ -158,7 +287,8 @@ public class QuizService {
                 skill,
                 solution,
                 Sender.ASSISTANT,
-                ContentType.GPT
+                ContentType.QUIZ,
+                null
         );
 
         return solution;
@@ -169,7 +299,9 @@ public class QuizService {
         Skill skill = skillService.getSkillBySkillId(skillId);
         Mastery mastery = masteryService.getMasteryByUserIdAndSkillId(userId, skillId);
         Progress progress = progressService.getProgressByUserIdAndSkillId(userId, skillId);
-        List<QuizResult> quizResults = quizResultService.getQuizResultsBySkillIdAndUserId(skillId, userId);
+
+        Integer quizNum = quizResultService.getLatestQuizQuestionNumBySkillIdAndUserId(skillId, userId);
+        List<QuizResult> quizResults = quizResultService.getAllQuizResultsByQuizNumAndSkillIdAndUserId(quizNum, skillId, userId);
 
         int numOfQuiz = quizResults.size();
         int numOfCorrectQuiz = 0;
@@ -200,9 +332,10 @@ public class QuizService {
                 resultSummary
         );
 
-        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), prompt);
+        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), skillId, prompt);
         progress.setQuizCompleted(true);
         progressService.updateProgress(progress);
+        courseService.markCourseCompletion(userId, skill.getCourse().getCourseId());
 
         // Find the average mastery level between our static rubric and GPT suggested level
         Double updatedMasteryLevel = getMasteryLevelFromGPT(resultSummary, skillId, userId);
@@ -217,7 +350,7 @@ public class QuizService {
                 """, numOfCorrectQuiz, numOfQuiz, avgMasteryLevel);
 
         String evalMsg = introMsg + answer;
-        chatHistoryService.addCustomizedMsgHistory(user, skill, evalMsg, Sender.ASSISTANT, ContentType.GPT);
+        chatHistoryService.addCustomizedMsgHistory(user, skill, evalMsg, Sender.ASSISTANT, ContentType.QUIZ, null);
 
         return evalMsg;
 
@@ -230,37 +363,32 @@ public class QuizService {
         Mastery mastery = masteryService.getMasteryByUserIdAndSkillId(userId, skillId);
 
         String prompt = String.format("""
-            A student has just completed a quiz on the skill "%s" from the course "%s".
-            
-            Below is the list of questions. Each includes the skill, question text, correct answer, student's answer, question difficulty, and whether the student's answer was correct:
-            
-            %s
-            
-            The student's mastery level estimate with a static rubric was %.2f (on a scale from 0.0 to 1.0).
-            
-            Based only on this quiz performance, estimate the student's updated mastery of this skill as a number between 0.0 (no mastery) and 1.0 (full mastery).
-            
-            Each correct answer should increase mastery, while each incorrect answer should decrease it. Weight harder or more recent questions more heavily if appropriate.
-            
-            Return only the new mastery score as a number (e.g., 0.75). Do not include any explanation, comments, or extra text.
-            """,
-                skill.getSkillName(),
-                skill.getCourse().getTitle(),
-                quizResultSummary,
-                mastery.getMasteryLevel()
-        );
+        I just completed a quiz on the skill "%s" from the course "%s".
+        
+        Here is a list of the questions I answered. Each includes the skill, question text, correct answer, my answer, the question difficulty, and whether my answer was correct:
 
-        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), prompt);
+        %s
+        
+        My mastery level estimate using a static rubric was %.2f (on a scale from 0.0 to 1.0).
+        
+        Based only on my performance in this quiz, what would my updated mastery level be? Please return a single number between 0.0 (no mastery) and 1.0 (full mastery).
+        
+        Correct answers should increase my mastery, and incorrect answers should decrease it. If appropriate, weight more difficult or more recent questions more heavily.
+        
+        Return only the updated mastery score as a number (e.g., 0.78). Do not include any explanation or extra text.
+        """, skill.getSkillName(), skill.getCourse().getTitle(), quizResultSummary, mastery.getMasteryLevel());
+
+        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), skillId, prompt);
         int retries = 0;
         final int maxRetries = 5;
 
         while (!isValidDouble(answer) && retries < maxRetries) {
             // For bad output
             String reGenPrompt = """
-                    Please return only the updated mastery score as a number between 0.0 and 1.0. For example: 0.78.
+                    Please answer only the updated mastery score as a number between 0.0 and 1.0. For example: 0.78.
                     Do not include any explanation, text, formatting, or additional symbols. Only return the number.
                     """;
-            answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), reGenPrompt);
+            answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), skillId, reGenPrompt);
             retries++;
         }
 
@@ -304,35 +432,40 @@ public class QuizService {
 
         String unrelatedAnswer = "The question is not related to the course content. Please ask a new question.";
         String prompt = String.format("""
-            The student has a mastery level of %.2f out of 1. They are currently taking a quiz on the topic "%s" from the course "%s".
-            
-            They have submitted the following question:
+            I have a question:
             
             "%s"
             
-            For context, this is the previous quiz question they may be referring to:
+            For context, here’s the previous quiz question I might be referring to:
             
             "%s"
             
-            Please provide a clear and concise answer to the student's question.
+            Please provide a clear and concise answer to my question based on the quiz context.
+                
+            Before answering:
+            - Look through the past conversation history to check if I’ve asked a question about this same quiz recently.
+            - If I have, please treat this as a follow-up to that previous question.
             
-            If the question is unrelated to the course content, respond exactly with:
+            Do not repeat the correct answer to the quiz question — I already know it.
+            
+            If my question is unrelated to the course content, just reply with:
+            
             "%s"
-            """, masteryService.getMasteryByUserIdAndSkillId(userId, skillId).getMasteryLevel(),
-                skill.getSkillName(), skill.getCourse().getTitle(), question, lastQuiz, unrelatedAnswer);
+            """, question, lastQuiz, unrelatedAnswer);
 
-        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), prompt);
+        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), skillId, prompt);
         if (!answer.equals(unrelatedAnswer)) {
             // Save to chat history only if the question is related to the lesson
-            chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.TEXT);
-            chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT);
+            chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.QUIZ, null);
+            chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.QUIZ, null);
         }
         return new GPTResponse(answer, Status.COMPLETED);
     }
 
-    public List<QuizQuestionDTO> getInitialAssessment(Long courseId) {
+    public List<QuizQuestionDTO> getInitialAssessment(Long courseId, Long userId) {
         List<Skill> skills = skillService.getSkillsByCourseId(courseId);
         List<QuizQuestionDTO> quizQuestionDTOList = new ArrayList<>();
+        courseService.addCourseCompletion(userId, courseId);
 
         for (Skill skill : skills) {
             Difficulty skillDifficulty = skill.getDifficulty();

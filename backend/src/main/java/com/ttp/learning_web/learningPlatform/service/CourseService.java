@@ -1,25 +1,27 @@
 package com.ttp.learning_web.learningPlatform.service;
 
+import com.ttp.learning_web.learningPlatform.dto.CourseDTO;
 import com.ttp.learning_web.learningPlatform.dto.CourseOverview;
 import com.ttp.learning_web.learningPlatform.dto.CourseResponse;
 import com.ttp.learning_web.learningPlatform.dto.SkillOverview;
 import com.ttp.learning_web.learningPlatform.entity.*;
+import com.ttp.learning_web.learningPlatform.enums.Status;
+import com.ttp.learning_web.learningPlatform.repository.CourseCompletionRepository;
 import com.ttp.learning_web.learningPlatform.repository.CourseRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
 public class CourseService {
     private final CourseRepository courseRepository;
+    private final CourseCompletionRepository courseCompletionRepository;
+    private final UserService userService;
 
     public List<CourseResponse> getAllCourses() {
         List<Course> courseList = courseRepository.findAll();
@@ -51,6 +53,12 @@ public class CourseService {
         return courseResponseList;
     }
 
+    public List<Course> getCompletedCoursesByUserId(Long userId) {
+        return courseCompletionRepository.findByUser_UserId(userId).stream()
+                .map(CourseCompletion::getCourse)
+                .toList();
+    }
+
     public Course getCourseByCourseId(Long courseId) {
         return courseRepository.findByCourseId(courseId)
                 .orElseThrow(() -> new RuntimeException("Course Not Found"));
@@ -65,9 +73,55 @@ public class CourseService {
         return courses.size();
     }
 
+    public CourseCompletion getCourseCompletionByUserIdAndCourseId(Long userId, Long courseId) {
+        return courseCompletionRepository.findByUser_UserIdAndCourse_CourseId(userId, courseId).orElse(null);
+    }
+
+    public List<CourseCompletion> getCourseCompletionByUserId(Long userId) {
+        return courseCompletionRepository.findByUser_UserId(userId);
+    }
+
+    public List<Course> getCourseTaken(Long userId) {
+        return getCourseCompletionByUserId(userId).stream()
+            .map(CourseCompletion::getCourse)
+            .map(course -> {
+                if (course.getTechnicalFocuses() != null) {
+                    course.setTechnicalFocuses(
+                            course.getTechnicalFocuses().stream()
+                                    .peek(tf -> tf.setCourses(null))
+                                    .collect(Collectors.toSet())
+                    );
+                }
+                course.setLanguages(null);
+                return course;
+            })
+            .toList();
+    }
+
     public Course addCourse(Course course) {
         courseRepository.save(course);
         return course;
+    }
+
+    public void addCourseCompletion(Long userId, Long courseId) {
+        CourseCompletion existingCourseCompletion = getCourseCompletionByUserIdAndCourseId(userId, courseId);
+        if (existingCourseCompletion == null) {
+            CourseCompletion courseCompletion = new CourseCompletion();
+            courseCompletion.setStartedAt(new Date());
+            courseCompletion.setCourse(getCourseByCourseId(courseId));
+            courseCompletion.setUser(userService.getUserByUserId(userId));
+            courseCompletion.setCompletion(false);
+            courseCompletionRepository.save(courseCompletion);
+        }
+    }
+
+    public void markCourseCompletion(Long userId, Long courseId) {
+        CourseCompletion courseCompletion = getCourseCompletionByUserIdAndCourseId(userId, courseId);
+        if (courseCompletion != null) {
+            courseCompletion.setCompletedAt(new Date());
+            courseCompletion.setCompletion(true);
+        }
+        courseCompletionRepository.save(courseCompletion);
     }
 
     public Course updateCourse(Course updatedCourse) {

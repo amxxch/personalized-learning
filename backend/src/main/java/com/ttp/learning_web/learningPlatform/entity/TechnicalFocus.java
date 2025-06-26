@@ -43,4 +43,12 @@ public class TechnicalFocus {
     public void setTechFocusName(String name) {
         this.techFocusName = name;
     }
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
+    }
 }

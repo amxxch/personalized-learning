@@ -22,26 +22,16 @@ public class CourseCompletion {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "completion", nullable = false)
-    private Status status;
+    private Boolean completion;
+
+    @Column(name = "started_at", nullable = false)
+    private Date startedAt;
 
     @Column(name = "completed_at")
     private Date completedAt;
 
     public CourseCompletion() {
-    }
-
-    public CourseCompletion(Long completionId,
-                            User user,
-                            Course course,
-                            Status status,
-                            Date completedAt) {
-        this.completionId = completionId;
-        this.user = user;
-        this.course = course;
-        this.status = status;
-        this.completedAt = completedAt;
     }
 
     public Long getCompletionId() {
@@ -68,12 +58,12 @@ public class CourseCompletion {
         this.course = course;
     }
 
-    public Status getStatus() {
-        return status;
+    public Boolean getCompletion() {
+        return completion;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setCompletion(Boolean completion) {
+        this.completion = completion;
     }
 
     public Date getCompletedAt() {
@@ -82,5 +72,13 @@ public class CourseCompletion {
 
     public void setCompletedAt(Date completedAt) {
         this.completedAt = completedAt;
+    }
+
+    public Date getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(Date startedAt) {
+        this.startedAt = startedAt;
     }
 }

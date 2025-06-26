@@ -30,6 +30,9 @@ public class QuizResult {
     @JoinColumn(name = "choice_id", nullable = false)
     private QuizChoice selectedAnswer;
 
+    @Column(name = "quiz_num", nullable = false)
+    private Integer quizNum;
+
     @Column(name = "is_correct", nullable = false)
     private Boolean isCorrect;
 
@@ -48,7 +51,8 @@ public class QuizResult {
                       QuizChoice selectedAnswer,
                       Boolean isCorrect,
                       Date submittedAt,
-                      QuizType quizType) {
+                      QuizType quizType,
+                      Integer quizNum) {
         this.user = user;
         this.skill = skill;
         this.quizQuestion = quizQuestion;
@@ -56,6 +60,7 @@ public class QuizResult {
         this.isCorrect = isCorrect;
         this.submittedAt = submittedAt;
         this.quizType = quizType;
+        this.quizNum = quizNum;
     }
 
     public Long getQuizResultId() {
@@ -120,5 +125,13 @@ public class QuizResult {
 
     public void setQuizType(QuizType quizType) {
         this.quizType = quizType;
+    }
+
+    public Integer getQuizNum() {
+        return quizNum;
+    }
+
+    public void setQuizNum(Integer quizNum) {
+        this.quizNum = quizNum;
     }
 }

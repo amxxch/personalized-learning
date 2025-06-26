@@ -42,7 +42,7 @@ const LoginPage = () => {
           })
           .catch((error) => {
             console.error('Login failed:', error.message);
-            setError('Login failed: ' + error.message);
+            setError(error.message);
           });
 
     };

@@ -13,10 +13,10 @@ const ProfilePage = () => {
     const [ techFocus, setTechFocus ] = useState<TechTopic[]>([]);
 
     const tabs = [
-        { label: "📔 Dashboard", key: "dashboard" },
-        { label: "🗺️ Course Planner", key: "planner" },
-        { label: "📊 Learning Stats", key: "stats" },
-        { label: "🎖️ Achievement", key: "achievement" },
+        { label: "Dashboard", key: "dashboard" },
+        { label: "Course Planner", key: "planner" },
+        { label: "Learning Stats", key: "stats" },
+        { label: "Achievement", key: "achievement" },
     ];
 
     useEffect(() => {
@@ -70,7 +70,7 @@ const ProfilePage = () => {
 
             {/* Performance Summary */}
             <div className="col-span-2 rounded-2xl shadow p-6 flex flex-col gap-4 bg-stone-50">
-              <LearningStats />
+              
             </div>
 
             {/* Due Tasks Section */}

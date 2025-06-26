@@ -12,6 +12,8 @@ import UserProfilePage from './pages/UserProfilePage';
 import AssessmentPage from './pages/AssessmentPage';
 import CodeEditor from './pages/CodeExercisePage';
 import CourseOverviewPage from './pages/CourseOverviewPage';
+import ChatHistoryPage from './pages/ChatHistoryPage';
+import ChatReviewPage from './pages/ChatReviewPage';
 
 function App() {
 
@@ -44,7 +46,7 @@ function App() {
         }
       />
       <Route
-        path="/course/:courseId/full-lesson"
+        path="/course/:courseId/full-lesson/:skillId"
         element={
           <RouteWithLayout isPrivate={true}>
             <CourseChatPage />
@@ -108,14 +110,29 @@ function App() {
         }
       />
       <Route
-        path="/exercise/:courseId/:skillId"
+        path="/course/:courseId/exercise/:skillId"
         element={
           <RouteWithLayout isPrivate={true}>
             <CodeEditor />
           </RouteWithLayout>
         }
       />
-
+      <Route
+        path="/course/:courseId/lesson/:skillId"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <ChatHistoryPage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/course/:courseId/review/:skillId"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <ChatReviewPage />
+          </RouteWithLayout>
+        }
+      />
     </Routes>
   );
 }

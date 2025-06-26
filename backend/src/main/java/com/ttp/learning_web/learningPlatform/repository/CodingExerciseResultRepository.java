@@ -16,5 +16,7 @@ public interface CodingExerciseResultRepository extends JpaRepository<CodingExer
 
     Optional<CodingExerciseResult> findByUser_UserIdAndExercise_ExerciseId(Long userId, Long exerciseId);
 
+    List<CodingExerciseResult> findByUser_UserId(Long userId);
+
     List<CodingExerciseResult> findByUser_UserIdAndSkill_SkillId(Long userId, Long skillId);
 }

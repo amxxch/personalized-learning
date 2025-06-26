@@ -16,12 +16,8 @@ const CourseHeader = ({ course, currentChapter, progressPercent, assessmentDone 
     const Navigate = useNavigate();
 
     const handleWholeLesson = () => {
-        Navigate(`/course/${course?.courseId}/full-lesson`);
+        Navigate(`/course/${course?.courseId}/full-lesson/${currentChapter?.skillId}`, { replace: true });
     }
-
-    useEffect(() => {
-        console.log(progressPercent);
-    }, []);
 
     return (
         <div>
@@ -113,7 +109,7 @@ const CourseHeader = ({ course, currentChapter, progressPercent, assessmentDone 
                         :
                         <button 
                             className="bg-pink-400 text-white w-full h-20 p-2 rounded-2xl font-semibold text-base 
-                            shadow hover:bg-pink-600 flex justify-center items-center gap-2 text-center"
+                            shadow hover:bg-pink-00 flex justify-center items-center gap-2 text-center"
                             onClick={handleWholeLesson}
                         >
                             <FaFilePen className='inline text-5xl ml-8' />

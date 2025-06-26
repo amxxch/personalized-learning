@@ -18,9 +18,10 @@ public class AssessmentController {
 
     @GetMapping()
     public ResponseEntity<List<QuizQuestionDTO>> getInitialAssessmentQuestions(
-            @RequestParam Long courseId
+            @RequestParam Long courseId,
+            @RequestParam Long userId
     ) {
-        return ResponseEntity.ok(quizService.getInitialAssessment(courseId));
+        return ResponseEntity.ok(quizService.getInitialAssessment(courseId, userId));
     }
 
     @PostMapping("submit")

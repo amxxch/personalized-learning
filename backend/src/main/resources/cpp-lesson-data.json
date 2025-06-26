@@ -268,7 +268,7 @@
           "quizChoices": [
             {
               "choiceLetter": "A",
-              "content": "g++ file.cpp"
+              "content": "g++ file.cpp file"
             },
             {
               "choiceLetter": "B",
@@ -1579,7 +1579,7 @@
         {
           "difficulty": "MEDIUM",
           "question": "What is the value of `3 + 4 * 2`?",
-          "expectedAnswer": "D",
+          "expectedAnswer": "B",
           "explanation": "Multiplication happens first: 4 * 2 = 8, then 3 + 8 = 11.",
           "quizChoices": [
             {
@@ -1596,7 +1596,7 @@
             },
             {
               "choiceLetter": "D",
-              "content": "11"
+              "content": "9"
             }
           ]
         },

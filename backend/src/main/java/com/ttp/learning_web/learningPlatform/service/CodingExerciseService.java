@@ -3,10 +3,7 @@ package com.ttp.learning_web.learningPlatform.service;
 import com.ttp.learning_web.learningPlatform.dto.CodingExerciseDTO;
 import com.ttp.learning_web.learningPlatform.dto.RunExerciseResponse;
 import com.ttp.learning_web.learningPlatform.dto.TestCaseDTO;
-import com.ttp.learning_web.learningPlatform.entity.CodingExercise;
-import com.ttp.learning_web.learningPlatform.entity.CodingExerciseResult;
-import com.ttp.learning_web.learningPlatform.entity.Mastery;
-import com.ttp.learning_web.learningPlatform.entity.TestCase;
+import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.Difficulty;
 import com.ttp.learning_web.learningPlatform.repository.CodingExerciseRepository;
 import lombok.AllArgsConstructor;
@@ -35,8 +32,75 @@ public class CodingExerciseService {
         return codingExerciseRepository.findById(id).orElse(null);
     }
 
-    public List<CodingExercise> getExerciseBySkillId(Long skillId) {
+    public List<CodingExercise> getAllExercisesBySkillId(Long skillId) {
         return codingExerciseRepository.findBySkill_SkillId(skillId);
+    }
+
+    public List<CodingExerciseDTO> getAllExercisesDTOByUserIdAndSkillId(Long userId, Long skillId) {
+        List<CodingExercise> codingExercises = getAllExercisesBySkillId(skillId);
+        List<CodingExerciseDTO> codingExerciseDTOS = new ArrayList<>();
+//        check mastery level also
+        for (CodingExercise codingExercise : codingExercises) {
+            CodingExerciseDTO codingExerciseDTO = new CodingExerciseDTO();
+            codingExerciseDTO.setExerciseId(codingExercise.getExerciseId());
+            codingExerciseDTO.setDifficulty(codingExercise.getDifficulty());
+            codingExerciseDTO.setHint(codingExercise.getHint());
+            codingExerciseDTO.setTask(codingExercise.getTask());
+            codingExerciseDTO.setTitle(codingExercise.getTitle());
+            List<TestCaseDTO> testCase = testCaseService.getTestCaseByExerciseId(codingExercise.getExerciseId()).stream()
+                    .map(tc -> {
+                        return new TestCaseDTO(
+                                tc.getInput(),
+                                tc.getOutput()
+                        );
+                    })
+                    .toList();
+            CodingExerciseResult history = codingExerciseResultService.getCodingExerciseResultByUserIdAndExerciseId(userId, codingExercise.getExerciseId());
+            if (history != null) {
+                codingExerciseDTO.setStarterCode(history.getAnswer());
+            } else {
+                codingExerciseDTO.setStarterCode(codingExercise.getStarterCode());
+            }
+            boolean completed = codingExerciseResultService.getCodingExerciseResultByUserIdAndExerciseId(userId, codingExercise.getExerciseId()) != null;
+            codingExerciseDTO.setTestCases(testCase);
+            codingExerciseDTO.setCompleted(completed);
+            codingExerciseDTO.setUnlocked(isExerciseUnlocked(userId, codingExercise.getExerciseId()));
+
+            codingExerciseDTOS.add(codingExerciseDTO);
+        }
+
+        return codingExerciseDTOS;
+    }
+
+    public boolean isFirstExercise(Long exerciseId) {
+        List<CodingExercise> codingExercises = getAllExercisesBySkillId(getCodingExerciseByExerciseId(exerciseId).getSkill().getSkillId());
+        CodingExercise firstExercise = codingExercises.stream()
+                .sorted(Comparator.comparingLong(CodingExercise::getExerciseId))
+                .toList()
+                .getFirst();
+        return firstExercise.getExerciseId().equals(exerciseId);
+    }
+
+    public CodingExercise getFirstExerciseBySkillId(Long skillId) {
+        return getAllExercisesBySkillId(skillId).getFirst();
+    }
+
+    public boolean isExerciseUnlocked(Long userId, Long exerciseId) {
+        CodingExercise latestCodingExercise = getLatestCodingExerciseByUserIdAndSkillId(userId, getCodingExerciseByExerciseId(exerciseId).getSkill().getSkillId());
+        CodingExercise codingExercise = getCodingExerciseByExerciseId(exerciseId);
+
+        if (latestCodingExercise == null) {
+            return isFirstExercise(exerciseId);
+        }
+
+        return codingExercise.getExerciseId() <= latestCodingExercise.getExerciseId();
+    }
+
+    public CodingExercise getLatestCodingExerciseByUserIdAndSkillId(Long userId, Long skillId) {
+        return codingExerciseResultService.getAllCodingExerciseResultByUserIdAndSkillId(userId, skillId).stream()
+                .map(CodingExerciseResult::getExercise)
+                .max(Comparator.comparingLong(CodingExercise::getExerciseId))
+                .orElse(null);
     }
 
     public List<CodingExercise> getExerciseBySkillIdAndDifficulty(Long skillId, Difficulty difficulty) {
@@ -65,7 +129,7 @@ public class CodingExerciseService {
                     incompleteCodingExercise.getExerciseId(),
                     incompleteCodingExercise.getTitle(),
                     incompleteCodingExercise.getTask(),
-                    incompleteCodingExercise.getStarterCode(),
+                    incompleteCodingExerciseResult.getAnswer(),
                     incompleteCodingExercise.getDifficulty(),
                     testCases,
                     incompleteCodingExercise.getHint()
@@ -78,7 +142,7 @@ public class CodingExerciseService {
                         .map(result -> result.getExercise().getExerciseId())
                         .collect(Collectors.toSet());
 
-        List<CodingExercise> availableCodingExercises = getExerciseBySkillId(skillId).stream()
+        List<CodingExercise> availableCodingExercises = getAllExercisesBySkillId(skillId).stream()
                 .filter(exercise -> !pastExerciseIds.contains(exercise.getExerciseId()))
                 .sorted(Comparator.comparing(CodingExercise::getDifficulty))
                 .toList();
@@ -99,7 +163,9 @@ public class CodingExerciseService {
                     .toList();
         }
 
-        CodingExercise currentExercise = customizedCodingExercises.getFirst();
+        CodingExercise currentExercise = customizedCodingExercises.isEmpty() ?
+                getFirstExerciseBySkillId(skillId) : customizedCodingExercises.getFirst();
+
         List<TestCaseDTO> testCases = testCaseService.getTestCaseByExerciseId(currentExercise.getExerciseId()).stream()
                 .map(testCase -> {
                     return new TestCaseDTO(
@@ -109,14 +175,25 @@ public class CodingExerciseService {
                 })
                 .toList();
 
-        codingExerciseResultService.addExerciseResult(new CodingExerciseResult(
-                userService.getUserByUserId(userId),
-                skillService.getSkillBySkillId(skillId),
-                currentExercise,
-                false,
-                "",
-                new Date()
-        ));
+        long numCompletedExercises = getAllExercisesDTOByUserIdAndSkillId(userId, skillId).stream()
+                        .filter(ex -> {
+                            if (ex.isCompleted()) {
+                                return true;
+                            }
+                            return false;
+                        }).count();
+        long totalExercises = getAllExercisesBySkillId(skillId).size();
+
+        if (numCompletedExercises < totalExercises) {
+            codingExerciseResultService.addExerciseResult(new CodingExerciseResult(
+                    userService.getUserByUserId(userId),
+                    skillService.getSkillBySkillId(skillId),
+                    currentExercise,
+                    false,
+                    currentExercise.getStarterCode(),
+                    new Date()
+            ));
+        }
 
         return new CodingExerciseDTO(
                 currentExercise.getExerciseId(),
@@ -130,13 +207,13 @@ public class CodingExerciseService {
 
     }
 
-    public RunExerciseResponse runExercise(Long exerciseId, String code) throws IOException, InterruptedException {
+    public RunExerciseResponse runExercise(Long exerciseId, String code, String input) throws IOException, InterruptedException {
         TestCase testCase = testCaseService.getTestCaseByExerciseId(exerciseId).getFirst();
         if (testCase == null) {
             throw new RuntimeException("TestCase not found");
         }
 
-        RunExerciseResponse runExerciseResponse = executeCppCode(exerciseId, code, testCase.getInput());
+        RunExerciseResponse runExerciseResponse = executeCppCode(exerciseId, code, input);
         runExerciseResponse.setTestcaseId(testCase.getTestCaseId());
         runExerciseResponse.setExpectedOutput(testCase.getOutput());
         runExerciseResponse.setSuccess(checkIfOutputIsCorrect(exerciseId, testCase.getTestCaseId(), runExerciseResponse.getOutput()));
@@ -248,6 +325,35 @@ public class CodingExerciseService {
                 input,
                 output
         );
+    }
+
+    public String saveCurrentCode(Long userId, Long exerciseId, String code) {
+        CodingExerciseResult history = codingExerciseResultService.getCodingExerciseResultByUserIdAndExerciseId(userId, exerciseId);
+        if (history == null) {
+            history = new CodingExerciseResult();
+            history.setCompleted(false);
+            history.setAnswer(code);
+            history.setSubmittedAt(new Date());
+            history.setSkill(getCodingExerciseByExerciseId(exerciseId).getSkill());
+            history.setUser(userService.getUserByUserId(userId));
+            history.setExercise(getCodingExerciseByExerciseId(exerciseId));
+            codingExerciseResultService.addExerciseResult(history);
+        } else {
+            history.setAnswer(code);
+            history.setSubmittedAt(new Date());
+            codingExerciseResultService.updateExerciseResult(history);
+        }
+
+        return history.getAnswer();
+    }
+
+    public String resetCurrentCode(Long userId, Long exerciseId) {
+        CodingExercise codingExercise = getCodingExerciseByExerciseId(exerciseId);
+        if (codingExercise == null) {
+            throw new RuntimeException("Exercise not exist");
+        }
+
+        return saveCurrentCode(userId, exerciseId, codingExercise.getStarterCode());
     }
 
     public String getHint(Long userId, Long exerciseId) {

@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,10 +40,12 @@ public class LearningService {
         Progress currentProgress = progressService.getIncompleteProgressByCourseIdAndUserId(courseId, userId);
         int currentSkillIndex = skill.getSkillOrder() - 1;
 
-        List<LessonBubble> bubbles = lessonBubbleService.getAllBubblesByUserSkill(skillId, userId);
+        List<LessonBubble> bubbles = lessonBubbleService.getAllBubblesByUserSkill(skillId, userId).stream().sorted(Comparator.comparingInt(LessonBubble::getBubbleOrder)).toList();
         System.out.println("Bubble sizes: " + bubbles.size());
         List<Skill> skills = skillService.getSkillsByCourseId(courseId);
         List<Progress> progresses = progressService.getProgressByCourseIdAndUserId(courseId, userId);
+
+        System.out.println("Progress sizes: " + progresses.size());
 
         boolean isFirstTime = progresses.isEmpty();
 
@@ -52,20 +56,18 @@ public class LearningService {
             }
 
             // Start new progress of the next skill at the first bubble
-            if (!isFirstTime) {
-                currentSkillIndex++;
-            }
             Skill nextSkill = skills.get(currentSkillIndex);
             System.out.println(nextSkill.getSkillId());
             LessonBubble firstBubble = lessonBubbleService.getAllBubblesByUserSkill(nextSkill.getSkillId(), userId).getFirst();
 //            LessonBubble firstBubble = lessonBubbleService.getAllBubblesBySkillId(nextSkill.getSkillId()).getFirst();
-            progressService.addProgress(new Progress(false, false, user, course, nextSkill, firstBubble));
+            String content = addChapterName(firstBubble.getContent(), firstBubble.getSkill().getSkillId());
+            progressService.addProgress(new Progress(false, false, user, course, nextSkill, firstBubble, new Date()));
             masteryService.addMastery(new Mastery(user, nextSkill));
-            chatHistoryService.addChatbotMsgHistory(user, nextSkill, firstBubble);
+            chatHistoryService.addChatbotMsgHistory(user, nextSkill, firstBubble, content);
 
             LessonBubbleDTO firstBubbleDTO = new LessonBubbleDTO(
                     firstBubble.getDifficulty(),
-                    firstBubble.getContent(),
+                    content,
                     firstBubble.getContentType(),
                     firstBubble.getBubbleOrder(),
                     firstBubble.getTopic(),
@@ -97,7 +99,7 @@ public class LearningService {
                 LessonBubble nextBubble = bubbles.stream().filter(b -> b.getBubbleOrder() == currentBubble.getBubbleOrder() + 1).findFirst().get();
                 currentProgress.setBubble(nextBubble);
                 progressService.updateProgress(currentProgress);
-                chatHistoryService.addChatbotMsgHistory(user, skill, nextBubble);
+                chatHistoryService.addChatbotMsgHistory(user, skill, nextBubble, nextBubble.getContent());
 
                 LessonBubbleDTO nextBubbleDTO = new LessonBubbleDTO(
                         nextBubble.getDifficulty(),
@@ -131,17 +133,20 @@ public class LearningService {
         masteryService.updateMastery(mastery);
 
         String prompt = String.format("""
-            This content is part of the study course "%s", under the topic "%s".
+            I was taught the following concept during my studies:
             
-            The student currently has a mastery level of %.2f out of 1, indicating they are struggling to understand the concept. Here is the original content:
+            %s
             
-            "%s"
+            However, I don’t fully understand it. Can you please:
+            - Rewrite or elaborate on the explanation in a clearer, more beginner-friendly way
+            - Break down the concept step-by-step
+            - Include simple examples to help illustrate the idea, if necessary
             
-            Please rewrite or elaborate on this content to make it clearer and easier to understand for the student. Focus on clarity and conceptual breakdown, and feel free to restructure the explanation to aid understanding. Please provide examples where necessary.
-            """, skill.getCourse().getTitle(), skill.getSkillName(), mastery.getMasteryLevel(), latestChatHistory.getContent());
+            Please focus on clarity and understanding, and restructure the explanation as needed.
+            """, latestChatHistory.getContent());
 
-        String answer = openAIService.learningPrompt(userId, courseId, prompt);
-        chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT);
+        String answer = openAIService.learningPrompt(userId, courseId, skill.getSkillId(), prompt);
+        chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT, null);
         return new GPTResponse(answer, Status.COMPLETED);
     }
 
@@ -150,21 +155,22 @@ public class LearningService {
         Skill skill = skillService.getSkillBySkillId(skillId);
 
         String unrelatedAnswer = "The question is not related to the course content. Please ask a new question.";
-        String prompt = String.format("""
-            The student has a mastery level of %.2f out of 1 and has a question related to "%s" while studying the course "%s":
-            
-            "%s"
-            
-            Please provide a clear and concise answer to this question.
-            If the question is unrelated to the course content, respond exactly with: "%s"
-            """, masteryService.getMasteryByUserIdAndSkillId(userId, skillId).getMasteryLevel(),
-                skill.getSkillName(), skill.getCourse().getTitle(), question, unrelatedAnswer);
 
-        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), prompt);
+        String prompt = String.format("""
+                I have a question:
+            
+                "%s"
+            
+                If my question isn’t related to the course content, please just reply with:
+            
+                "%s"
+            """, question, unrelatedAnswer);
+
+        String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), skillId, prompt);
         if (!answer.equals(unrelatedAnswer)) {
             // Save to chat history only if the question is related to the lesson
-            chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.TEXT);
-            chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT);
+            chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.TEXT, null);
+            chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT, null);
         }
         return new GPTResponse(answer, Status.COMPLETED);
     }
@@ -229,6 +235,13 @@ public class LearningService {
         courseOverview.setSkills(skillOverviewList);
 
         return courseOverview;
+    }
+
+    private String addChapterName(String lesson, Long skillId) {
+        Skill skill = skillService.getSkillBySkillId(skillId);
+
+        String chapterName = "**Chapter " + skill.getSkillOrder() + ": " + skill.getSkillName() + "**\n";
+        return chapterName + lesson;
     }
 
     // TODO: This is for the handling next skill after reviewing done

@@ -46,7 +46,7 @@ export interface ChatHistory {
     skillId: number;
     skillName: string;
     sender: 'CHATBOT' | 'USER';
-    contentType: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE' | 'GPT' | 'UNSURE' | 'QUIZ';
+    contentType: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE' | 'GPT' | 'UNSURE' | 'QUIZ' | 'REVIEW';
     content: string;
     topic?: string;
     timestamp: Date;
@@ -56,7 +56,7 @@ export interface ChatHistory {
 
 export interface Message {
     sender: 'ASSISTANT' | 'USER';
-    type: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE' | 'GPT' | 'UNSURE' | 'QUIZ';
+    type: 'TEXT' | 'IMAGE' | 'VIDEO' | 'CODE' | 'GPT' | 'UNSURE' | 'QUIZ' | 'REVIEW';
     content: string;
     topic?: string;
     skillId?: number;
@@ -112,6 +112,8 @@ export interface CodeExercise {
     starterCode: string;
     hint: string;
     difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+    completed: boolean;
+    unlocked: boolean;
     testCases: TestCase[];
 }
 
@@ -126,4 +128,42 @@ export interface CodeOutput {
     output: string;
     expectedOutput: string;
     testcaseId: number;
+}
+
+export interface OverallStats {
+    thisWeekQuizStats: QuizStats;
+    quizPercentGrowth: number;
+    allTimeQuizStats: QuizStats;
+
+    thisWeekChapterStats: number;
+    allTimeChapterStats: number;
+    chapterPercentGrowth: number;
+
+    thisWeekExerciseStats: ExerciseStats;
+    allTimeExerciseStats: ExerciseStats;
+    exercisePercentGrowth: number;
+}
+
+export interface QuizStats {
+    totalQuestions: number;
+    totalCorrectQuestions: number;
+    easyQuestions: number;
+    mediumQuestions: number
+    hardQuestions: number;
+    correctEasyQuestions: number;
+    correctMediumQuestions: number;
+    correctHardQuestions: number;
+}
+
+export interface ExerciseStats {
+    totalExercises: number;
+    easyExercises: number;
+    mediumExercises: number;
+    hardExercises: number;
+}
+
+export interface MasteryStats {
+    chapterNumber: number;
+    chapterName: string;
+    masteryLevel: number;
 }
