@@ -13,4 +13,3 @@ module.exports = {
     themes: ["winter", "cupcake", "bumblebee", "pastel", "nord", "valentine", "halloween"],
   },
 }
-

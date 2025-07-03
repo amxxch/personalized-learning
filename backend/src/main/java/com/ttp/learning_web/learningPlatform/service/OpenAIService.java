@@ -65,8 +65,9 @@ public class OpenAIService {
                 1. Select and order the most relevant courses.
                 2. Feel free to skip the courses that you think the student already learn and understand it based on their experience year. For example, if the user already have multiple years of experience, we can assume they should have the basic understanding and can skip the beginner level course.
                 3. Estimate how many weeks each course would take based on the user's weekly learning hours.
-                r. Make sure the progression makes sense (e.g., beginner to advanced).
-                4. Output exactly only a JSON roadmap with the following format without any introductions, conclusions, or backtick:
+                4. Make sure the progression makes sense (e.g., beginner to advanced).
+                5. For rationale, use you/your as the pronoun to regard the student as if you are talking to them directly.
+                6. Output exactly only a JSON roadmap with the following format without any introductions, conclusions, or backtick:
                 
                 {
                   "technicalFocus": "Web Development"

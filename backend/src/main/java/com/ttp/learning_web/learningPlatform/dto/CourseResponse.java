@@ -9,6 +9,7 @@ public class CourseResponse {
     private List<String> language;
     private List<String> techFocus;
     private String level;
+    private Double progressPercent;
 
     public Long getCourseId() {
         return courseId;
@@ -56,5 +57,13 @@ public class CourseResponse {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    public Double getProgressPercent() {
+        return progressPercent;
+    }
+
+    public void setProgressPercent(Double progressPercent) {
+        this.progressPercent = progressPercent;
     }
 }

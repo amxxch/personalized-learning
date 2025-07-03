@@ -52,6 +52,8 @@ public class DataLoader implements CommandLineRunner {
         languageService.addAllLanguages(languages);
         technicalFocusService.addAllTechnicalFocus(techFocuses);
 
+        CourseDTO cppCourseDTO = mapper.readValue(cppJsonFile, CourseDTO.class);
+
         // Create and save Course
         for (CourseDTO c : courseDTO) {
             Course course = new Course();
@@ -72,81 +74,79 @@ public class DataLoader implements CommandLineRunner {
             course.setTechnicalFocuses(courseTechFocuses);
 
             courseService.addCourse(course);
-        }
 
-        // Add lesson inside some courses
-        CourseDTO cppCourseDTO = mapper.readValue(cppJsonFile, CourseDTO.class);
-        Course cppCourse = courseService.getCoursesByCourseName(cppCourseDTO.getTitle()).get(0);
+            // Create and save each skill in course
+            for (SkillDTO skillDTO : cppCourseDTO.getSkills()) {
+                Skill skill = new Skill();
+                skill.setSkillName(skillDTO.getSkillName());
+                skill.setSkillOrder(skillDTO.getSkillOrder());
+                skill.setDifficulty(skillDTO.getDifficulty());
+                skill.setCourse(course);
 
-        // Create and save each skill in course
-        for (SkillDTO skillDTO : cppCourseDTO.getSkills()) {
-            Skill skill = new Skill();
-            skill.setSkillName(skillDTO.getSkillName());
-            skill.setSkillOrder(skillDTO.getSkillOrder());
-            skill.setDifficulty(skillDTO.getDifficulty());
-            skill.setCourse(cppCourse);
+                skill = skillService.addSkill(skill);
 
-            skill = skillService.addSkill(skill);
+                // Create and save bubbles in each skill
+                for (LessonBubbleDTO bubbleDTO : skillDTO.getLessonBubbles()) {
+                    LessonBubble bubble = new LessonBubble();
+                    bubble.setBubbleOrder(bubbleDTO.getBubbleOrder());
+                    bubble.setContent(bubbleDTO.getContent());
+                    bubble.setContentType(bubbleDTO.getContentType());
+                    bubble.setDifficulty(bubbleDTO.getDifficulty());
+                    bubble.setTopic(bubbleDTO.getTopic());
+                    bubble.setSkill(skill);
 
-            // Create and save bubbles in each skill
-            for (LessonBubbleDTO bubbleDTO : skillDTO.getLessonBubbles()) {
-                LessonBubble bubble = new LessonBubble();
-                bubble.setBubbleOrder(bubbleDTO.getBubbleOrder());
-                bubble.setContent(bubbleDTO.getContent());
-                bubble.setContentType(bubbleDTO.getContentType());
-                bubble.setDifficulty(bubbleDTO.getDifficulty());
-                bubble.setTopic(bubbleDTO.getTopic());
-                bubble.setSkill(skill);
+                    lessonBubbleService.addBubble(bubble);
+                }
 
-                lessonBubbleService.addBubble(bubble);
-            }
+                if (skillDTO.getQuizQuestions() != null) {
+                    // Create and save quiz questions in each bubble
+                    for (QuizQuestionDTO quizQuestionDTO : skillDTO.getQuizQuestions()) {
+                        QuizQuestion quizQuestion = new QuizQuestion();
+                        quizQuestion.setQuestion(quizQuestionDTO.getQuestion());
+                        quizQuestion.setSkill(skill);
+                        quizQuestion.setDifficulty(quizQuestionDTO.getDifficulty());
+                        quizQuestion.setExpectedAnswer(String.valueOf(quizQuestionDTO.getExpectedAnswer()));
+                        quizQuestion.setExplanation(quizQuestionDTO.getExplanation());
 
-            if (skillDTO.getQuizQuestions() != null) {
-                // Create and save quiz questions in each bubble
-                for (QuizQuestionDTO quizQuestionDTO : skillDTO.getQuizQuestions()) {
-                    QuizQuestion quizQuestion = new QuizQuestion();
-                    quizQuestion.setQuestion(quizQuestionDTO.getQuestion());
-                    quizQuestion.setSkill(skill);
-                    quizQuestion.setDifficulty(quizQuestionDTO.getDifficulty());
-                    quizQuestion.setExpectedAnswer(String.valueOf(quizQuestionDTO.getExpectedAnswer()));
-                    quizQuestion.setExplanation(quizQuestionDTO.getExplanation());
+                        quizQuestionService.addQuestion(quizQuestion);
 
-                    quizQuestionService.addQuestion(quizQuestion);
+                        // // Create and save quiz choices in each quiz question
+                        for (QuizChoiceDTO quizChoiceDTO : quizQuestionDTO.getQuizChoices()) {
+                            QuizChoice quizChoice = new QuizChoice();
+                            quizChoice.setQuizQuestion(quizQuestion);
+                            quizChoice.setChoiceLetter(quizChoiceDTO.getChoiceLetter());
+                            quizChoice.setContent(quizChoiceDTO.getContent());
 
-                    // // Create and save quiz choices in each quiz question
-                    for (QuizChoiceDTO quizChoiceDTO : quizQuestionDTO.getQuizChoices()) {
-                        QuizChoice quizChoice = new QuizChoice();
-                        quizChoice.setQuizQuestion(quizQuestion);
-                        quizChoice.setChoiceLetter(quizChoiceDTO.getChoiceLetter());
-                        quizChoice.setContent(quizChoiceDTO.getContent());
+                            quizChoiceService.addQuizChoice(quizChoice);
+                        }
+                    }
+                }
 
-                        quizChoiceService.addQuizChoice(quizChoice);
+                if (skillDTO.getCodingExercises() != null) {
+                    for (CodingExerciseDTO codingExerciseDTO : skillDTO.getCodingExercises()) {
+                        CodingExercise codingExercise = new CodingExercise();
+                        codingExercise.setSkill(skill);
+                        codingExercise.setTitle(codingExerciseDTO.getTitle());
+                        codingExercise.setTask(codingExerciseDTO.getTask());
+                        codingExercise.setStarterCode(codingExerciseDTO.getStarterCode());
+                        codingExercise.setDifficulty(codingExerciseDTO.getDifficulty());
+                        codingExercise.setHint(codingExerciseDTO.getHint());
+
+                        codingExerciseService.addCodingExercise(codingExercise);
+
+                        for (TestCaseDTO testCaseDTO : codingExerciseDTO.getTestCases()) {
+                            TestCase testCase = new TestCase();
+                            testCase.setExercise(codingExercise);
+                            testCase.setInput(testCaseDTO.getInput());
+                            testCase.setOutput(testCaseDTO.getOutput());
+
+                            testCaseService.addTestCase(testCase);
+                        }
                     }
                 }
             }
 
-            if (skillDTO.getCodingExercises() != null) {
-                for (CodingExerciseDTO codingExerciseDTO : skillDTO.getCodingExercises()) {
-                    CodingExercise codingExercise = new CodingExercise();
-                    codingExercise.setSkill(skill);
-                    codingExercise.setTitle(codingExerciseDTO.getTitle());
-                    codingExercise.setTask(codingExerciseDTO.getTask());
-                    codingExercise.setStarterCode(codingExerciseDTO.getStarterCode());
-                    codingExercise.setDifficulty(codingExerciseDTO.getDifficulty());
-                    codingExercise.setHint(codingExerciseDTO.getHint());
 
-                    codingExerciseService.addCodingExercise(codingExercise);
-
-                    for (TestCaseDTO testCaseDTO : codingExerciseDTO.getTestCases()) {
-                        TestCase testCase = new TestCase();
-                        testCase.setExercise(codingExercise);
-                        testCase.setInput(testCaseDTO.getInput());
-                        testCase.setOutput(testCaseDTO.getOutput());
-
-                        testCaseService.addTestCase(testCase);
-                    }
-                }
-            }
         }
 
         System.out.println("Data import complete!");

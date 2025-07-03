@@ -3,6 +3,7 @@ package com.ttp.learning_web.learningPlatform.dto;
 public class MasteryStats {
     private int chapterNumber;
     private String chapterName;
+    private Long skillId;
     private Double masteryLevel;
 
     public int getChapterNumber() {
@@ -27,5 +28,13 @@ public class MasteryStats {
 
     public void setMasteryLevel(Double masteryLevel) {
         this.masteryLevel = masteryLevel;
+    }
+
+    public Long getSkillId() {
+        return skillId;
+    }
+
+    public void setSkillId(Long skillId) {
+        this.skillId = skillId;
     }
 }

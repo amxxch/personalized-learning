@@ -11,9 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -60,6 +58,60 @@ public class LearningStatsService {
         Integer thisWeekExerciseTotal = thisWeekExerciseStats != null ? thisWeekExerciseStats.getTotalExercises() : null;
         Integer lastWeekExerciseTotal = lastWeekExerciseStats != null ? lastWeekExerciseStats.getTotalExercises() : null;
         overallStats.setExercisePercentGrowth(calculatePercentGrowth(thisWeekExerciseTotal, lastWeekExerciseTotal));
+
+        // Weekly stats trend
+        List<ExerciseStats> exerciseStatsList = new ArrayList<>();
+        List<QuizStats> quizStatsList = new ArrayList<>();
+        List<ChapterCountStats> chapterCountStatsList = new ArrayList<>();
+        now = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        for (int i = 0; i < 4; i++) {
+            ExerciseStats thisExerciseStats = getWeeklyExerciseStats(userId, now);
+            if (thisExerciseStats == null) {
+                thisExerciseStats = new ExerciseStats();
+                thisExerciseStats.setDate(now.toString());
+                thisExerciseStats.setEasyExercises(0);
+                thisExerciseStats.setMediumExercises(0);
+                thisExerciseStats.setHardExercises(0);
+                thisExerciseStats.setTotalExercises(0);
+            }
+            thisExerciseStats.setDate(now.toString());
+            exerciseStatsList.add(thisExerciseStats);
+
+            QuizStats thisQuizStats = getWeeklyQuizStats(userId, now);
+            if (thisQuizStats == null) {
+                thisQuizStats = new QuizStats();
+                thisQuizStats.setDate(now.toString());
+                thisQuizStats.setCorrectEasyQuestions(0);
+                thisQuizStats.setCorrectMediumQuestions(0);
+                thisQuizStats.setCorrectHardQuestions(0);
+                thisQuizStats.setEasyQuestions(0);
+                thisQuizStats.setMediumQuestions(0);
+                thisQuizStats.setHardQuestions(0);
+                thisQuizStats.setTotalQuestions(0);
+                thisQuizStats.setTotalCorrectQuestions(0);
+            }
+            thisQuizStats.setDate(now.toString());
+            quizStatsList.add(thisQuizStats);
+
+            Integer chapterCount = getWeeklyLessonCount(userId, now);
+            ChapterCountStats chapterCountStats = new ChapterCountStats();
+            if (chapterCount == null) {
+                chapterCount = 0;
+            }
+            chapterCountStats.setDate(now.toString());
+            chapterCountStats.setLessonCount(chapterCount);
+            chapterCountStatsList.add(chapterCountStats);
+
+            now = now.with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
+        }
+
+        exerciseStatsList.sort(Comparator.comparing(ExerciseStats::getDate));
+        quizStatsList.sort(Comparator.comparing(QuizStats::getDate));
+        chapterCountStatsList.sort(Comparator.comparing(ChapterCountStats::getDate));
+
+        overallStats.setChapterStatsList(chapterCountStatsList);
+        overallStats.setExerciseStatsList(exerciseStatsList);
+        overallStats.setQuizStatsList(quizStatsList);
 
         return overallStats;
     }
@@ -245,11 +297,40 @@ public class LearningStatsService {
             masteryStats.setMasteryLevel(Double.parseDouble(formattedLevel));
             masteryStats.setChapterName(mastery.getSkill().getSkillName());
             masteryStats.setChapterNumber(mastery.getSkill().getSkillOrder());
+            masteryStats.setSkillId(mastery.getSkill().getSkillId());
 
             masteryStatsList.add(masteryStats);
         }
         return masteryStatsList;
     }
+
+    public List<QuizStats> getQuizStatsPerChapter(Long userId, Long skillId) {
+        List<QuizResult> quizResultList = quizResultService.getQuizResultsBySkillIdAndUserId(skillId, userId);
+        if (quizResultList == null || quizResultList.isEmpty()) {
+            return null;
+        }
+        int quizNum = 1;
+        List<QuizStats> quizStatsList = new ArrayList<>();
+        while (true) {
+            int finalQuizNum = quizNum;
+            List<QuizResult> thisQuizResult = quizResultList.stream()
+                    .filter(qr -> qr.getQuizNum() == finalQuizNum)
+                    .toList();
+            if (thisQuizResult == null || thisQuizResult.isEmpty()) {
+                break;
+            }
+            QuizStats quizStats = generateQuizStats(thisQuizResult);
+            quizStats.setDate(convertDateToLocalDate(thisQuizResult.getFirst().getSubmittedAt()).toString());
+            quizStatsList.add(quizStats);
+            quizNum++;
+        }
+        return quizStatsList;
+    }
+
+    private LocalDate convertDateToLocalDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
 
 
 

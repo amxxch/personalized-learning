@@ -3,14 +3,10 @@ package com.ttp.learning_web.learningPlatform.controller;
 import com.ttp.learning_web.learningPlatform.entity.Course;
 import com.ttp.learning_web.learningPlatform.service.CourseService;
 import com.ttp.learning_web.learningPlatform.service.LearningService;
-import com.ttp.learning_web.learningPlatform.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -36,7 +32,29 @@ public class CourseController {
     public ResponseEntity<?> getCoursesTaken(
             @RequestParam Long userId
     ) {
-        return ResponseEntity.ok(courseService.getCourseTaken(userId));
+        return ResponseEntity.ok(learningService.getCourseTakenResponse(userId));
+    }
+
+    @GetMapping("/courses-taken/current")
+    public ResponseEntity<?> getCurrentCoursesTaken(
+            @RequestParam Long userId
+    ) {
+        return ResponseEntity.ok(learningService.getCurrentCoursesTaken(userId));
+    }
+
+    @GetMapping("/skills-taken")
+    public ResponseEntity<?> getSkillsTaken(
+            @RequestParam Long userId,
+            @RequestParam Long courseId
+    ) {
+        return ResponseEntity.ok(learningService.getCompletedSkills(userId, courseId));
+    }
+
+    @GetMapping("/title")
+    public ResponseEntity<?> getCourseName(
+            @RequestParam Long courseId
+    ) {
+        return ResponseEntity.ok(courseService.getCourseNameByCourseId(courseId));
     }
 
     @PostMapping

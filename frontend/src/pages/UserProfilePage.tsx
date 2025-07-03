@@ -6,21 +6,28 @@ import LearningStats from "../components/LearningStats";
 import CoursePlanner from "../components/CoursePlanner";
 import DueTasks from "../components/DueTasks";
 import { TechTopic } from "../dto/response";
+import LoginCalendar from "../components/LoginCalendar";
+import { useParams } from "react-router-dom";
+import CourseCatalog from "../components/CourseCatalog";
 
 const ProfilePage = () => {
-    const [activeTab, setActiveTab] = useState<"dashboard" | "stats" | "planner" | "achievement">("dashboard");
+    const [activeTab, setActiveTab] = useState<"dashboard" | "stats" | "planner" | "courses">("dashboard");
     const { userId } = useAuth();
     const [ techFocus, setTechFocus ] = useState<TechTopic[]>([]);
+    const { tab } = useParams<{ tab: string }>();
 
     const tabs = [
         { label: "Dashboard", key: "dashboard" },
         { label: "Course Planner", key: "planner" },
+        { label: "Course Catalogs", key: "courses" },
         { label: "Learning Stats", key: "stats" },
-        { label: "Achievement", key: "achievement" },
     ];
 
     useEffect(() => {
         // Fetching languages and tech focus from the backend
+        if (tab && tabs.some(t => t.key === tab)) {
+            setActiveTab(tab as typeof activeTab);
+        }
         axios.get('http://localhost:8080/api/v1/user', {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -62,26 +69,27 @@ const ProfilePage = () => {
       {/* Main Dashboard */}
       <main className="flex-1 p-6 flex flex-col gap-6">
         {activeTab === "dashboard" && (
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-7 gap-6">
             {/* Profile Info Card */}
-            <div className="col-span-3 lg:col-span-3 rounded-2xl shadow p-6 flex flex-col gap-4 bg-stone-50">
+            <div className="col-span-5 rounded-2xl shadow p-6 flex flex-col gap-4 bg-stone-50">
               <ProfileOverview />
             </div>
 
             {/* Performance Summary */}
             <div className="col-span-2 rounded-2xl shadow p-6 flex flex-col gap-4 bg-stone-50">
-              
+              <LoginCalendar />
             </div>
 
             {/* Due Tasks Section */}
-            <div className="col-span-3 lg:col-span-5 rounded-2xl shadow p-6 flex flex-col gap-4 bg-stone-50">
+            {/* <div className="col-span-7 rounded-2xl shadow p-6 flex flex-col gap-4 bg-stone-50">
               <DueTasks />
-            </div>
+            </div> */}
           </div>
         )}
 
         {activeTab === "stats" && <LearningStats />}
         {activeTab === "planner" && <CoursePlanner />}
+        {activeTab === "courses" && <CourseCatalog />}
       </main>
     </div>
   );

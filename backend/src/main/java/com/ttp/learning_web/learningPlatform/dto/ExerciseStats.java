@@ -6,6 +6,16 @@ public class ExerciseStats {
     private Integer mediumExercises;
     private Integer hardExercises;
 
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public Integer getTotalExercises() {
         return totalExercises;
     }

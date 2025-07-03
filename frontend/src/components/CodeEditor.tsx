@@ -489,7 +489,7 @@ const CodeEditor = () => {
                   </div>
                   { isCustomCodeRunning && <LoadingSpinner message="Running Code..." /> }
                   { customOutput && 
-                  <div className="font-semibold"><strong className='text-base'>Expected Output:</strong><br />
+                  <div className="font-semibold"><strong className='text-base'>Output:</strong><br />
                     <code className="block bg-gray-100 p-2 rounded">{customOutput}</code>
                   </div>
                   }

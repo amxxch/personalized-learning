@@ -35,6 +35,10 @@ public class SkillService {
         return skillRepository.findBySkillNameContaining(skillName);
     }
 
+    public int getNumberOfSkillsByCourseId(Long courseId) {
+        return skillRepository.findByCourse_CourseId(courseId).size();
+    }
+
     public Skill addSkill(Skill skill) {
         Long courseId = skill.getCourse().getCourseId();
 

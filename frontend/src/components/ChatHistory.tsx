@@ -35,6 +35,7 @@ const ChatHistory = ({ initialMessages, courseId, skillId } : ChatHistoryProps) 
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+
   const handleQuit = () => {
     navigate(`/course/overview/${courseId}`, { replace: true });
   }
@@ -73,6 +74,7 @@ const ChatHistory = ({ initialMessages, courseId, skillId } : ChatHistoryProps) 
             userId: userId,
             skillId: skillId,
             question: input,
+            review: false
           }
         });
         

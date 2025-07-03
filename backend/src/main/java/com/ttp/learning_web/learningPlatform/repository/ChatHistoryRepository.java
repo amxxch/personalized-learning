@@ -18,5 +18,7 @@ public interface ChatHistoryRepository extends JpaRepository<ChatHistory, Long> 
 
     List<ChatHistory> findByUser_UserIdAndSkill_SkillId(Long userId, Long skillId);
 
+    List<ChatHistory> findByUser_UserId(Long userId);
+
     List<ChatHistory> findByUser_UserIdAndCourse_CourseId(Long userId, Long courseId);
 }

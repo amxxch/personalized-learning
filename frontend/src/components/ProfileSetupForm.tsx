@@ -32,7 +32,6 @@ const ProfileSetupForm = ({ setIsStart } : ProfileSetupProps) => {
         })
         .then(response => {
             const data = response.data;
-            console.log(data)
             const languagesList = data.languages;
             const techFocusList = data.techFocuses;
             setLanguages(languagesList);
@@ -52,6 +51,7 @@ const ProfileSetupForm = ({ setIsStart } : ProfileSetupProps) => {
         }).then(response => {
             const userData = response.data;
             if (isProfileSetup) {
+                console.log("profile initial setup data: ", userData);
                 console.log(userData.knownLanguages, userData.technicalFocuses, userData.experienceLevel, userData.careerGoal, userData.weeklyLearningHours);
                 setSelectedLanguages(userData.knownLanguages || []);
                 setSelectedTechFocus(userData.technicalFocuses || []);
@@ -93,37 +93,33 @@ const ProfileSetupForm = ({ setIsStart } : ProfileSetupProps) => {
         .then(response => {
             console.log('Profile setup successful:', response.data);
 
-            // is profile setup = false
-            if (!isProfileSetup) {
-                // Generate personalized learning path
-                axios.post('http://localhost:8080/api/v1/profile-setup/roadmap', 
-                { userId }, 
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    console.log("Course Prediction Successful", response.data);
-                    if (!response.data || response.data.length === 0) {
-                      alert("Roadmap is empty — generation failed or not ready.");
-                      return;
-                    }
-                    setIsProfileSetup(true);
-                    setIsStart(false);
-                    setIsLoading(false);
-                    Navigate("/profile", { replace: true });
-                })
-                .catch(error => {
-                    console.error('Error setting up profile:', error);
-                    alert("Failed to set up profile. Please try again.");
-                })
-            } else {
+            // Generate personalized learning path
+            axios.post('http://localhost:8080/api/v1/profile-setup/roadmap', 
+            { userId }, 
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            .then(response => {
+                console.log("Course Prediction Successful", response.data);
+                if (!response.data || response.data.length === 0) {
+                    alert("Roadmap is empty — generation failed or not ready.");
+                    return;
+                }
                 setIsProfileSetup(true);
                 setIsStart(false);
                 setIsLoading(false);
-                Navigate("/profile", { replace: true });
-            }
+                if (isProfileSetup) {
+                    Navigate("/profile", { replace: true });
+                } else {
+                    Navigate("/profile/planner", { replace: true });
+                }
+            })
+            .catch(error => {
+                console.error('Error setting up profile:', error);
+                alert("Failed to set up profile. Please try again.");
+            })
         })
         .catch(error => {
             console.error('Error setting up profile:', error);
@@ -132,13 +128,32 @@ const ProfileSetupForm = ({ setIsStart } : ProfileSetupProps) => {
         })
     }
 
+    const handleBack = () => {
+        if (isProfileSetup) {
+            Navigate("/profile", { replace: true });
+        } else {
+            Navigate("/profile-setup", { replace: true });
+        }
+    }
+
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-2xl shadow-md mt-2">
         <div className="space-y-6">
             { isLoading && <LoadingSpinner message="Setting up your profile..." /> }
             { !isLoading &&
             <div>
-                <h2 className="text-2xl font-bold text-gray-800 text-center">Let's Set Up Your Profile</h2>
+                <div className="flex items-center justify-between px-4 mb-1">
+                <button
+                    onClick={handleBack}
+                    className="bg-gray-200 hover:bg-gray-300 w-[90px] text-gray-800 px-4 py-2 rounded-lg font-medium transition"
+                >
+                    ← Back
+                </button>
+                <h2 className="text-2xl font-bold text-gray-800 text-center flex-1">
+                    Let's Set Up Your Profile
+                </h2>
+                <div className="w-[90px]">{/* spacer to center title */}</div>
+                </div>
                 <p className="text-gray-600 text-center">This will help us personalize your learning path.</p>
                 
                 <form className="space-y-8">

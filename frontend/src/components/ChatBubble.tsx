@@ -19,10 +19,11 @@ interface ChatBubbleProps {
     initialSkillId?: number;
     initialBubbleId?: number;
     courseId: number | null;
+    courseName?: string;
 }
 
 
-const ChatBubble = ({ initialMessages, initialSkillId = 0, initialBubbleId = 1, courseId } : ChatBubbleProps) => {
+const ChatBubble = ({ initialMessages, initialSkillId = 0, initialBubbleId = 1, courseId, courseName } : ChatBubbleProps) => {
 
   const maxQuizQuestion = 5;
 
@@ -47,6 +48,27 @@ const ChatBubble = ({ initialMessages, initialSkillId = 0, initialBubbleId = 1, 
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  const tutorial = `👋 **Welcome to this lesson!**
+
+—Click **Next** if you understand the current lesson bubble and want to continue.\n
+—Click **Still Unsure** to get a clearer or simpler explanation.\n
+—Have a question during the lesson? **Ask anything** related to this lesson, and I’ll help explain it.\n\n
+
+Let's learn step by step — you're in control!`;
+  
+  useEffect(() => {
+    if (!initialMessages || initialMessages.length === 0) {
+        console.log('No initial messages provided, setting tutorial message.');
+      setMessages([
+        {
+          sender: 'ASSISTANT',
+          type: 'TEXT',
+          content: tutorial,
+        }
+      ]);
+    }
+    }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -146,7 +168,8 @@ const ChatBubble = ({ initialMessages, initialSkillId = 0, initialBubbleId = 1, 
           },
           params: {
             userId: userId,
-            courseId: courseId
+            courseId: courseId,
+            review: false
           }
         });
         
@@ -235,6 +258,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 0, initialBubbleId = 1, 
             userId: userId,
             skillId: skillId,
             question: input,
+            review: false,
           }
         });
         
@@ -347,6 +371,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 0, initialBubbleId = 1, 
         params: {
           userId: userId,
           skillId: skillId,
+          review: false
         }
       });
       
@@ -403,6 +428,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 0, initialBubbleId = 1, 
           questionId: quizId,
           choiceLetterStr: answer,
           questionNum: numOfQuiz,
+          review: false
         }
       });
       
@@ -444,7 +470,7 @@ const ChatBubble = ({ initialMessages, initialSkillId = 0, initialBubbleId = 1, 
         {/* Title */}
         <div className="flex-1 overflow-y-auto space-y-4">
         <div className="text-center mb-10">
-          <p className="text-xl text-gray-600 font-semibold mb-1">C++ Courses</p>
+          <p className="text-xl text-gray-600 font-semibold mb-1">{courseName}</p>
           <p className='text-gray-500'>{datetime}</p>
         </div>
 

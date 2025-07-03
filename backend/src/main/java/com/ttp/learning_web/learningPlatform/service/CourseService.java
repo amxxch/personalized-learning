@@ -59,6 +59,10 @@ public class CourseService {
                 .toList();
     }
 
+    public String getCourseNameByCourseId(Long courseId) {
+        return getCourseByCourseId(courseId).getTitle();
+    }
+
     public Course getCourseByCourseId(Long courseId) {
         return courseRepository.findByCourseId(courseId)
                 .orElseThrow(() -> new RuntimeException("Course Not Found"));
@@ -92,7 +96,13 @@ public class CourseService {
                                     .collect(Collectors.toSet())
                     );
                 }
-                course.setLanguages(null);
+                if (course.getLanguages() != null) {
+                    course.setLanguages(
+                            course.getLanguages().stream()
+                                    .peek(l -> l.setCourses(null))
+                                    .collect(Collectors.toSet())
+                    );
+                }
                 return course;
             })
             .toList();

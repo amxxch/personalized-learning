@@ -4,10 +4,11 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Course } from "../dto/response";
 import { MdClear } from "react-icons/md";
+import { GrCatalog } from "react-icons/gr";
 
 
 export default function CourseCatalog() {
-    const { isProfileSetup } = useAuth();
+    const { isProfileSetup, userId } = useAuth();
 
     const [isLoading, setIsLoading] = useState(true);
     const [courseList, setCourseList] = useState<Course[]>([]);
@@ -24,9 +25,12 @@ export default function CourseCatalog() {
   
     useEffect(() => {
       // Fetching languages and tech focus from the backend
-      axios.get('http://localhost:8080/api/v1/course/all', {
+      axios.get('http://localhost:8080/api/v1/course/courses-taken', {
           headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`
+          },
+          params: {
+            userId: userId
           }
       })
       .then(response => {
@@ -67,9 +71,10 @@ export default function CourseCatalog() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-8 sm:p-20 gap-8 font-[family-name:var(--font-geist-sans)]">
-      <h1 className="min-w-screen text-5xl font-bold text-center font-mono tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-pink-900">
-        Welcome to LearningBot!
+    <div className="flex flex-col items-center min-h-screen p-6 gap-8 font-[family-name:var(--font-geist-sans)]">
+        <h1 className="text-4xl font-bold text-gray-800 text-center">
+            <GrCatalog className="inline-block mr-4" />
+            Your Course Catalog
       </h1>
 
       { isProfileSetup && (
@@ -197,7 +202,7 @@ export default function CourseCatalog() {
             </div>
           )}
     
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 w-5/6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
             {courseList
             .filter((course) => {
               const matchesLanguage = selectedLanguages.length === 0 || course.language.some(lang => selectedLanguages.includes(lang));
@@ -216,6 +221,7 @@ export default function CourseCatalog() {
                 language={course.language}
                 techFocus={course.techFocus}
                 level={course.level}
+                progressPercent={course.progressPercent || 0}
               />
             ))}
           </div>

@@ -43,6 +43,26 @@ const ChatReview = ({ initialMessages, courseId, skillId } : ChatReviewProps) =>
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  const tutorial = `🧠 **Ready to Review?**\n
+
+We'll go through **5 short questions** to help you review what you've learned in this lesson.\n
+
+You can ask **any question** if something is unclear — I’m here to help!
+`;
+  
+  useEffect(() => {
+    if (!initialMessages || initialMessages.length === 0) {
+        console.log('No initial messages provided, setting tutorial message.');
+      setMessages([
+        {
+          sender: 'ASSISTANT',
+          type: 'TEXT',
+          content: tutorial,
+        }
+      ]);
+    }
+    }, []);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -66,7 +86,8 @@ const ChatReview = ({ initialMessages, courseId, skillId } : ChatReviewProps) =>
       },
       params: {
         userId: userId,
-        courseId: courseId
+        courseId: courseId,
+        review: true
       }
     });
     
@@ -116,6 +137,7 @@ const ChatReview = ({ initialMessages, courseId, skillId } : ChatReviewProps) =>
             userId: userId,
             skillId: skillId,
             question: input,
+            review: true
           }
         });
         
@@ -154,7 +176,8 @@ const ChatReview = ({ initialMessages, courseId, skillId } : ChatReviewProps) =>
         params: {
           userId: userId,
           skillId: skillId,
-          questionNum: numOfQuiz
+          questionNum: numOfQuiz,
+          review: true
         }
       });
       
@@ -238,6 +261,7 @@ const ChatReview = ({ initialMessages, courseId, skillId } : ChatReviewProps) =>
         params: {
           userId: userId,
           skillId: skillId,
+          review: true
         }
       });
       
@@ -292,7 +316,8 @@ const ChatReview = ({ initialMessages, courseId, skillId } : ChatReviewProps) =>
           userId: userId,
           questionId: quizId,
           choiceLetterStr: answer,
-          questionNum: numOfQuiz
+          questionNum: numOfQuiz,
+          review: true
         }
       });
       

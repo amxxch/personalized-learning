@@ -14,6 +14,7 @@ const CourseChatPage = () => {
 
   const [loading, setLoading] = useState(true);
   const { courseId, skillId } = useParams();
+  const [courseName, setCourseName] = useState<string>('');
   const parsedCourseId = courseId ? parseInt(courseId) : null;
   const parsedSkillId = skillId ? parseInt(skillId) : null;
   const Navigate = useNavigate();
@@ -32,8 +33,12 @@ const CourseChatPage = () => {
       }
     })
     .then((response) => {
+      const data = response.data;
       console.log('Assessment status:', response.data);
-      if (!response.data) {
+      const completed = data.completed;
+      setCourseName(data.title || '');
+      console.log(data.title)
+      if (!completed) {
         // if assessment is done, redirect to assessment page
         setLoading(false);
         Navigate(`/assessment/${parsedCourseId}`);
@@ -127,6 +132,7 @@ const CourseChatPage = () => {
           initialSkillId={parsedSkillId || 1} 
           initialBubbleId={bubbleId} 
           courseId={parsedCourseId}
+          courseName={courseName}
           />
         )}
     </div>

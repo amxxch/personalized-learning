@@ -7,6 +7,7 @@ export interface Course {
     techFocus: string[];
     skills: Skill[];
     assessmentDone: boolean;
+    progressPercent: number;
 }
 
 export interface User {
@@ -134,17 +135,21 @@ export interface OverallStats {
     thisWeekQuizStats: QuizStats;
     quizPercentGrowth: number;
     allTimeQuizStats: QuizStats;
+    quizStatsList: QuizStats[];
 
     thisWeekChapterStats: number;
     allTimeChapterStats: number;
     chapterPercentGrowth: number;
+    chapterStatsList: ChapterCountStats[];
 
     thisWeekExerciseStats: ExerciseStats;
     allTimeExerciseStats: ExerciseStats;
     exercisePercentGrowth: number;
+    exerciseStatsList: ExerciseStats[];
 }
 
 export interface QuizStats {
+    date: string;
     totalQuestions: number;
     totalCorrectQuestions: number;
     easyQuestions: number;
@@ -156,14 +161,21 @@ export interface QuizStats {
 }
 
 export interface ExerciseStats {
+    date: string;
     totalExercises: number;
     easyExercises: number;
     mediumExercises: number;
     hardExercises: number;
 }
 
+export interface ChapterCountStats {
+    date: string;
+    lessonCount: number;
+}
+
 export interface MasteryStats {
     chapterNumber: number;
     chapterName: string;
     masteryLevel: number;
+    skillId: number;
 }

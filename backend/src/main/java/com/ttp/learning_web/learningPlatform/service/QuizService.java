@@ -229,7 +229,8 @@ public class QuizService {
     public String submitAnswerAndGetSolution(Long userId,
                                              Long questionId,
                                              ChoiceLetter selectedLetter,
-                                             int questionNum) {
+                                             int questionNum,
+                                             boolean review) {
         QuizQuestion quizQuestion = quizQuestionService.getQuizQuestionByQuestionId(questionId);
         User user = userService.getUserByUserId(userId);
         Skill skill = quizQuestion.getSkill();
@@ -241,9 +242,9 @@ public class QuizService {
 
         boolean isCorrect = correctAnswer.getChoiceLetter().equals(selectedLetter);
         if (isCorrect) {
-            masteryService.increaseMasteryByQuiz(mastery, quizQuestion);
+            masteryService.increaseMasteryByQuiz(mastery, quizQuestion, review);
         } else {
-            masteryService.decreaseMasteryByQuiz(mastery, quizQuestion);
+            masteryService.decreaseMasteryByQuiz(mastery, quizQuestion, review);
         }
 
         chatHistoryService.addCustomizedMsgHistory(
@@ -251,7 +252,7 @@ public class QuizService {
                 skill,
                 "Selected answer: " + selectedLetter.name(),
                 Sender.USER,
-                ContentType.QUIZ,
+                review ? ContentType.REVIEW : ContentType.QUIZ,
                 null
         );
 
@@ -287,14 +288,14 @@ public class QuizService {
                 skill,
                 solution,
                 Sender.ASSISTANT,
-                ContentType.QUIZ,
+                review ? ContentType.REVIEW : ContentType.QUIZ,
                 null
         );
 
         return solution;
     }
 
-    public String getQuizEvaluation(Long userId, Long skillId) throws JsonProcessingException {
+    public String getQuizEvaluation(Long userId, Long skillId, boolean review) throws JsonProcessingException {
         User user = userService.getUserByUserId(userId);
         Skill skill = skillService.getSkillBySkillId(skillId);
         Mastery mastery = masteryService.getMasteryByUserIdAndSkillId(userId, skillId);
@@ -335,7 +336,9 @@ public class QuizService {
         String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), skillId, prompt);
         progress.setQuizCompleted(true);
         progressService.updateProgress(progress);
-        courseService.markCourseCompletion(userId, skill.getCourse().getCourseId());
+        if (skill.getSkillOrder() == skillService.getNumberOfSkillsByCourseId(skill.getCourse().getCourseId())) {
+            courseService.markCourseCompletion(userId, skill.getCourse().getCourseId());
+        }
 
         // Find the average mastery level between our static rubric and GPT suggested level
         Double updatedMasteryLevel = getMasteryLevelFromGPT(resultSummary, skillId, userId);
@@ -350,7 +353,14 @@ public class QuizService {
                 """, numOfCorrectQuiz, numOfQuiz, avgMasteryLevel);
 
         String evalMsg = introMsg + answer;
-        chatHistoryService.addCustomizedMsgHistory(user, skill, evalMsg, Sender.ASSISTANT, ContentType.QUIZ, null);
+        chatHistoryService.addCustomizedMsgHistory(
+                user,
+                skill,
+                evalMsg,
+                Sender.ASSISTANT,
+                review ? ContentType.REVIEW : ContentType.QUIZ,
+                null
+        );
 
         return evalMsg;
 
@@ -424,7 +434,7 @@ public class QuizService {
         return new ObjectMapper().writeValueAsString(summaryJSON);
     }
 
-    public GPTResponse handleAskQuestion(String question, Long userId, Long skillId) {
+    public GPTResponse handleAskQuestion(String question, Long userId, Long skillId, boolean review) {
         User user = userService.getUserByUserId(userId);
         Skill skill = skillService.getSkillBySkillId(skillId);
 
@@ -456,8 +466,22 @@ public class QuizService {
         String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), skillId, prompt);
         if (!answer.equals(unrelatedAnswer)) {
             // Save to chat history only if the question is related to the lesson
-            chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.QUIZ, null);
-            chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.QUIZ, null);
+            chatHistoryService.addCustomizedMsgHistory(
+                    user,
+                    skill,
+                    question,
+                    Sender.USER,
+                    review ? ContentType.REVIEW : ContentType.QUIZ,
+                    null
+            );
+            chatHistoryService.addCustomizedMsgHistory(
+                    user,
+                    skill,
+                    answer,
+                    Sender.ASSISTANT,
+                    review ? ContentType.REVIEW : ContentType.QUIZ,
+                    null
+            );
         }
         return new GPTResponse(answer, Status.COMPLETED);
     }

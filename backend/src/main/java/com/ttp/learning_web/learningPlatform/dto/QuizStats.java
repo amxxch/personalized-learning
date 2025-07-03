@@ -1,5 +1,7 @@
 package com.ttp.learning_web.learningPlatform.dto;
 
+import java.util.Date;
+
 public class QuizStats {
     private Integer totalQuestions;
     private Integer totalCorrectQuestions;
@@ -9,6 +11,16 @@ public class QuizStats {
     private Integer correctEasyQuestions;
     private Integer correctMediumQuestions;
     private Integer correctHardQuestions;
+
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public Integer getTotalQuestions() {
         return totalQuestions;

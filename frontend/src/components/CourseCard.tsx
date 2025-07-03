@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react'
+import ProgressBar from './ProgressBar';
 
 interface CardProps {
     courseId?: number;
@@ -9,9 +10,10 @@ interface CardProps {
     language?: string[];
     level: string;
     techFocus?: string[];
+    progressPercent?: number;
 }
 
-const MAX_TAGS = 10;
+const MAX_TAGS = 3;
 
 const CourseCard = ( { 
     title, 
@@ -20,7 +22,8 @@ const CourseCard = ( {
     language = [],
     level,
     techFocus = [],
-    courseId
+    courseId,
+    progressPercent
 } : CardProps) => {
 
   const [showAll, setShowAll] = useState(false);
@@ -47,12 +50,11 @@ const CourseCard = ( {
             </span>
           ))}
           {!showAll && hiddenCount > 0 && (
-            <button
-              onClick={() => setShowAll(true)}
-              className="bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full font-medium hover:bg-gray-300"
+            <span
+              className={`${color} text-xs px-2 py-0.5 rounded-full font-medium hover:bg-gray-300`}
             >
               +{hiddenCount} more
-            </button>
+            </span>
           )}
         </div>
       </div>
@@ -68,7 +70,8 @@ const CourseCard = ( {
 
           { renderTags("Level", [level.charAt(0).toUpperCase() + level.slice(1).toLowerCase()], "bg-yellow-100 text-yellow-700", "level")}
           { language && language.length > 0 && renderTags("Languages", language, "bg-green-100 text-green-700", "lang")}
-          { techFocus && techFocus.length > 0 && renderTags("Technical Scope", techFocus, "bg-purple-100 text-purple-700", "tech")}
+          { techFocus && techFocus.length > 0 && renderTags("Technical Scope", techFocus, "bg-purple-100 text-purple-700 mb-2", "tech")}
+          { progressPercent != null && <ProgressBar progressPercent={parseFloat(progressPercent.toFixed(2))} /> }
         </div>
       </Link>
     </div>

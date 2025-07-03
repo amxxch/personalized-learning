@@ -1,17 +1,22 @@
 package com.ttp.learning_web.learningPlatform.dto;
 
+import java.util.List;
+
 public class OverallStats {
     private QuizStats thisWeekQuizStats;
     private Integer quizPercentGrowth;
     private QuizStats allTimeQuizStats;
+    private List<QuizStats> quizStatsList;
 
     private Integer thisWeekChapterStats;
     private Integer allTimeChapterStats;
     private Integer chapterPercentGrowth;
+    private List<ChapterCountStats> chapterStatsList;
 
     private ExerciseStats thisWeekExerciseStats;
     private ExerciseStats allTimeExerciseStats;
     private Integer exercisePercentGrowth;
+    private List<ExerciseStats> exerciseStatsList;
 
     public QuizStats getThisWeekQuizStats() {
         return thisWeekQuizStats;
@@ -83,5 +88,29 @@ public class OverallStats {
 
     public void setAllTimeChapterStats(Integer allTimeChapterStats) {
         this.allTimeChapterStats = allTimeChapterStats;
+    }
+
+    public List<QuizStats> getQuizStatsList() {
+        return quizStatsList;
+    }
+
+    public void setQuizStatsList(List<QuizStats> quizStatsList) {
+        this.quizStatsList = quizStatsList;
+    }
+
+    public List<ChapterCountStats> getChapterStatsList() {
+        return chapterStatsList;
+    }
+
+    public void setChapterStatsList(List<ChapterCountStats> chapterStatsList) {
+        this.chapterStatsList = chapterStatsList;
+    }
+
+    public List<ExerciseStats> getExerciseStatsList() {
+        return exerciseStatsList;
+    }
+
+    public void setExerciseStatsList(List<ExerciseStats> exerciseStatsList) {
+        this.exerciseStatsList = exerciseStatsList;
     }
 }

@@ -98,7 +98,7 @@ public class MasteryService {
         updateMastery(mastery);
     }
 
-    public void increaseMasteryByQuiz(Mastery mastery, QuizQuestion quizQuestion) {
+    public void increaseMasteryByQuiz(Mastery mastery, QuizQuestion quizQuestion, boolean review) {
         if (!quizQuestion.getSkill().getSkillId().equals(mastery.getSkill().getSkillId())) {
             return;
         }
@@ -106,12 +106,22 @@ public class MasteryService {
         Difficulty difficulty = quizQuestion.getDifficulty();
         Double currentMasteryLevel = mastery.getMasteryLevel();
 
-        if (difficulty == Difficulty.EASY) {
-            mastery.setMasteryLevel(min(currentMasteryLevel + 0.15, 1));
-        } else if (difficulty == Difficulty.MEDIUM) {
-            mastery.setMasteryLevel(min(currentMasteryLevel + 0.2, 1));
-        } else if (difficulty == Difficulty.HARD) {
-            mastery.setMasteryLevel(min(currentMasteryLevel + 0.25, 1));
+        if (!review) {
+            if (difficulty == Difficulty.EASY) {
+                mastery.setMasteryLevel(min(currentMasteryLevel + 0.15, 1));
+            } else if (difficulty == Difficulty.MEDIUM) {
+                mastery.setMasteryLevel(min(currentMasteryLevel + 0.2, 1));
+            } else if (difficulty == Difficulty.HARD) {
+                mastery.setMasteryLevel(min(currentMasteryLevel + 0.25, 1));
+            }
+        } else {
+            if (difficulty == Difficulty.EASY) {
+                mastery.setMasteryLevel(min(currentMasteryLevel + 0.08, 1));
+            } else if (difficulty == Difficulty.MEDIUM) {
+                mastery.setMasteryLevel(min(currentMasteryLevel + 0.1, 1));
+            } else if (difficulty == Difficulty.HARD) {
+                mastery.setMasteryLevel(min(currentMasteryLevel + 0.12, 1));
+            }
         }
         updateMastery(mastery);
     }
@@ -134,7 +144,7 @@ public class MasteryService {
         updateMastery(mastery);
     }
 
-    public void decreaseMasteryByQuiz(Mastery mastery, QuizQuestion quizQuestion) {
+    public void decreaseMasteryByQuiz(Mastery mastery, QuizQuestion quizQuestion, boolean review) {
         if (!quizQuestion.getSkill().getSkillId().equals(mastery.getSkill().getSkillId())) {
             return;
         }
@@ -143,12 +153,22 @@ public class MasteryService {
         Double currentMasteryLevel = mastery.getMasteryLevel();
 //        mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.05));
 
-        if (difficulty == Difficulty.EASY) {
-            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.075));
-        } else if (difficulty == Difficulty.MEDIUM) {
-            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.15));
-        } else if (difficulty == Difficulty.HARD) {
-            mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.2));
+        if (!review) {
+            if (difficulty == Difficulty.EASY) {
+                mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.075));
+            } else if (difficulty == Difficulty.MEDIUM) {
+                mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.15));
+            } else if (difficulty == Difficulty.HARD) {
+                mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.2));
+            }
+        } else {
+            if (difficulty == Difficulty.EASY) {
+                mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.04));
+            } else if (difficulty == Difficulty.MEDIUM) {
+                mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.08));
+            } else if (difficulty == Difficulty.HARD) {
+                mastery.setMasteryLevel(max(0, currentMasteryLevel - 0.1));
+            }
         }
         updateMastery(mastery);
     }

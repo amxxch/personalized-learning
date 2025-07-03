@@ -1,6 +1,7 @@
 package com.ttp.learning_web.learningPlatform.dto;
 
 import com.ttp.learning_web.learningPlatform.enums.CourseLevel;
+import com.ttp.learning_web.learningPlatform.enums.Status;
 
 import java.util.Set;
 
@@ -12,6 +13,7 @@ public class RoadmapResponse {
     private CourseLevel courseLevel;
     private Integer estimatedDurationWeeks;
     private String rationale;
+    private Status status;
 
     public int getSequence() {
         return sequence;
@@ -51,6 +53,14 @@ public class RoadmapResponse {
 
     public void setEstimatedDurationWeeks(Integer estimatedDurationWeeks) {
         this.estimatedDurationWeeks = estimatedDurationWeeks;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public String getRationale() {

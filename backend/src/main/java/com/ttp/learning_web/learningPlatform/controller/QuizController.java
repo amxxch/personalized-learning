@@ -32,11 +32,12 @@ public class QuizController {
             @RequestParam Long userId,
             @RequestParam Long questionId,
             @RequestParam String choiceLetterStr,
-            @RequestParam int questionNum
+            @RequestParam int questionNum,
+            @RequestParam boolean review
     ) {
         try {
             ChoiceLetter choiceLetter = ChoiceLetter.valueOf(choiceLetterStr);
-            return ResponseEntity.ok(quizService.submitAnswerAndGetSolution(userId, questionId, choiceLetter, questionNum));
+            return ResponseEntity.ok(quizService.submitAnswerAndGetSolution(userId, questionId, choiceLetter, questionNum, review));
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
@@ -46,17 +47,19 @@ public class QuizController {
     public ResponseEntity<GPTResponse> askQuestion(
             @RequestParam String question,
             @RequestParam Long userId,
-            @RequestParam Long skillId
+            @RequestParam Long skillId,
+            @RequestParam boolean review
     ) {
-        return ResponseEntity.ok(quizService.handleAskQuestion(question, userId, skillId));
+        return ResponseEntity.ok(quizService.handleAskQuestion(question, userId, skillId, review));
     }
 
     @GetMapping("/evaluate")
     public ResponseEntity<String> evaluateQuiz(
             @RequestParam Long userId,
-            @RequestParam Long skillId
+            @RequestParam Long skillId,
+            @RequestParam boolean review
     ) throws JsonProcessingException {
-        return ResponseEntity.ok(quizService.getQuizEvaluation(userId, skillId));
+        return ResponseEntity.ok(quizService.getQuizEvaluation(userId, skillId, review));
     }
 
     @GetMapping("/next-review-question")

@@ -33,22 +33,24 @@ public class LearningController {
     @GetMapping("/rephrase")
     public ResponseEntity<GPTResponse> rephraseBubble(
             @RequestParam Long userId,
-            @RequestParam Long courseId
+            @RequestParam Long courseId,
+            @RequestParam boolean review
     ) {
-        return ResponseEntity.ok(learningService.handleRephrase(userId, courseId));
+        return ResponseEntity.ok(learningService.handleRephrase(userId, courseId, review));
     }
 
     @GetMapping("/ask-questions")
     public ResponseEntity<GPTResponse> askQuestion(
             @RequestParam String question,
             @RequestParam Long userId,
-            @RequestParam Long skillId
+            @RequestParam Long skillId,
+            @RequestParam boolean review
     ) {
-        return ResponseEntity.ok(learningService.handleAskQuestion(question, userId, skillId));
+        return ResponseEntity.ok(learningService.handleAskQuestion(question, userId, skillId, review));
     }
 
     @GetMapping("/isAssessmentDone")
-    public ResponseEntity<Boolean> isAssessmentDone(
+    public ResponseEntity<?> isAssessmentDone(
             @RequestParam Long userId,
             @RequestParam Long courseId
     ) {

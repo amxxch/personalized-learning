@@ -26,6 +26,10 @@ public class ChatHistoryService {
         return chatHistoryRepository.findAll();
     }
 
+    public List<ChatHistory> getAllChatHistoryByUserId(Long userId) {
+        return chatHistoryRepository.findByUser_UserId(userId);
+    }
+
     public List<ChatHistoryDTO> getAllChatHistoryByUserIdAndSkillId(
             Long userId, Long skillId
     ) {
@@ -116,7 +120,7 @@ public class ChatHistoryService {
         List<ChatHistory> chatHistoryList = chatHistoryRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId);
 
         return chatHistoryList.stream()
-                .filter(ch -> ch.getContentType() == ContentType.QUIZ && Objects.equals(ch.getTopic(), "QUIZ"))
+                .filter(ch -> (ch.getContentType() == ContentType.QUIZ || ch.getContentType() == ContentType.REVIEW) && Objects.equals(ch.getTopic(), "QUIZ"))
                 .max(Comparator.comparingLong(ChatHistory::getChatId))
                 .orElse(null);
     }

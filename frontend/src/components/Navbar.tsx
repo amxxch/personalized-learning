@@ -6,10 +6,11 @@ import { useAuth } from "../context/AuthContext";
 const NavBar = () => {
     const { pathname } = useLocation();
     const disabledHref = pathname.includes('/chat') || pathname.includes('/profile-setup')
+    const homePage = pathname === '/';
     const { logout } = useAuth();
 
     return (
-        <div className="navbar bg-base-300 shadow-sm">
+        <div className={`navbar ${homePage ? "bg-white" : "bg-base-300"} shadow-sm`}>
             <div className="flex-1">
                 {disabledHref ? (
                     <span className="btn btn-ghost text-xl font-mono">LearningBot</span>

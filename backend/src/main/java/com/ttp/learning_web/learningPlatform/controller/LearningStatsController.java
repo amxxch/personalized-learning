@@ -28,4 +28,12 @@ public class LearningStatsController {
     ) {
         return ResponseEntity.ok(learningStatsService.getMasteryStats(userId, courseId));
     }
+
+    @GetMapping("/chapter-quiz-stats")
+    public ResponseEntity<?> getChapterQuizStats(
+            @RequestParam Long userId,
+            @RequestParam Long skillId
+    ) {
+        return ResponseEntity.ok(learningStatsService.getQuizStatsPerChapter(userId, skillId));
+    }
 }

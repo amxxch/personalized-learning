@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import axios from 'axios';
+import { registerLicense } from '@syncfusion/ej2-base';
 import CourseChatPage from './pages/CourseChatPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -14,6 +15,8 @@ import CodeEditor from './pages/CodeExercisePage';
 import CourseOverviewPage from './pages/CourseOverviewPage';
 import ChatHistoryPage from './pages/ChatHistoryPage';
 import ChatReviewPage from './pages/ChatReviewPage';
+
+registerLicense('Ngo9BigBOggjHTQxAR8/V1JEaF5cXmRCeUx0THxbf1x1ZFdMYltbQXFPMyBoS35Rc0VlW3ZecnZSQ2lbVkd3VEFd');
 
 function App() {
 
@@ -37,14 +40,14 @@ function App() {
 
   return (
     <Routes>
-      <Route
+      {/* <Route
         path="/"
         element={
           <RouteWithLayout isPrivate={true}>
             <HomePage />
           </RouteWithLayout>
         }
-      />
+      /> */}
       <Route
         path="/course/:courseId/full-lesson/:skillId"
         element={
@@ -86,7 +89,7 @@ function App() {
         }
       />
       <Route
-        path="/welcome"
+        path="/"
         element={
           <RouteWithLayout>
             <WelcomePage />
@@ -95,6 +98,14 @@ function App() {
       />
       <Route
         path="/profile"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <UserProfilePage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/profile/:tab"
         element={
           <RouteWithLayout isPrivate={true}>
             <UserProfilePage />

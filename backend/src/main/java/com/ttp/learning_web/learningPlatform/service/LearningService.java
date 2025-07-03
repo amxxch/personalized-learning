@@ -8,10 +8,7 @@ import com.ttp.learning_web.learningPlatform.enums.Status;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,8 +44,6 @@ public class LearningService {
 
         System.out.println("Progress sizes: " + progresses.size());
 
-        boolean isFirstTime = progresses.isEmpty();
-
         if (currentProgress == null) {
             // If the user has no progress yet, check if all skills are already completed
             if (progresses.size() == skills.size()) {
@@ -57,6 +52,16 @@ public class LearningService {
 
             // Start new progress of the next skill at the first bubble
             Skill nextSkill = skills.get(currentSkillIndex);
+            if (progressService.getProgressByUserIdAndSkillId(userId, nextSkill.getSkillId()) != null) {
+                nextSkill = skills.get(currentSkillIndex + 1);
+            }
+//            Skill lastSkill = progresses.stream()
+//                            .filter(p -> p.getLessonCompleted() && p.getQuizCompleted())
+//                            .toList()
+//                            .getLast().getSkill();
+//            Skill nextSkill = skills.stream()
+//                            .filter(s -> s.getSkillOrder() == lastSkill.getSkillOrder() + 1)
+//                            .toList().getFirst();
             System.out.println(nextSkill.getSkillId());
             LessonBubble firstBubble = lessonBubbleService.getAllBubblesByUserSkill(nextSkill.getSkillId(), userId).getFirst();
 //            LessonBubble firstBubble = lessonBubbleService.getAllBubblesBySkillId(nextSkill.getSkillId()).getFirst();
@@ -116,7 +121,7 @@ public class LearningService {
         }
     }
 
-    public GPTResponse handleRephrase(Long userId, Long courseId) {
+    public GPTResponse handleRephrase(Long userId, Long courseId, boolean review) {
 
         User user = userService.getUserByUserId(userId);
 
@@ -128,7 +133,9 @@ public class LearningService {
 
         Skill skill = latestChatHistory.getSkill();
         Mastery mastery = masteryService.getMasteryByUserIdAndSkillId(userId, skill.getSkillId());
-        chatHistoryService.addStillUnsureMsgHistory(user, skill);
+        if (!review) {
+            chatHistoryService.addStillUnsureMsgHistory(user, skill);
+        }
         mastery.setMasteryLevel(mastery.getMasteryLevel() - 0.01);
         masteryService.updateMastery(mastery);
 
@@ -146,11 +153,17 @@ public class LearningService {
             """, latestChatHistory.getContent());
 
         String answer = openAIService.learningPrompt(userId, courseId, skill.getSkillId(), prompt);
-        chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT, null);
+        chatHistoryService.addCustomizedMsgHistory(
+                user,
+                skill,
+                answer,
+                Sender.ASSISTANT,
+                review ? ContentType.REVIEW : ContentType.GPT,
+                null);
         return new GPTResponse(answer, Status.COMPLETED);
     }
 
-    public GPTResponse handleAskQuestion(String question, Long userId, Long skillId) {
+    public GPTResponse handleAskQuestion(String question, Long userId, Long skillId, boolean review) {
         User user = userService.getUserByUserId(userId);
         Skill skill = skillService.getSkillBySkillId(skillId);
 
@@ -169,7 +182,14 @@ public class LearningService {
         String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), skillId, prompt);
         if (!answer.equals(unrelatedAnswer)) {
             // Save to chat history only if the question is related to the lesson
-            chatHistoryService.addCustomizedMsgHistory(user, skill, question, Sender.USER, ContentType.TEXT, null);
+            chatHistoryService.addCustomizedMsgHistory(
+                    user,
+                    skill,
+                    question,
+                    Sender.USER,
+                    review ? ContentType.REVIEW : ContentType.TEXT,
+                    null
+            );
             chatHistoryService.addCustomizedMsgHistory(user, skill, answer, Sender.ASSISTANT, ContentType.GPT, null);
         }
         return new GPTResponse(answer, Status.COMPLETED);
@@ -182,7 +202,7 @@ public class LearningService {
         gptChatHistoryService.deleteAllGPTChatHistory();
     }
 
-    public boolean hasUserCompletedInitialAssessment(Long userId, Long courseId) {
+    public CourseAssessmentStatus hasUserCompletedInitialAssessment(Long userId, Long courseId) {
         Course course = courseService.getCourseByCourseId(courseId);
 
         List<Skill> skillList = skillService.getAllSkills().stream()
@@ -196,7 +216,11 @@ public class LearningService {
         System.out.println("Mastery List: " + masteryList.size());
         System.out.println("Skill List: " + skillList.size());
 
-        return skillList.size() == masteryList.size();
+        CourseAssessmentStatus courseAssessmentStatus = new CourseAssessmentStatus();
+        courseAssessmentStatus.setCompleted(skillList.size() == masteryList.size());
+        courseAssessmentStatus.setTitle(course.getTitle());
+
+        return courseAssessmentStatus;
     }
 
     public CourseOverview getCourseOverview(Long courseId, Long userId) {
@@ -210,7 +234,7 @@ public class LearningService {
         courseOverview.setLevel(course.getLevel().name());
         courseOverview.setLanguage(course.getLanguages().stream().map(Language::getLanguageName).collect(Collectors.toSet()));
         courseOverview.setTechFocus(course.getTechnicalFocuses().stream().map(TechnicalFocus::getTechFocusName).collect(Collectors.toSet()));
-        courseOverview.setAssessmentDone(hasUserCompletedInitialAssessment(userId, courseId));
+        courseOverview.setAssessmentDone(hasUserCompletedInitialAssessment(userId, courseId).isCompleted());
 
         List<SkillOverview> skillOverviewList = new ArrayList<>();
 
@@ -235,6 +259,94 @@ public class LearningService {
         courseOverview.setSkills(skillOverviewList);
 
         return courseOverview;
+    }
+
+    public List<CourseResponse> getCurrentCoursesTaken(Long userId) {
+        List<Course> courseList = courseService.getCourseTaken(userId).stream()
+                .filter(c -> !courseService.getCourseCompletionByUserIdAndCourseId(userId, c.getCourseId()).getCompletion())
+                .toList();
+
+        List<CourseResponse> courseResponseList = new ArrayList<>();
+        for (Course course : courseList) {
+            CourseResponse courseResponse = new CourseResponse();
+            courseResponse.setCourseId(course.getCourseId());
+            courseResponse.setTitle(course.getTitle());
+            courseResponse.setDescription(course.getDescription());
+            courseResponse.setLevel(course.getLevel().name());
+
+            Set<Language> languageSet = course.getLanguages();
+            List<String> languageNameList = languageSet.stream()
+                    .map(Language::getLanguageName)
+                    .toList();
+
+            Set<TechnicalFocus> technicalFocusSet = course.getTechnicalFocuses();
+            List<String> techFocusNameList = technicalFocusSet.stream()
+                    .map(TechnicalFocus::getTechFocusName)
+                    .toList();
+
+            courseResponse.setLanguage(languageNameList);
+            courseResponse.setTechFocus(techFocusNameList);
+
+            int totalSkills = skillService.getSkillsByCourseId(course.getCourseId()).size();
+            int completedSkills = progressService.getProgressByCourseIdAndUserId(course.getCourseId(), userId).stream()
+                            .filter(p -> p.getQuizCompleted() && p.getLessonCompleted())
+                            .toList().size();
+            double progressPercent;
+
+            try {
+                progressPercent = (double) completedSkills / totalSkills * 100;
+            } catch (Exception e) {
+                progressPercent = 0.0;
+            }
+
+            courseResponse.setProgressPercent(progressPercent);
+
+            courseResponseList.add(courseResponse);
+        }
+
+        return courseResponseList;
+    }
+
+    public List<CourseResponse> getCourseTakenResponse(Long userId) {
+        List<Long> courseTakenIdList = courseService.getCourseTaken(userId).stream()
+                .map(Course::getCourseId)
+                .toList();
+        List<CourseResponse> responseList = courseService.getAllCourses().stream()
+                .filter(cr -> courseTakenIdList.contains(cr.getCourseId()))
+                .toList();
+        for (CourseResponse courseResponse : responseList) {
+            int totalSkills = skillService.getSkillsByCourseId(courseResponse.getCourseId()).size();
+            int completedSkills = progressService.getProgressByCourseIdAndUserId(courseResponse.getCourseId(), userId).stream()
+                    .filter(p -> p.getQuizCompleted() && p.getLessonCompleted())
+                    .toList().size();
+            double progressPercent;
+
+            try {
+                progressPercent = (double) completedSkills / totalSkills * 100;
+            } catch (Exception e) {
+                progressPercent = 0.0;
+            }
+
+            courseResponse.setProgressPercent(progressPercent);
+        }
+
+        return responseList;
+    }
+
+    public List<SkillOverview> getCompletedSkills(Long userId, Long courseId) {
+        List<Skill> skillList = progressService.getProgressByCourseIdAndUserId(courseId, userId).stream()
+                .map(Progress::getSkill)
+                .toList();
+        List<SkillOverview> skillOverviewList = new ArrayList<>();
+        for (Skill skill : skillList) {
+            SkillOverview skillOverview = new SkillOverview();
+            skillOverview.setSkillId(skill.getSkillId());
+            skillOverview.setSkillName(skill.getSkillName());
+            skillOverview.setDifficulty(skill.getDifficulty().name());
+            skillOverview.setSkillOrder(skill.getSkillOrder());
+            skillOverviewList.add(skillOverview);
+        }
+        return skillOverviewList;
     }
 
     private String addChapterName(String lesson, Long skillId) {

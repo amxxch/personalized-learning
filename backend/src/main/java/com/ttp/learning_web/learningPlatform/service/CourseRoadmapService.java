@@ -8,6 +8,7 @@ import com.ttp.learning_web.learningPlatform.dto.RoadmapResponse;
 import com.ttp.learning_web.learningPlatform.dto.TechFocusRoadmap;
 import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.CourseLevel;
+import com.ttp.learning_web.learningPlatform.enums.Status;
 import com.ttp.learning_web.learningPlatform.repository.CourseRoadmapRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,18 @@ public class CourseRoadmapService {
                 roadmapResponse.setLanguages(roadmap.getCourse().getLanguages().stream()
                         .map(Language::getLanguageName)
                         .collect(Collectors.toSet()));
+
+                CourseCompletion courseCompletion = courseService.getCourseCompletionByUserIdAndCourseId(userId, roadmap.getCourse().getCourseId());
+                Status status;
+                if (courseCompletion != null) {
+                    status = courseCompletion.getCompletion()
+                            ? Status.COMPLETED
+                            : Status.CONTINUE;
+                } else {
+                    status = Status.LOCKED;
+                }
+
+                roadmapResponse.setStatus(status);
 
                 roadmapResponseList.add(roadmapResponse);
             }

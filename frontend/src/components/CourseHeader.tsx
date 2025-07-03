@@ -4,6 +4,7 @@ import { FaPlayCircle } from "react-icons/fa";
 import { FaFilePen } from "react-icons/fa6";
 import { FaHourglassStart } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
+import ProgressBar from './ProgressBar';
 
 interface CourseHeaderProps {
     course: Course | null;
@@ -60,17 +61,7 @@ const CourseHeader = ({ course, currentChapter, progressPercent, assessmentDone 
                         }
                         </div>
                         {/* Progress Bar */}
-                        <div className="mt-2">
-                            <div className="text-sm font-medium text-gray-700 mb-1">
-                            Progress: {progressPercent}%
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-4">
-                            <div
-                                className="bg-pink-600 h-4 rounded-full transition-all"
-                                style={{ width: `${progressPercent}%` }}
-                            ></div>
-                            </div>
-                        </div>
+                        <ProgressBar progressPercent={progressPercent} />
                     </div>
                     <div className="mt-4 md:mt-0 md:ml-4 w-full md:w-64">
                     { assessmentDone ? 
