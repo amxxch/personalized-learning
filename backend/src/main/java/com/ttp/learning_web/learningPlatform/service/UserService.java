@@ -1,9 +1,6 @@
 package com.ttp.learning_web.learningPlatform.service;
 
-import com.ttp.learning_web.learningPlatform.dto.AuthResponse;
-import com.ttp.learning_web.learningPlatform.dto.UserStatusResponse;
-import com.ttp.learning_web.learningPlatform.dto.ProfileSetupRequest;
-import com.ttp.learning_web.learningPlatform.dto.UserDTO;
+import com.ttp.learning_web.learningPlatform.dto.*;
 import com.ttp.learning_web.learningPlatform.entity.Language;
 import com.ttp.learning_web.learningPlatform.entity.TechnicalFocus;
 import com.ttp.learning_web.learningPlatform.entity.User;
@@ -15,6 +12,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -91,6 +90,21 @@ public class UserService {
         response.setToken(token);
         response.setSuccess(true);
         return response;
+    }
+
+    public List<TechnicalFocusDTO> getTechFocusByUserId(Long userId) {
+        Set<TechnicalFocus> technicalFocusSet = getUserByUserId(userId).getTechnicalFocuses();
+
+        List<TechnicalFocusDTO> technicalFocusDTOList = new ArrayList<>();
+        for (TechnicalFocus technicalFocus : technicalFocusSet) {
+            TechnicalFocusDTO technicalFocusDTO = new TechnicalFocusDTO();
+            technicalFocusDTO.setTechFocusName(technicalFocus.getTechFocusName());
+            technicalFocusDTO.setTechFocusId(technicalFocus.getTechFocusId());
+
+            technicalFocusDTOList.add(technicalFocusDTO);
+        }
+
+        return technicalFocusDTOList;
     }
 
     public AuthResponse addUser(String email, String password, String name) {

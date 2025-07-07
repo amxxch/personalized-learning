@@ -4,7 +4,6 @@ import { useAuth } from "../context/AuthContext";
 import ProfileOverview from "../components/ProfileOverview";
 import LearningStats from "../components/LearningStats";
 import CoursePlanner from "../components/CoursePlanner";
-import DueTasks from "../components/DueTasks";
 import { TechTopic } from "../dto/response";
 import LoginCalendar from "../components/LoginCalendar";
 import { useParams } from "react-router-dom";
@@ -14,13 +13,13 @@ const ProfilePage = () => {
     const [activeTab, setActiveTab] = useState<"dashboard" | "stats" | "planner" | "courses">("dashboard");
     const { userId } = useAuth();
     const [ techFocus, setTechFocus ] = useState<TechTopic[]>([]);
-    const { tab } = useParams<{ tab: string }>();
+    const { tab, tech } = useParams<{ tab: string, tech: string}>();
 
     const tabs = [
         { label: "Dashboard", key: "dashboard" },
         { label: "Course Planner", key: "planner" },
-        { label: "Course Catalogs", key: "courses" },
         { label: "Learning Stats", key: "stats" },
+        { label: "Course Catalogs", key: "courses" },
     ];
 
     useEffect(() => {
@@ -44,6 +43,20 @@ const ProfilePage = () => {
             console.error('Error fetching profile overview data:', error);
         });
     }, [userId]);
+
+    useEffect(() => {
+        // Set the active tab based on the URL parameter
+        if (tab && tabs.some(t => t.key === tab)) {
+            setActiveTab(tab as typeof activeTab);
+        } else {
+            setActiveTab("dashboard");
+        }
+        
+    }, [tab, tech])
+
+    useEffect(() => {
+      console.log("Active Tab:", activeTab);
+    }, [activeTab]);
 
   return (
     <div className="min-h-screen flex">
@@ -88,7 +101,12 @@ const ProfilePage = () => {
         )}
 
         {activeTab === "stats" && <LearningStats />}
-        {activeTab === "planner" && <CoursePlanner />}
+        {activeTab === "planner" ? 
+          (tech ?
+          <CoursePlanner technicalFocus={tech} /> :
+          <CoursePlanner />
+        ) : null
+        }
         {activeTab === "courses" && <CourseCatalog />}
       </main>
     </div>

@@ -103,10 +103,9 @@ const ProfileSetupForm = ({ setIsStart } : ProfileSetupProps) => {
             })
             .then(response => {
                 console.log("Course Prediction Successful", response.data);
-                if (!response.data || response.data.length === 0) {
-                    alert("Roadmap is empty — generation failed or not ready.");
-                    return;
-                }
+
+                console.log(response.data);
+
                 setIsProfileSetup(true);
                 setIsStart(false);
                 setIsLoading(false);
@@ -143,16 +142,16 @@ const ProfileSetupForm = ({ setIsStart } : ProfileSetupProps) => {
             { !isLoading &&
             <div>
                 <div className="flex items-center justify-between px-4 mb-1">
-                <button
-                    onClick={handleBack}
-                    className="bg-gray-200 hover:bg-gray-300 w-[90px] text-gray-800 px-4 py-2 rounded-lg font-medium transition"
-                >
-                    ← Back
-                </button>
-                <h2 className="text-2xl font-bold text-gray-800 text-center flex-1">
-                    Let's Set Up Your Profile
-                </h2>
-                <div className="w-[90px]">{/* spacer to center title */}</div>
+                    <button
+                        onClick={handleBack}
+                        className="bg-gray-200 hover:bg-gray-300 w-[90px] text-gray-800 px-4 py-2 rounded-lg font-medium transition"
+                    >
+                        ← Back
+                    </button>
+                    <h2 className="text-2xl font-bold text-gray-800 text-center flex-1">
+                        Let's Set Up Your Profile
+                    </h2>
+                    <div className="w-[90px]">{/* spacer to center title */}</div>
                 </div>
                 <p className="text-gray-600 text-center">This will help us personalize your learning path.</p>
                 

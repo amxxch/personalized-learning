@@ -33,6 +33,11 @@ public class UserController {
         return new ResponseEntity<>(courseRoadmapService.getAllTechFocusRoadmapByUserId(userId), HttpStatus.OK);
     }
 
+    @GetMapping("/tech-focus")
+    public ResponseEntity<?> findTechFocus(@RequestParam Long userId) {
+        return new ResponseEntity<>(userService.getTechFocusByUserId(userId), HttpStatus.OK);
+    }
+
     @GetMapping()
     public ResponseEntity<UserDTO> getUser(@RequestParam Long userId) {
         return new ResponseEntity<>(userService.getUserDTOByUserId(userId), HttpStatus.OK);

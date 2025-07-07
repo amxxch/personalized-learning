@@ -2,6 +2,7 @@ package com.ttp.learning_web.learningPlatform.service;
 
 import com.ttp.learning_web.learningPlatform.dto.*;
 import com.ttp.learning_web.learningPlatform.entity.*;
+import com.ttp.learning_web.learningPlatform.enums.CourseLevel;
 import com.ttp.learning_web.learningPlatform.enums.Difficulty;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ public class LearningStatsService {
     private final ProgressService progressService;
     private final QuizResultService quizResultService;
     private final MasteryService masteryService;
+    private final SkillService skillService;
+    private final CourseRoadmapService courseRoadmapService;
 
     public OverallStats getOverallStats(Long userId) {
         OverallStats overallStats = new OverallStats();
@@ -331,7 +334,79 @@ public class LearningStatsService {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
+    public int getTechFocusMasteryLevel(Long userId, Long techFocusId) {
+        List<Long> courseIdList = courseRoadmapService.getTechFocusRoadmapByUserIdAndTechFocusId(userId, techFocusId).stream()
+                .map(RoadmapResponse::getCourseId)
+                .toList();
 
+        Map<CourseLevel, Integer> courseScore = Map.of(
+                CourseLevel.BEGINNER, 1,
+                CourseLevel.INTERMEDIATE, 2,
+                CourseLevel.ADVANCED, 3
+        );
 
+        Double scoreReceived = courseIdList.stream()
+                .map(courseService::getCourseByCourseId)
+                .map(c ->{
+                            int courseScoreValue = courseScore.get(c.getLevel());
+                            List<Skill> skills = skillService.getSkillsByCourseId(c.getCourseId());
 
+                            double masterySum = skills.stream()
+                                    .mapToDouble(s -> {
+                                        var mastery = masteryService.getMasteryByUserIdAndSkillId(userId, s.getSkillId());
+                                        return mastery != null ? mastery.getMasteryLevel() : 0.0;
+                                    })
+                                    .sum();
+                            double masteryAvg = masterySum / skills.size();
+                            return masteryAvg * courseScoreValue;
+                        }
+                )
+                .reduce(0.0, Double::sum);
+
+        Integer maxScore = courseIdList.stream()
+                .map(courseService::getCourseByCourseId)
+                .mapToInt(c -> courseScore.get(c.getLevel()))
+                .sum();
+
+        return (int) (scoreReceived / maxScore * 100);
+    }
+
+    public float getTechFocusProgress(Long userId, Long techFocusId) {
+        List<Long> courseIdList = courseRoadmapService.getTechFocusRoadmapByUserIdAndTechFocusId(userId, techFocusId).stream()
+                .map(RoadmapResponse::getCourseId)
+                .toList();
+        int totalCourseCount = courseIdList.size();
+        double progressCount = 0;
+
+        for (Long courseId : courseIdList) {
+            CourseCompletion courseCompletion = courseService.getCourseCompletionByUserIdAndCourseId(userId, courseId);
+            if (courseCompletion != null) {
+                boolean isComplete = courseCompletion.getCompletion();
+                if (isComplete) {
+                    progressCount++;
+                } else {
+                    List<Skill> skills = skillService.getSkillsByCourseId(courseId);
+                    int totalSkillCount = skills.size();
+                    int progressSkill = 0;
+                    List<Progress> progressList = progressService.getProgressByCourseIdAndUserId(courseId, userId);
+                    for (Progress progress : progressList) {
+                        if (progress.getLessonCompleted() && progress.getQuizCompleted()) {
+                            progressSkill++;
+                        }
+                    }
+                    progressCount += (double) progressSkill / totalSkillCount;
+                }
+            }
+        }
+        return (float) progressCount / totalCourseCount * 100;
+    }
+
+    public TechFocusReport getTechFocusReport(Long userId, Long techFocusId) {
+        Integer score = getTechFocusMasteryLevel(userId, techFocusId);
+        Float progress = getTechFocusProgress(userId, techFocusId);
+        TechFocusReport techFocusReport = new TechFocusReport();
+        techFocusReport.setScore(score);
+        techFocusReport.setProgress(progress);
+        return techFocusReport;
+    }
 }

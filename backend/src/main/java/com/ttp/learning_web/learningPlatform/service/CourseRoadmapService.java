@@ -71,6 +71,14 @@ public class CourseRoadmapService {
         return techFocusRoadmapList;
     }
 
+    public List<RoadmapResponse> getTechFocusRoadmapByUserIdAndTechFocusId(Long userId, Long techFocusId) {
+        return getAllTechFocusRoadmapByUserId(userId).stream()
+                .filter(rm -> rm.getTechnicalFocus() == technicalFocusService.getTechnicalFocusById(techFocusId).getTechFocusName())
+                .toList()
+                .getFirst()
+                .getRoadmap();
+
+    }
 
     public void addCourseRoadmap(CourseRoadmap courseRoadmap) {
         User user = userService.getUserByUserId(courseRoadmap.getUser().getUserId());
@@ -88,7 +96,6 @@ public class CourseRoadmapService {
 
     public List<TechFocusRoadmap> generateCourseRoadmap(Long userId) {
 
-        System.out.println("generateCourseRoadmap");
         User user = userService.getUserByUserId(userId);
 
         String experienceLevel = user.getExperienceLevel();
@@ -104,6 +111,11 @@ public class CourseRoadmapService {
         ObjectMapper objectMapper = new ObjectMapper();
 
         for (TechnicalFocus technicalFocus : technicalFocusSet) {
+            // Don't regenerate if the course roadmap already exists
+            if (!courseRoadmapRepository.findByUser_UserIdAndTechnicalFocus_TechFocusId(user.getUserId(), technicalFocus.getTechFocusId()).isEmpty()) {
+                continue;
+            }
+
             String techName = technicalFocus.getTechFocusName();
 
             List<CourseResponse> courses = courseService.getAllCourses().stream()

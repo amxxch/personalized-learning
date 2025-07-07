@@ -4,7 +4,7 @@ import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { OverallStats, QuizStats, ExerciseStats, Course, MasteryStats, Skill } from "../dto/response";
+import { OverallStats, QuizStats, ExerciseStats, Course, MasteryStats, Skill, TechFocus, techFocusReport } from "../dto/response";
 import {
   AreaChart,
   Area,
@@ -19,9 +19,12 @@ import {
   Line,
   CartesianGrid,
 } from "recharts";
+import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 import StatsBox from "./StatsBox";
 import { Tabs, Tab } from "@mui/material";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import TechSkillChart from "./TechSkillChart";
 
 function classifyMasteryLevel(mastery: number) {
   if (mastery >= 0.8) return "Advanced";
@@ -29,6 +32,13 @@ function classifyMasteryLevel(mastery: number) {
   return "Beginner";
 }
 
+const levels = [
+  { name: "Novice", start: 0.0, end: 0.2 },
+  { name: "Emerging", start: 0.2, end: 0.4 },
+  { name: "Average", start: 0.4, end: 0.6 },
+  { name: "Above Average", start: 0.6, end: 0.8 },
+  { name: "Expert", start: 0.8, end: 1.0 },
+];
 
 const LearningStats = () => {
   const { userToken, userId } = useAuth();
@@ -41,14 +51,10 @@ const LearningStats = () => {
   const [maxChapterStats, setMaxChapterStats] = useState<number>(40);
   const [maxQuizStats, setMaxQuizStats] = useState<number>(40);
   
-  const [selectedCourseStr, setSelectedCourseStr] = useState('');
-  const [selectedCourseObject, setSelectedCourseObject] = useState<Course | null>(null);
-  const [selectedChapter, setSelectedChapter] = useState<Skill | null>(null);
-  const [chaptersTaken, setChaptersTaken] = useState<Skill[]>([]);
-  const [coursesTaken, setCoursesTaken] = useState<Course[]>([]);
-  const [chapterPerformance, setChapterPerformance] = useState<MasteryStats[]>([]);
-
-  const [chapterQuizStats, setChapterQuizStats] = useState<QuizStats[]>([]);
+  const [selectedTechFocusStr, setSelectedTechFocusStr] = useState('');
+  const [techFocusList, setTechFocusList] = useState<TechFocus[]>([]);
+  const [techFocusScore, setTechFocusScore] = useState<number>(0);
+  const [techFocusProgress, setTechFocusProgress] = useState<number>(0);
 
   const navigate = useNavigate();
 
@@ -74,14 +80,14 @@ const LearningStats = () => {
     
           setOverallStats(response);
     
-          const coursesRes = await axios.get('http://localhost:8080/api/v1/course/courses-taken', {
+          const techRes = await axios.get('http://localhost:8080/api/v1/user/tech-focus', {
             headers: { Authorization: `Bearer ${userToken}` },
             params: { userId }
           });
     
-          const coursesData: Course[] = coursesRes.data;
-          setCoursesTaken(coursesData);
-          setSelectedCourseStr(coursesData[0].title); // Set first course as default
+          const techData: TechFocus[] = techRes.data;
+          setTechFocusList(techData);
+          setSelectedTechFocusStr(techData[0].techFocusName); // Set first course as default
         } catch (error) {
           console.error('Error fetching course overview:', error);
         } finally {
@@ -91,66 +97,22 @@ const LearningStats = () => {
     
       fetchOverviewData();
     }, [userId, userToken]);   
+
+    useEffect(() => {
+      if (!selectedTechFocusStr || techFocusList.length === 0) return;
+      const techFocusId = techFocusList.find(tech => tech.techFocusName === selectedTechFocusStr)?.techFocusId;
+      axios.get('http://localhost:8080/api/v1/tech-focus/report', {
+        headers: { Authorization: `Bearer ${userToken}` },
+        params: { userId, technicalFocusId: techFocusId }
+      })
+      .then((response) => {
+        const report: techFocusReport = response.data;
+        console.log("Mastery Score:", report);
+        setTechFocusScore(report.score);
+        setTechFocusProgress(parseFloat(report.progress.toFixed(2)));
+      })
+    }, [selectedTechFocusStr])
     
-    useEffect(() => {
-      const course = coursesTaken.find(c => c.title === selectedCourseStr)
-      if (!course) return;
-      setSelectedCourseObject(course);
-      console.log("Selected Course:", selectedCourseStr);
-      console.log(course.courseId);
-      axios.get('http://localhost:8080/api/v1/learning-stats/mastery', {
-        headers: { Authorization: `Bearer ${userToken}` },
-        params: { userId, courseId: course.courseId }  
-      })
-      .then((response) => {
-        const data = response.data;
-        console.log("Chapter Performance Data:", data)
-        data.sort((a: MasteryStats, b: MasteryStats) => a.chapterNumber - b.chapterNumber);
-        setChapterPerformance(data);
-
-        axios.get('http://localhost:8080/api/v1/course/skills-taken', {
-          headers: { Authorization: `Bearer ${userToken}` },
-          params: { userId, courseId: course.courseId }  
-        })
-        .then((response) => {
-          const data: Skill[] = response.data;
-          console.log("Chapter Taken:", data)
-          data.sort((a: Skill, b: Skill) => a.skillOrder - b.skillOrder);
-          setSelectedChapter(data[0]);
-          setChaptersTaken(data);
-        })
-        .catch(error => {
-          console.error('Error fetching chapter performance data:', error);
-        })
-      })
-      .catch(error => {
-        console.error('Error fetching chapter performance data:', error);
-      })
-
-    }, [selectedCourseStr]);
-
-    useEffect(() => {
-      console.log("Selected Chapter:", selectedChapter);
-      if (!selectedChapter) return;
-      axios.get('http://localhost:8080/api/v1/learning-stats/chapter-quiz-stats', {
-        headers: { Authorization: `Bearer ${userToken}` },
-        params: { userId, skillId: selectedChapter.skillId }  
-      })
-      .then((response) => {
-        const data: QuizStats[] = response.data;
-        console.log("Quiz Stats:", data)
-        if (data.length === 0) {
-          setChapterQuizStats([]);
-          return;
-        }
-        data.sort((a: QuizStats, b: QuizStats) => a.date.localeCompare(b.date));
-        setChapterQuizStats(data);
-      })
-      .catch(error => {
-        console.error('Error fetching chapter performance data:', error);
-      })
-
-    }, [selectedChapter]);
 
     const MasteryCustomTooltip: React.FC<{ active?: boolean; payload?: any[]; label?: string }> = ({ active, payload, label }) => {
       if (active && payload && payload.length) {
@@ -406,144 +368,57 @@ const LearningStats = () => {
         <>
           {/* Course Selection */}
           <div className="flex items-center gap-4 mt-12">
-            <label htmlFor="course-select" className="text-lg font-medium text-gray-700 mb-4">
+            <label htmlFor="course-select" className="text-lg font-medium text-gray-700">
               Select Course:
             </label>
             <select
               id="course-select"
-              value={selectedCourseStr}
-              onChange={(e) => setSelectedCourseStr(e.target.value)}
-              className="border rounded px-3 py-2 shadow-sm focus:outline-none mb-4"
+              value={selectedTechFocusStr}
+              onChange={(e) => setSelectedTechFocusStr(e.target.value)}
+              className="border rounded px-3 py-2 shadow-sm focus:outline-none"
             >
-              {coursesTaken.map((course) => (
-                <option key={course.courseId} value={course.title}>
-                  {course.title}
+              {techFocusList.map((tech) => (
+                <option key={tech.techFocusId} value={tech.techFocusName}>
+                  {tech.techFocusName}
                 </option>
               ))}
             </select>
-            <button 
-            onClick={() => navigate(`/course/overview/${selectedCourseObject?.courseId}`)}
-            className="btn btn-primary px-3 py-1 mb-4 ml-6"
-            >
-              <FaArrowUpRightFromSquare className="inline ml-2" />
-              Go to course
-            </button>
           </div>
-
-          <div className="space-y-10">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Mastery Performance Graphs */}
-              <div className="bg-white p-6 rounded-xl shadow">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Mastery Level per Chapter</h2>
-                <ResponsiveContainer width="100%" height={250}>
-                  <LineChart data={chapterPerformance}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="chapterNumber" />
-                    <YAxis domain={[0, 1]} />
-                    <Tooltip content={<MasteryCustomTooltip />} />
-                    <Line type="monotone" dataKey="masteryLevel" stroke="#10b981" strokeWidth={3} />
-                  </LineChart>
-                </ResponsiveContainer>
-
-                <div className="text-center mt-4">
-                  <p className="text-gray-700 text-md font-bold">
-                    Average Mastery Level:{" "}
-                    <span className="font-semibold text-green-600">
-                      {(
-                        chapterPerformance.reduce((sum, chapter) => sum + chapter.masteryLevel, 0) /
-                        chapterPerformance.length
-                      ).toFixed(2)}
-                    </span>
-                  </p>
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-start">
+              <div className="col-span-2">
+              <TechSkillChart userScore={techFocusScore} />
               </div>
+              <div className="col-span-1 flex flex-col items-center bg-white p-8 rounded-2xl shadow-lg space-y-6">
+                <h2 className="text-2xl font-semibold text-gray-800 text-center leading-tight">
+                  🚀 You're <span className="text-pink-500 font-bold">{techFocusProgress}%</span> through the
+                  <span className="text-indigo-600"> {selectedTechFocusStr} Roadmap</span>!
+                </h2>
 
-              <div className="bg-white p-6 rounded-xl shadow">
-                {/* Mastery Level Classification */}
-                <h2 className="text-xl font-semibold text-gray-800 mb-1">Chapter Mastery Classification</h2>
-                <p className="text-gray-500 italic text-sm mb-4 ml-2">**Click to review each chapter</p>
-                <div className="grid grid-cols-1 gap-4 text-sm text-gray-700">
-                  <div className="bg-green-50 p-4 rounded">
-                    <h3 className="font-bold text-green-700 mb-2 text-lg">Advanced</h3>
-                    {chapterPerformance.filter(c => classifyMasteryLevel(c.masteryLevel) === "Advanced").map(item => (
-                      <div key={item.chapterNumber} className="ml-2 text-md">
-                        <Link to={`/course/${selectedCourseObject?.courseId}/review/${item.skillId}`} className="hover:underline">
-                          <strong>Chapter {item.chapterNumber}:</strong> {item.chapterName} ({(item.masteryLevel * 100).toFixed(0)}%)
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="bg-yellow-50 p-4 rounded">
-                    <h3 className="font-bold text-yellow-700 mb-2 text-lg">Intermediate</h3>
-                    {chapterPerformance.filter(c => classifyMasteryLevel(c.masteryLevel) === "Intermediate").map(item => (
-                      <div key={item.chapterNumber} className="ml-2 text-md">
-                        <Link to={`/course/${selectedCourseObject?.courseId}/review/${item.skillId}`} className="hover:underline">
-                          <strong>Chapter {item.chapterNumber}:</strong> {item.chapterName} ({(item.masteryLevel * 100).toFixed(0)}%)
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="bg-red-50 p-4 rounded">
-                    <h3 className="font-bold text-red-700 mb-2 text-lg">Beginner</h3>
-                    {chapterPerformance.filter(c => classifyMasteryLevel(c.masteryLevel) === "Beginner").map(item => (
-                      <div key={item.chapterNumber} className="ml-2 text-md">
-                        <Link to={`/course/${selectedCourseObject?.courseId}/review/${item.skillId}`} className="hover:underline">
-                          <strong>Chapter {item.chapterNumber}:</strong> {item.chapterName} ({(item.masteryLevel * 100).toFixed(0)}%)
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
+                <div className="w-36 h-36">
+                  <CircularProgressbar
+                    value={techFocusProgress}
+                    text={`${techFocusProgress}%`}
+                    styles={buildStyles({
+                      textColor: "#374151",
+                      pathColor: techFocusProgress >= 70 
+                        ? "#10B981" // green
+                        : techFocusProgress >= 30
+                          ? "#FBBF24" // yellow
+                          : "#EF4444", // red,
+                      trailColor: "#E5E7EB",
+                      textSize: "16px",
+                      pathTransitionDuration: 0.5,
+                    })}
+                  />
                 </div>
+                <button 
+                  className="px-6 py-3 bg-pink-500 text-white rounded-full shadow-md hover:bg-pink-600 transition-all font-semibold text-sm"
+                  onClick={() => navigate(`/profile/planner/${selectedTechFocusStr}`, { replace: true })}
+                  >
+                  View Course Roadmap
+                </button>
             </div>
-          </div>
-
-          {selectedCourseStr !== '' && (
-              <>
-              <label htmlFor="course-select" className="text-lg font-medium text-gray-700 mb-4 mr-4">
-              Select Chapter:
-              </label>
-              <select
-                id="course-select"
-                value={selectedChapter ? selectedChapter.skillName : ''}
-                onChange={(e) => setSelectedChapter(chaptersTaken.find(s => s.skillName === e.target.value) || null)}
-                className="border rounded px-3 py-2 shadow-sm focus:outline-none mb-4"
-              >
-                {chaptersTaken.map((chapter) => (
-                  <option key={chapter.skillId} value={chapter.skillName}>
-                    Chapter {chapter.skillOrder}: {chapter.skillName}
-                  </option>
-                ))}
-              </select>
-            </>
-            )}
-          {selectedChapter && (
-            <div className="bg-white p-6 rounded-xl shadow">
-            {/* Mastery Performance Graphs */}
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Quiz / Review Performance History</h2>
-              <ResponsiveContainer width="100%" height={250}>
-                <LineChart data={chapterQuizStats}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis domain={[0, 5]} />
-                  <Tooltip content={<QuizCustomTooltip />} />
-                  <Line type="monotone" dataKey="totalCorrectQuestions" stroke="#10b981" strokeWidth={3} />
-                </LineChart>
-              </ResponsiveContainer>
-              <div className="text-center mt-4">
-                  <p className="text-gray-700 text-md font-bold">
-                    Average Quiz Score:{" "}
-                    <span className="font-semibold text-green-600">
-                      {(
-                        chapterQuizStats.reduce((sum, quiz) => sum + quiz.totalCorrectQuestions, 0) /
-                        (chapterQuizStats.length)
-                      ).toFixed(2) + " "}
-                      / 5
-                    </span>
-                  </p>
-                </div>
             </div>
-          )}
-        </div>
         </>)}
       </div>
     </div>

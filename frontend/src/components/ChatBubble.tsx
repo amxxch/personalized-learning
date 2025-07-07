@@ -113,7 +113,7 @@ Let's learn step by step — you're in control!`;
         } else if (data.status === 'CONTINUE') {
           const newBubble: Message = {
             sender: 'ASSISTANT',
-            type: data.nextBubble.contentType,
+            type: data.nextBubble.contentType === 'CODE' ? 'TEXT' : data.nextBubble.contentType,
             content: data.nextBubble.content,
             skillId: data.nextBubble.skillId,
             skillName: data.nextBubble.skillName,

@@ -23,14 +23,17 @@ interface Roadmap {
   status: 'COMPLETED' | 'CONTINUE' | 'LOCKED';
 }
 
+interface CourseRoadmapProps {
+  technicalFocus?: string;
+}
 
-const CourseRoadmapView = () => {
+const CourseRoadmapView = ({ technicalFocus } : CourseRoadmapProps ) => {
     const Navigate = useNavigate();
     const { userId } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
 
     const [techFocusRoadmapList, setTechFocusRoadmapList] = useState<TechnicalFocusRoadmap[]>([]);
-    const [activeTechFocus, setActiveTechFocus] = useState('');
+    const [activeTechFocus, setActiveTechFocus] = useState(technicalFocus || '');
     const [currentCourseIndex, setCurrentCourseIndex] = useState(0);
 
     useEffect(() => {
@@ -128,31 +131,36 @@ const CourseRoadmapView = () => {
                     course.status === 'LOCKED' && idx !== currentCourseIndex ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
                   }`}
                 >
-                  <h2 className="text-sm font-medium text-gray-500 mb-1">Step {idx + 1}</h2>
-                  <p className="text-xl font-semibold mb-1">{course.courseTitle}</p>
-                  <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full font-medium mr-1">{course.courseLevel}</span>
-                  {course.languages.length > 0 && course.languages.map((lang, langIdx) => (
-                    <span
-                      key={langIdx}
-                      className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium mr-1"
-                    >
-                      {lang}
-                    </span>
-                  ))}
-                  <p className="text-sm text-gray-600 mb-3 mt-2">{course.rationale}</p>
-                  <p className="text-sm mb-2">
-                    <strong>Estimated:</strong> {course.estimatedDurationWeeks} weeks
-                  </p>
+                  <div className="flex flex-col h-full justify-between">
+                    <div>
+                      <h2 className="text-sm font-medium text-gray-500 mb-1">Step {idx + 1}</h2>
+                      <p className="text-xl font-semibold mb-2">{course.courseTitle}</p>
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full font-medium mr-1">{course.courseLevel}</span>
+                        {course.languages.length > 0 && course.languages.map((lang, langIdx) => (
+                          <span
+                            key={langIdx}
+                            className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium mr-1"
+                          >
+                            {lang}
+                          </span>
+                        ))}
+                      </div>
+                    <p className="text-sm text-gray-600 mb-3 mt-2">{course.rationale}</p>
+                    <p className="text-sm mb-2">
+                      <strong>Estimated:</strong> {course.estimatedDurationWeeks} weeks
+                    </p>
+                    </div>
 
                   {course.status === 'COMPLETED' && (
-                    <div className="mt-3 w-full text-center bg-pink-400 text-white py-2 rounded-full text-sm font-medium">
-                      Reviewing Learning →
+                    <div className="mt-3 w-full text-center bg-yellow-500 text-white py-2 rounded-full text-sm font-medium">
+                      Reviewing Lesson →
                     </div>
                   )}
 
                   {course.status === 'CONTINUE' && (
                     <div className="mt-3 w-full text-center bg-pink-400 text-white py-2 rounded-full text-sm font-medium">
-                      Continue Learning →
+                      Resume Learning →
                     </div>
                   )}
 
@@ -167,7 +175,8 @@ const CourseRoadmapView = () => {
                       Start Learning →
                     </div>
                   )}
-                </motion.div>
+                </div>
+              </motion.div>
               ))
             )}
         </div>

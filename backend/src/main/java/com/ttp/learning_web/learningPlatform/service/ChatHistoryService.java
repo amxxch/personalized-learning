@@ -108,6 +108,15 @@ public class ChatHistoryService {
                 .orElse(null);
     }
 
+    public ChatHistory getLatestLessonBubbleChatHistoryByUserIdAndSkillId(Long userId, Long skillId) {
+        List<ChatHistory> chatHistoryList = chatHistoryRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId);
+
+        return chatHistoryList.stream()
+                .filter(chat -> chat.getContentType() == ContentType.TEXT)
+                .max(Comparator.comparingInt(ChatHistory::getContentOrder))
+                .orElse(null);
+    }
+
     public ChatHistory getLatestChatHistoryByUserIdAndCourseId(Long userId, Long courseId) {
         List<ChatHistory> chatHistoryList = chatHistoryRepository.findByUser_UserIdAndCourse_CourseId(userId, courseId);
 

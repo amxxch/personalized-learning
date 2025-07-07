@@ -1,5 +1,7 @@
 package com.ttp.learning_web.learningPlatform.service;
 
+import com.ttp.learning_web.learningPlatform.dto.RoadmapResponse;
+import com.ttp.learning_web.learningPlatform.dto.TechFocusRoadmap;
 import com.ttp.learning_web.learningPlatform.entity.*;
 import com.ttp.learning_web.learningPlatform.enums.Difficulty;
 import com.ttp.learning_web.learningPlatform.repository.MasteryRepository;
@@ -9,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -21,7 +25,6 @@ public class MasteryService {
     private final MasteryRepository masteryRepository;
     private final UserService userService;
     private final SkillService skillService;
-    private final CourseService courseService;
 
     public List<Mastery> getAllMastery() {
         return masteryRepository.findAll();

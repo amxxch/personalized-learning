@@ -12,6 +12,10 @@ import java.util.List;
 public class TechnicalFocusService {
     private final TechnicalFocusRepository technicalFocusRepository;
 
+    public TechnicalFocus getTechnicalFocusById(Long id) {
+        return technicalFocusRepository.findById(id).orElse(null);
+    }
+
     public TechnicalFocus findTechnicalFocusByName(String name){
         return technicalFocusRepository.findByTechFocusName(name).orElse(null);
     }

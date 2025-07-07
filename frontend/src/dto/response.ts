@@ -106,6 +106,11 @@ export const techFocusOptions = [
   
 export type TechTopic = typeof techFocusOptions[number];
 
+export interface TechFocus {
+    techFocusId: number;
+    techFocusName: string;
+}
+
 export interface CodeExercise {
     exerciseId: number;
     title: string;
@@ -178,4 +183,9 @@ export interface MasteryStats {
     chapterName: string;
     masteryLevel: number;
     skillId: number;
+}
+
+export interface techFocusReport {
+    score: number;
+    progress: number;
 }

@@ -15,6 +15,7 @@ import CodeEditor from './pages/CodeExercisePage';
 import CourseOverviewPage from './pages/CourseOverviewPage';
 import ChatHistoryPage from './pages/ChatHistoryPage';
 import ChatReviewPage from './pages/ChatReviewPage';
+import CourseStatPage from './pages/CourseStatPage';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1JEaF5cXmRCeUx0THxbf1x1ZFdMYltbQXFPMyBoS35Rc0VlW3ZecnZSQ2lbVkd3VEFd');
 
@@ -113,6 +114,22 @@ function App() {
         }
       />
       <Route
+        path="/profile/:tab/:tech"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <UserProfilePage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/profile/course-planner"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <UserProfilePage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
         path="/assessment/:courseId"
         element={
           <RouteWithLayout>
@@ -141,6 +158,14 @@ function App() {
         element={
           <RouteWithLayout isPrivate={true}>
             <ChatReviewPage />
+          </RouteWithLayout>
+        }
+      />
+      <Route
+        path="/course/:courseId/performance-analysis"
+        element={
+          <RouteWithLayout isPrivate={true}>
+            <CourseStatPage />
           </RouteWithLayout>
         }
       />

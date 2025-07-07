@@ -101,6 +101,9 @@ public class LearningService {
             } else {
                 // Continue with the next bubble in the current skill
 //                LessonBubble nextBubble = bubbles.get(currentBubble.getBubbleOrder());
+
+                // TODO: Check if the user has asked too many
+
                 LessonBubble nextBubble = bubbles.stream().filter(b -> b.getBubbleOrder() == currentBubble.getBubbleOrder() + 1).findFirst().get();
                 currentProgress.setBubble(nextBubble);
                 progressService.updateProgress(currentProgress);
@@ -169,15 +172,23 @@ public class LearningService {
 
         String unrelatedAnswer = "The question is not related to the course content. Please ask a new question.";
 
+        ChatHistory lastBubble = chatHistoryService.getLatestLessonBubbleChatHistoryByUserIdAndSkillId(userId, skillId);
+
+        String lastBubbleContent = lastBubble == null ? "" : lastBubble.getContent();
+
         String prompt = String.format("""
                 I have a question:
             
+                "%s"
+                
+                For your reference, this is the last lesson bubble I got taught:
+                
                 "%s"
             
                 If my question isn’t related to the course content, please just reply with:
             
                 "%s"
-            """, question, unrelatedAnswer);
+            """, question, lastBubbleContent, unrelatedAnswer);
 
         String answer = openAIService.learningPrompt(userId, skill.getCourse().getCourseId(), skillId, prompt);
         if (!answer.equals(unrelatedAnswer)) {

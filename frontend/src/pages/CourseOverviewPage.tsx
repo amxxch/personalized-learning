@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Course, Skill } from "../dto/response";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -18,6 +18,8 @@ export default function CourseOverviewPage() {
     const [assessmentDone, setAssessmentDone] = useState(false);
     const [progressPercent, setProgressPercent] = useState(0);
     const [currentChapter, setCurrentChapter] = useState<Skill | null>(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/v1/course/overview', {
@@ -61,9 +63,17 @@ export default function CourseOverviewPage() {
     return (
         <div className="min-h-screen px-6 py-10 font-sans">
             { isLoading && <LoadingSpinner message="Loading course overview..." /> }
+
+            <button
+                onClick={() => navigate(-1)}
+                className="left-12 absolute bg-gray-200 hover:bg-gray-300 w-[90px] text-gray-800 px-4 py-2 rounded-lg font-medium transition"
+            >
+                ← Back
+            </button>
             
             <div className="max-w-5xl mx-auto space-y-8">
                 {/* Course Header */}
+                
                 <CourseHeader course={courseOverview} currentChapter={currentChapter} progressPercent={progressPercent} assessmentDone={assessmentDone} />
 
                 {/* Chapters */}
