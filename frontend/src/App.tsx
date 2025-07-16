@@ -146,7 +146,7 @@ function App() {
         }
       />
       <Route
-        path="/course/:courseId/lesson/:skillId"
+        path="/course/:courseName/:courseId/lesson/:skillId"
         element={
           <RouteWithLayout isPrivate={true}>
             <ChatHistoryPage />
@@ -154,7 +154,7 @@ function App() {
         }
       />
       <Route
-        path="/course/:courseId/review/:skillId"
+        path="/course/:courseName/:courseId/review/:skillId/:courseName"
         element={
           <RouteWithLayout isPrivate={true}>
             <ChatReviewPage />

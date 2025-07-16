@@ -1,6 +1,6 @@
-# LearningBot
+# CodePath
 
-LearningBot is a personalized learning platform for programming in a chatbot-style interface, built with Spring Boot and React.js frameworks.
+CodePath is a personalized learning platform for programming in a chatbot-style interface, built with Spring Boot and React.js frameworks.
 
 ## Getting started (Local Setup)
 This will cover a step-by-step guideline to run the app locally.

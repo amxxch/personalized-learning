@@ -65,7 +65,7 @@ export default function CourseOverviewPage() {
             { isLoading && <LoadingSpinner message="Loading course overview..." /> }
 
             <button
-                onClick={() => navigate(-1)}
+                onClick={() => navigate('/', { replace: true })}
                 className="left-12 absolute bg-gray-200 hover:bg-gray-300 w-[90px] text-gray-800 px-4 py-2 rounded-lg font-medium transition"
             >
                 ← Back
@@ -82,7 +82,7 @@ export default function CourseOverviewPage() {
                     <div
                     key={index}
                     >
-                        <CourseChapter chapter={chapter} assessmentDone={assessmentDone} />
+                        <CourseChapter chapter={chapter} assessmentDone={assessmentDone} courseName={courseOverview.title} />
                     </div>
                 ))}
                 </div>

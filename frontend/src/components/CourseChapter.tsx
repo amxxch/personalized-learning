@@ -11,10 +11,11 @@ import { RiLoopLeftFill } from "react-icons/ri";
 interface CourseChapterProps {
     chapter: Skill;
     assessmentDone: boolean;
+    courseName: string;
 }
 
 
-const CourseChapter = ({ chapter, assessmentDone } : CourseChapterProps) => {
+const CourseChapter = ({ chapter, assessmentDone, courseName } : CourseChapterProps) => {
     const { courseId } = useParams();
     const [thisChapter, setThisChapter] = useState<Skill>(chapter);
     const Navigate = useNavigate();
@@ -30,15 +31,15 @@ const CourseChapter = ({ chapter, assessmentDone } : CourseChapterProps) => {
     }, []);
 
     const handleExercise = () => {
-        Navigate(`/course/${courseId}/exercise/${chapter.skillId}`);
+        Navigate(`/course/${courseId}/exercise/${chapter.skillId}`, { replace: true });
     }
 
-    const handleSpecificLesson = () => {
-        Navigate(`/course/${courseId}/lesson/${chapter.skillId}`);
+    const handleLessonHistory = () => {
+        Navigate(`/course/${courseName}/${courseId}/lesson/${chapter.skillId}`, { replace: true });
     }
 
     const handleReviewLesson = () => {
-        Navigate(`/course/${courseId}/review/${chapter.skillId}`);
+        Navigate(`/course/${courseName}/${courseId}/review/${chapter.skillId}/${courseName}`, { replace: true });
     }
 
     return (
@@ -70,7 +71,7 @@ const CourseChapter = ({ chapter, assessmentDone } : CourseChapterProps) => {
                         <button
                         className="bg-indigo-400 text-white rounded-xl px-4 py-2 font-medium shadow-md hover:bg-indigo-300 disabled:opacity-50"
                         disabled={!thisChapter.unlocked || !thisChapter.completed}
-                        onClick={handleSpecificLesson}
+                        onClick={handleLessonHistory}
                         >
                         <FaBookReader className='inline mb-1 text-lg mr-2' />Lesson History
                         </button>

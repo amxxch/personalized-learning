@@ -21,7 +21,7 @@ export default function HomePage() {
                   }}
             >
                 <h1 className="min-w-screen text-5xl font-bold text-center font-mono tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-pink-900">
-                    Welcome to LearningBot!
+                    Welcome to CodePath!
                 </h1>
     
                 <div className="text-lg md:text-xl font-semibold font-mono">      

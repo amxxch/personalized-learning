@@ -4907,7 +4907,7 @@
           "bubbleOrder": 8,
           "content": "**Using `std::string`**\n\nModern and safer than char arrays:\n```cpp\n#include <string>\nstring name = \"Alex\";\ncout << name.length();\n```",
           "contentType": "TEXT",
-          "difficulty": "EASY",
+          "difficulty": "HARD",
           "topic": "std::string"
         },
         {
@@ -5623,7 +5623,7 @@
           "bubbleOrder": 10,
           "content": "**Why Use Pointers?**\n\nPointers enable:\n- Dynamic memory\n- Efficient array traversal\n- Passing large data efficiently\n- Building data structures like linked lists",
           "contentType": "TEXT",
-          "difficulty": "MEDIUM",
+          "difficulty": "HARD",
           "topic": "Use Cases"
         }
       ],
@@ -6293,7 +6293,7 @@
           "bubbleOrder": 10,
           "content": "**Why Use OOP?**\n\nOOP helps:\n- Organize large programs\n- Promote reusability with inheritance\n- Create flexible code with polymorphism\n- Protect data using encapsulation",
           "contentType": "TEXT",
-          "difficulty": "MEDIUM",
+          "difficulty": "HARD",
           "topic": "Benefits"
         }
       ],
@@ -7649,7 +7649,7 @@
           "bubbleOrder": 10,
           "content": "**Why STL Matters**\n\nSTL reduces code complexity, improves performance, and provides tested algorithms and data structures.",
           "contentType": "TEXT",
-          "difficulty": "MEDIUM",
+          "difficulty": "HARD",
           "topic": "Benefits"
         }
       ],

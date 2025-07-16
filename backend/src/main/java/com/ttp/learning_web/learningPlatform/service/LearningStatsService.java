@@ -278,7 +278,7 @@ public class LearningStatsService {
         } else if (thisWeekStats == null || thisWeekStats <= 0) {
             thisWeekStats = 0;
         }
-        return (thisWeekStats - lastWeekStats) / lastWeekStats * 100;
+        return (thisWeekStats - lastWeekStats) * 100 / lastWeekStats;
     }
 
     public List<MasteryStats> getMasteryStats(Long userId, Long courseId) {

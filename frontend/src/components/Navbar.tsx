@@ -13,9 +13,9 @@ const NavBar = () => {
         <div className={`navbar ${homePage ? "bg-white" : "bg-base-300"} shadow-sm`}>
             <div className="flex-1">
                 {disabledHref ? (
-                    <span className="btn btn-ghost text-xl font-mono">LearningBot</span>
+                    <span className="btn btn-ghost text-xl font-mono">CodePath</span>
                 ) : (
-                    <Link to="/" className="btn btn-ghost text-xl font-mono">LearningBot</Link>
+                    <Link to="/" className="btn btn-ghost text-xl font-mono">CodePath</Link>
                 )}
             </div>
             <div className="flex-none">

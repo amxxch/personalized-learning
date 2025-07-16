@@ -15,10 +15,11 @@ interface ChatHistoryProps {
     initialMessages: Message[];
     courseId: number | null;
     skillId: number | null;
+    courseName: string;
 }
 
 
-const ChatHistory = ({ initialMessages, courseId, skillId } : ChatHistoryProps) => {
+const ChatHistory = ({ initialMessages, courseId, skillId, courseName } : ChatHistoryProps) => {
 
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [loading, setLoading] = useState(false);
@@ -107,7 +108,7 @@ const ChatHistory = ({ initialMessages, courseId, skillId } : ChatHistoryProps) 
         {/* Title */}
         <div className="flex-1 overflow-y-auto space-y-4">
         <div className="text-center mb-10">
-          <p className="text-xl text-gray-600 font-semibold mb-1">C++ Courses</p>
+          <p className="text-xl text-gray-600 font-semibold mb-1">{courseName}</p>
           <p className='text-gray-500'>{datetime}</p>
         </div>
 

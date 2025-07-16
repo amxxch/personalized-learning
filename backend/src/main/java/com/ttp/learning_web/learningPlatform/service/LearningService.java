@@ -104,6 +104,9 @@ public class LearningService {
 
                 // TODO: Check if the user has asked too many
 
+                for (LessonBubble lessonBubble : bubbles) {
+                    System.out.println(lessonBubble.getBubbleOrder());
+                }
                 LessonBubble nextBubble = bubbles.stream().filter(b -> b.getBubbleOrder() == currentBubble.getBubbleOrder() + 1).findFirst().get();
                 currentProgress.setBubble(nextBubble);
                 progressService.updateProgress(currentProgress);

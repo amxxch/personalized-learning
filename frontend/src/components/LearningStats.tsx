@@ -369,7 +369,7 @@ const LearningStats = () => {
           {/* Course Selection */}
           <div className="flex items-center gap-4 mt-12">
             <label htmlFor="course-select" className="text-lg font-medium text-gray-700">
-              Select Course:
+              Select Technical Area:
             </label>
             <select
               id="course-select"

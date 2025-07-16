@@ -173,15 +173,10 @@ const AssessmentPage = () => {
             { isLoading && <LoadingSpinner message="Loading questions..." /> }
 
             { !isLoading && questions.length > 0 && !submitted && (
-            <div>
+            <div className="flex flex-col items-center justify-center">
                 <h1 className="text-4xl font-mono font-bold mt-12 text-center">Initial Assessment</h1>
                 {/* Pagination Controls */}
                 <div className="flex justify-center">
-
-                    {/* Temporary */}
-                    <button className="btn btn-outline btn-secondary mt-6 mb-4" onClick={() => randomSubmit()}>
-                        Skip Assessment
-                    </button>
 
                     <div className="join my-6">
                         <button
@@ -260,8 +255,13 @@ const AssessmentPage = () => {
                     </button>
                     )}
                 </div>
+            {/* Temporary */}
+            <button className="btn btn-outline btn-secondary mt-6 mb-4" onClick={() => randomSubmit()}>
+                Skip Assessment
+            </button>
             </div>
             )}
+
 
             {/* Display results after submission */}
             { submitted && (

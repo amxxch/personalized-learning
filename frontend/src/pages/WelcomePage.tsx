@@ -70,13 +70,13 @@ export default function HomePage() {
             <div className="relative mb-5">
               {/* Transparent placeholder to reserve space */}
               <div className="invisible text-4xl md:text-6xl font-bold font-mono tracking-wide">
-                Welcome to LearningBot
+                Welcome to CodePath
               </div>
 
               <div className="absolute top-0 left-0 text-4xl md:text-6xl font-bold font-mono tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-pink-900">
                 <Typewriter
                   options={{
-                    strings: ['Welcome to LearningBot'],
+                    strings: ['Welcome to CodePath'],
                     autoStart: true,
                     loop: true,
                     cursor: '_',

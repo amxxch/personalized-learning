@@ -12,7 +12,7 @@ const ChatReviewPage = () => {
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
 
   const [loading, setLoading] = useState(false);
-  const { courseId, skillId } = useParams();
+  const { courseId, skillId, courseName } = useParams();
   const parsedCourseId = courseId ? parseInt(courseId) : null;
   const parsedSkillId = skillId ? parseInt(skillId) : null;
   const Navigate = useNavigate();
@@ -36,6 +36,7 @@ const ChatReviewPage = () => {
             initialMessages={initialMessages}
             courseId={parsedCourseId}
             skillId={parsedSkillId}
+            courseName={courseName || ''}
             />
         )}
     </div>

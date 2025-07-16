@@ -92,11 +92,6 @@ const ProfilePage = () => {
             <div className="col-span-2 rounded-2xl shadow p-6 flex flex-col gap-4 bg-stone-50">
               <LoginCalendar />
             </div>
-
-            {/* Due Tasks Section */}
-            {/* <div className="col-span-7 rounded-2xl shadow p-6 flex flex-col gap-4 bg-stone-50">
-              <DueTasks />
-            </div> */}
           </div>
         )}
 

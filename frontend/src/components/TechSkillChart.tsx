@@ -112,7 +112,7 @@ import {
                     value: level.name,
                     position: "top", // Move labels to the top
                     fill: level.name === userLevel?.name ? "#0D47A1" : "black",
-                    fontSize: level.name === userLevel?.name ? 20 : 14,
+                    fontSize: level.name === userLevel?.name ? 16 : 14,
                     fontWeight: level.name === userLevel?.name ? "bold" : "normal",
                 }}
                 />
@@ -167,7 +167,7 @@ import {
                 position: "left",
                 value: userScore,
                 fill: "black",
-                fontSize: 16,
+                fontSize: 12,
                 fontWeight: "bold",
             }}
             />
